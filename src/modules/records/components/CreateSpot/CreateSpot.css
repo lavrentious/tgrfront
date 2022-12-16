@@ -1,0 +1,11 @@
+.create-spot__form-description {
+  resize: none;
+  height: 10rem !important;
+}
+.create-spot__form-image {
+  max-width: 3rem;
+  height: auto;
+}
+.create-spot__form-image-item {
+  cursor: grab;
+}
