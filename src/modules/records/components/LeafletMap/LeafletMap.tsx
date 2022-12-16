@@ -40,17 +40,15 @@ interface ILeafletMapProps {
   children?: React.ReactNode;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const centerOn = (map: RefObject<any>, center: LatLngTuple, zoom: number) => {
+const centerOn = (
+  map: RefObject<Map | null>,
+  center: LatLngTuple,
+  zoom: number
+) => {
   if (!map.current) return;
-  map.current?.setView(center, zoom, {
-    pan: {
-      animate: true,
-      duration: 1,
-    },
-    zoom: {
-      animate: true,
-    },
+  map.current.setView(center, zoom, {
+    animate: false,
+    duration: 0,
   });
 };
 
