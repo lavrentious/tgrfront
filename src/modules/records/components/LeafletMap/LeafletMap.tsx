@@ -119,15 +119,17 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
         {(setZoom || setCenter) && (
           <EventHandlers {...{ onClick, setCenter, setZoom }} />
         )}
-        {markers?.map((marker) =>
-          marker.position != null && marker.visible ? (
-            <Marker {...marker} position={marker.position} key={marker.key}>
-              {marker.content ? <Popup>{marker.content}</Popup> : <></>}
-            </Marker>
-          ) : (
-            <></>
-          )
-        )}
+        {markers?.map((marker) => (
+          <React.Fragment key={marker.key}>
+            {marker.position != null && marker.visible ? (
+              <Marker {...marker} position={marker.position}>
+                {marker.content ? <Popup>{marker.content}</Popup> : <></>}
+              </Marker>
+            ) : (
+              <></>
+            )}
+          </React.Fragment>
+        ))}
 
         {children}
       </MapContainer>
