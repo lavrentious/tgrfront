@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { PinMap as Icon } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { setCenter, setZoom } from "src/store/mapReducer";
+import { setCenter, setZoom } from "src/store/map.reducer";
 
 const CenterButton = () => {
   const userCoords = useSelector((state: RootState) => state.map.userCoords);

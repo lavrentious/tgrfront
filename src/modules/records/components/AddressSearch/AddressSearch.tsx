@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import useFetch from "src/modules/common/hooks/useFetch";
 import haversine from "src/modules/common/utils/haversine";
 import { RootState, useAppDispatch } from "src/store";
-import { pickSpot } from "src/store/mapReducer";
+import { pickSpot } from "src/store/map.reducer";
 
 type SearchItem = {
   id: string;

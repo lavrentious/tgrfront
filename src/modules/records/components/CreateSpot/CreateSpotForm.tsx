@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { removeFile } from "src/store/createSpotReducer";
+import { removeFile } from "src/store/createSpot.reducer";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";
 import ImageList from "./ImageList";

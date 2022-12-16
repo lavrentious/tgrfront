@@ -1,8 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import authReducer from "./authReducer";
-import createSpotReducer from "./createSpotReducer";
-import mapReducer from "./mapReducer";
+import authReducer from "./auth.reducer";
+import createSpotReducer from "./createSpot.reducer";
+import mapReducer from "./map.reducer";
 
 const rootReducer = combineReducers({
   auth: authReducer,

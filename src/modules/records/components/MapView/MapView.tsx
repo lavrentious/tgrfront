@@ -16,14 +16,14 @@ import LeafletMap, {
 import CenterButton from "src/modules/records/components/MapView/CenterButton";
 import ControlButtons from "src/modules/records/components/MapView/ControlButtons";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpotReducer";
+import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 import {
   setCenter,
   setIsSelectingSpot,
   setSelectedSpot,
   setUserCoords,
   setZoom,
-} from "src/store/mapReducer";
+} from "src/store/map.reducer";
 import "./mapView.css";
 
 let init = true;

@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { setFiles } from "src/store/createSpotReducer";
+import { setFiles } from "src/store/createSpot.reducer";
 
 interface FileUploadFieldProps {
   maxFilesCount: number;

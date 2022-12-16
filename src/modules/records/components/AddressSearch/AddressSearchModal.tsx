@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsAddressSearchShown } from "src/store/mapReducer";
+import { setIsAddressSearchShown } from "src/store/map.reducer";
 import AddressSearch from "./AddressSearch";
 
 const AddressSearchModal = () => {

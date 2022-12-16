@@ -8,12 +8,12 @@ import {
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpotReducer";
+import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 import {
   setIsAddressSearchShown,
   setIsSelectingSpot,
   setSelectedSpot,
-} from "src/store/mapReducer";
+} from "src/store/map.reducer";
 import { deleteFile } from "src/modules/records/components/CreateSpot/CreateSpotForm";
 
 const ControlButtons = () => {

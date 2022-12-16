@@ -3,7 +3,7 @@ import { useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import arrayMove from "src/modules/common/utils/arrayMove";
 import { RootState, useAppDispatch } from "src/store";
-import { setFiles } from "src/store/createSpotReducer";
+import { setFiles } from "src/store/createSpot.reducer";
 import ImageItem from "./ImageItem";
 
 interface ImageListProps {

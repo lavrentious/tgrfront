@@ -2,7 +2,7 @@ import React from 'react';
 import { Toast, ToastContainer } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/store";
-import { setIsSelectingSpot } from "src/store/mapReducer";
+import { setIsSelectingSpot } from "src/store/map.reducer";
 import "./mapView.css";
 
 const SelectingSpotNotification = () => {

@@ -6,7 +6,7 @@ import {
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpotReducer";
+import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 import CreateSpotForm from "./CreateSpotForm";
 
 const CreateSpotModal = () => {
