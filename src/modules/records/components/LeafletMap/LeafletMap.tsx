@@ -18,6 +18,7 @@ import {
   TileLayer,
   useMapEvents,
 } from "react-leaflet";
+import arraysEqual from "src/modules/common/utils/arraysEqual";
 
 export interface IMarker {
   position: LatLngTuple | null;
@@ -66,12 +67,14 @@ const EventHandlers = ({
       if (onClick) onClick(e);
     },
     dragend(e) {
-      if (!setCenter) return;
-      const { lat, lng } = e.target.getCenter();
-      setCenter([lat, lng]);
+      if (setCenter) {
+        setCenter([e.target.getCenter().lat, e.target.getCenter().lng]);
+      }
     },
     zoom(e) {
       if (setZoom) setZoom(e.target.getZoom());
+      if (setCenter)
+        setCenter([e.target.getCenter().lat, e.target.getCenter().lng]);
     },
   });
   return <></>;
@@ -90,21 +93,14 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
   }: ILeafletMapProps) {
     const map = useRef<Map | null>(null);
     useEffect(() => {
-      if (zoom !== map.current?.getZoom()) {
-        if (!map.current) return;
-        map.current.setView(map.current.getCenter(), zoom, {
-          animate: false,
-          duration: 0,
-        });
-      }
-    }, [zoom]);
-    useEffect(() => {
       if (!map.current) return;
-      const mapCenter = map.current.getCenter();
-      if (center[0] !== mapCenter.lat || center[1] !== mapCenter.lng) {
-        centerOn(map, center, map.current.getZoom());
+      const { lat: mapLat, lng: mapLng } = map.current.getCenter();
+      const mapCenter: LatLngTuple = [mapLat, mapLng];
+      const mapZoom = map.current.getZoom();
+      if (!arraysEqual(center, mapCenter) || zoom !== mapZoom) {
+        centerOn(map, center, zoom);
       }
-    }, [center]);
+    }, [center, zoom]);
 
     return (
       <MapContainer
