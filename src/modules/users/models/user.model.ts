@@ -6,10 +6,12 @@ export enum Role {
 }
 
 export interface User {
+  _id: string;
   name?: string;
   email: string;
   username?: string;
-  password: string;
   emailConfirmed: boolean;
   role: Role;
+  createdAt: string;
+  updatedAt: string;
 }
