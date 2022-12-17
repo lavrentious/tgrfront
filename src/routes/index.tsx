@@ -1,7 +1,9 @@
 import React from "react";
 import About from "src/modules/about/components/About/About";
-import MainMap from "src/modules/records/components/MapView/MapView";
 import NotFound from "src/modules/common/components/NotFound/NotFound";
+import MainMap from "src/modules/records/components/MapView/MapView";
+import Login from "src/modules/users/components/Login/Login";
+import Register from "src/modules/users/components/Register/Register";
 
 export type Route = {
   path: string;
@@ -12,6 +14,8 @@ export type Route = {
 const routes: Route[] = [
   { element: <MainMap />, path: "/map" },
   { element: <About />, path: "/" },
+  { element: <Login />, path: "/login", anonOnly: true },
+  { element: <Register />, path: "/register", anonOnly: true },
   { element: <NotFound />, path: "/*" },
 ];
 

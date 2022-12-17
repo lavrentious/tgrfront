@@ -1,4 +1,4 @@
-import { User } from "./user.model";
+import { User } from "../../users/models/user.model";
 
 export interface Address {
   region: string;

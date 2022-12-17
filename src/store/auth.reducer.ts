@@ -6,21 +6,19 @@ export enum Role {
   VERIFIED = "VERIFIED",
   MODERATOR = "MODERATOR",
 }
-export type User = {
+export type StoredUser = {
   id: string;
-  username: string;
-  name: string;
+  username?: string;
+  name?: string;
   role: string;
 };
 
 type AuthState = {
-  isLoggedIn: boolean;
   isAuthLoading: boolean;
-  user: User | null;
+  user: StoredUser | null;
 };
 
 const initialState: AuthState = {
-  isLoggedIn: false,
   isAuthLoading: true,
   user: null,
 };
@@ -29,21 +27,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User>) {
+    setUser(state, action: PayloadAction<StoredUser | null>) {
       state.user = action.payload;
-      state.isLoggedIn = true;
     },
     setIsAuthLoading(state, action: PayloadAction<boolean>) {
       state.isAuthLoading = action.payload;
     },
-    logout(state) {
-      state.user = null;
-      state.isLoggedIn = false;
-      localStorage.removeItem("token");
-    },
   },
 });
 
-export const { setUser, logout, setIsAuthLoading } = authSlice.actions;
+export const { setUser, setIsAuthLoading } = authSlice.actions;
 
 export default authSlice.reducer;

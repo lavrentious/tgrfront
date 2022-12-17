@@ -1,13 +1,29 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import routes from "src/routes";
+import routes, { Route as RouteType } from "src/routes";
+import { RootState } from "src/store";
+import { StoredUser } from "src/store/auth.reducer";
 
 interface AppRouterProps {
   children: React.ReactNode;
 }
 
+function getRouteElement(
+  route: RouteType,
+  user: StoredUser | null,
+  isAuthLoading: boolean
+): React.ReactNode {
+  const isLoggedIn = user != null;
+  if (!route.anonOnly && !route.authOnly) return route.element;
+  if ((route.anonOnly && !isLoggedIn) || (route.authOnly && isLoggedIn)) {
+    return isAuthLoading ? <></> : route.element;
+  }
+  return <Navigate to="/" />;
+}
+
 const AppRouter: React.FC<AppRouterProps> = ({ children }) => {
-  const isLoggedIn = false; // TODO
+  const { user, isAuthLoading } = useSelector((state: RootState) => state.auth);
   return (
     <BrowserRouter>
       {children}
@@ -17,15 +33,7 @@ const AppRouter: React.FC<AppRouterProps> = ({ children }) => {
             <Route
               key={route.path}
               path={route.path}
-              element={
-                (!route.anonOnly && !route.authOnly) ||
-                (route.anonOnly && !isLoggedIn) ||
-                (route.authOnly && isLoggedIn) ? (
-                  route.element
-                ) : (
-                  <Navigate to="/" />
-                )
-              }
+              element={getRouteElement(route, user, isAuthLoading)}
             />
           );
         })}
