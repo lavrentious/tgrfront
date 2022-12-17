@@ -5,7 +5,7 @@ export enum Role {
   MODERATOR = "MODERATOR",
 }
 
-export interface User {
+export class User {
   _id: string;
   name?: string;
   email: string;

@@ -1,6 +1,6 @@
 import { User } from "../../users/models/user.model";
 
-export interface Address {
+export class Address {
   region: string;
   city: string;
   street: string;
@@ -13,13 +13,13 @@ export enum SpotType {
   SIGHT,
 }
 
-export interface RecordPhoto {
+export class RecordPhoto {
   url: string;
   publicId: string;
   comment: string;
 }
 
-export interface Record {
+export class Record {
   name: string;
   description: string;
   accessibility: string;

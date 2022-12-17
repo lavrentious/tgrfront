@@ -1,16 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Role } from "src/modules/users/models/user.model";
 
-export enum Role {
-  ADMIN = "ADMIN",
-  USER = "USER",
-  VERIFIED = "VERIFIED",
-  MODERATOR = "MODERATOR",
-}
 export type StoredUser = {
   id: string;
   username?: string;
   name?: string;
-  role: string;
+  role: Role;
 };
 
 type AuthState = {

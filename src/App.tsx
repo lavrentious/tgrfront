@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import "./app.css";
+import AbilityContextProvider from "./modules/ability/ability.context.provider";
 import AppRouter from "./modules/common/components/AppRouter";
 import Navbar from "./modules/common/components/Navbar/Navbar";
 import { AuthService } from "./modules/users/services/auth.service";
@@ -14,10 +15,12 @@ const App = () => {
   }, []);
   return (
     <Provider store={store}>
-      <AppRouter>
-        <Navbar />
-        <Toaster position="top-right" />
-      </AppRouter>
+      <AbilityContextProvider>
+        <AppRouter>
+          <Navbar />
+          <Toaster position="top-right" />
+        </AppRouter>
+      </AbilityContextProvider>
     </Provider>
   );
 };
