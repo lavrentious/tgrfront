@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import BootstrapNavbar from "react-bootstrap/Navbar";
@@ -10,9 +10,37 @@ import { AuthService } from "src/modules/users/services/auth.service";
 import { RootState } from "src/store";
 import "./Navbar.css";
 
+const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
+  const isLoggedIn = !!user;
+  if (isAuthLoading) {
+    return <Spinner animation="border" className="align-self-center" />;
+  }
+  if (isLoggedIn) {
+    return (
+      <>
+        <LinkContainer to={`/profile/${user.id}`}>
+          <Nav.Link>Мой профиль</Nav.Link>
+        </LinkContainer>
+        <Button variant="danger" onClick={AuthService.logout}>
+          Выход
+        </Button>
+      </>
+    );
+  }
+  return (
+    <>
+      <LinkContainer to="/login">
+        <Nav.Link>Вход</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to="/register">
+        <Nav.Link>Регистрация</Nav.Link>
+      </LinkContainer>
+    </>
+  );
+};
+
 const Navbar: React.FunctionComponent = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const isLoggedIn = user != null;
+  const { user, isAuthLoading } = useSelector((state: RootState) => state.auth);
   return (
     <BootstrapNavbar
       id="navbar"
@@ -43,25 +71,7 @@ const Navbar: React.FunctionComponent = () => {
               </LinkContainer>
             </div>
             <div className="d-flex flex-wrap">
-              {isLoggedIn ? (
-                <>
-                  <LinkContainer to={`/profile/${user.id}`}>
-                    <Nav.Link>Мой профиль</Nav.Link>
-                  </LinkContainer>
-                  <Button variant="danger" onClick={AuthService.logout}>
-                    Выход
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <LinkContainer to="/login">
-                    <Nav.Link>Вход</Nav.Link>
-                  </LinkContainer>
-                  <LinkContainer to="/register">
-                    <Nav.Link>Регистрация</Nav.Link>
-                  </LinkContainer>
-                </>
-              )}
+              <AuthStatus isAuthLoading={isAuthLoading} user={user} />
             </div>
           </Nav>
         </BootstrapNavbar.Collapse>
