@@ -1,3 +1,4 @@
+import { cookieExists } from "src/modules/common/utils/cookieExists";
 import { removeCookie } from "src/modules/common/utils/removeCookie";
 import { setIsAuthLoading, setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
@@ -33,7 +34,7 @@ export abstract class AuthService {
   }
 
   static onLoad() {
-    if (localStorage.getItem("token") != null) {
+    if (cookieExists("refreshToken")) {
       this.refresh()
         .catch(() => {
           localStorage.removeItem("token");
