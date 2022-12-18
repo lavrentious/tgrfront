@@ -11,4 +11,13 @@ export abstract class TokenService {
     removeCookie(REFRESH_TOKEN_NAME);
     store.dispatch(setUser(null));
   }
+
+  static set accessToken(token: string | null) {
+    if (token) localStorage.setItem(ACCESS_TOKEN_NAME, token);
+    else localStorage.removeItem(ACCESS_TOKEN_NAME);
+  }
+
+  static get accessToken(): string | null {
+    return localStorage.getItem(ACCESS_TOKEN_NAME);
+  }
 }
