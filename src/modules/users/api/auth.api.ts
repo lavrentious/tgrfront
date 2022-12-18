@@ -5,6 +5,8 @@ import { RegisterDto } from "../etc/register.dto";
 
 const BASE_URL = "/auth";
 
+export const REFRESH_URL = BASE_URL + "/refresh";
+
 interface AuthResponse {
   accessToken: string;
   refreshToken: string;
@@ -25,6 +27,6 @@ export abstract class AuthApi {
   }
 
   static async refresh() {
-    return await api.get<AuthResponse>(`${BASE_URL}/refresh`);
+    return await api.get<AuthResponse>(REFRESH_URL);
   }
 }
