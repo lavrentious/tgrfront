@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { ApiError } from "src/modules/common/api";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";
-import { validators } from "../../etc/validations";
+import { validators } from "../../utils/validations";
 import { AuthService } from "../../services/auth.service";
 
 interface Values {

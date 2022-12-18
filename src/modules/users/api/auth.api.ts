@@ -1,7 +1,7 @@
 import { api } from "src/modules/common/api";
 import { StoredUser } from "src/store/auth.reducer";
-import { LoginDto } from "../etc/login.dto";
-import { RegisterDto } from "../etc/register.dto";
+import { LoginDto } from "../dto/login.dto";
+import { RegisterDto } from "../dto/register.dto";
 
 const BASE_URL = "/auth";
 

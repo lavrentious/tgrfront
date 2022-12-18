@@ -1,8 +1,8 @@
 import { setIsAuthLoading, setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
 import { AuthApi } from "../api/auth.api";
-import { LoginDto } from "../etc/login.dto";
-import { RegisterDto } from "../etc/register.dto";
+import { LoginDto } from "../dto/login.dto";
+import { RegisterDto } from "../dto/register.dto";
 import { TokenService } from "./token.service";
 
 export abstract class AuthService {
@@ -20,10 +20,9 @@ export abstract class AuthService {
   }
 
   static async logout() {
-    return await AuthApi.logout().finally(() => {
-      store.dispatch(setUser(null));
-      TokenService.accessToken = null;
-    });
+    store.dispatch(setUser(null));
+    TokenService.clearTokens();
+    return AuthApi.logout();
   }
 
   static async refresh() {
