@@ -1,16 +1,10 @@
 import axios from "axios";
 import { LatLngTuple } from "leaflet";
 import React, { FormEvent, useState } from "react";
-import {
-  Button,
-  Form,
-  InputGroup,
-  ListGroup,
-  ListGroupItem,
-  Spinner,
-} from "react-bootstrap";
+import { Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Search as SearchIcon } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
+import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import useFetch from "src/modules/common/hooks/useFetch";
 import haversine from "src/modules/common/utils/haversine";
 import { RootState, useAppDispatch } from "src/store";
@@ -97,17 +91,12 @@ const AddressSearch = () => {
               onChange={(e) => setQuery(e.target.value)}
               enterKeyHint="search"
             />
-            <Button
-              variant="primary"
+            <LoadingButton
               type="submit"
+              isLoading={isFetching}
               disabled={isFetching || !query.length}
-            >
-              {isFetching ? (
-                <Spinner animation="border" size="sm" />
-              ) : (
-                <SearchIcon />
-              )}
-            </Button>
+              icon={<SearchIcon />}
+            />
           </InputGroup>
         </Form.Group>
       </Form>

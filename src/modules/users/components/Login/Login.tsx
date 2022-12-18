@@ -1,15 +1,10 @@
 import useToggle from "beautiful-react-hooks/useToggle";
 import { useFormik } from "formik";
 import React from "react";
-import {
-  Button,
-  Container,
-  Form,
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
+import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { ApiError } from "src/modules/common/api";
+import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";
 import { AuthService } from "../../services/auth.service";
@@ -94,13 +89,14 @@ const Login: React.FC = () => {
             </InputGroup>
           </Form.Group>
 
-          <Button
+          <LoadingButton
+            isLoading={f.isSubmitting}
             type="submit"
             className="mt-2"
             disabled={!f.isValid || f.isSubmitting}
           >
             Войти
-          </Button>
+          </LoadingButton>
         </Form>
       </Container>
     </>

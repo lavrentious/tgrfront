@@ -1,20 +1,15 @@
 import useToggle from "beautiful-react-hooks/useToggle";
 import { useFormik } from "formik";
 import React from "react";
-import {
-  Button,
-  Container,
-  Form,
-  FormControl,
-  InputGroup,
-} from "react-bootstrap";
+import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { ApiError } from "src/modules/common/api";
+import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";
+import { AuthService } from "../../services/auth.service";
 import * as rules from "../../utils/validations";
 import { validators } from "../../utils/validations";
-import { AuthService } from "../../services/auth.service";
 
 interface Values {
   email: string;
@@ -157,9 +152,14 @@ const Register: React.FC = () => {
             />
           </Form.FloatingLabel>
 
-          <Button type="submit" className="mt-2" disabled={!f.isValid}>
+          <LoadingButton
+            isLoading={f.isSubmitting}
+            type="submit"
+            className="mt-2"
+            disabled={!f.isValid || f.isSubmitting}
+          >
             Зарегистрироваться
-          </Button>
+          </LoadingButton>
         </Form>
       </Container>
     </>
