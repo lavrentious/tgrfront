@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Role } from "src/modules/users/models/user.model";
+import { TokenService } from "src/modules/users/services/token.service";
 
 export type StoredUser = {
   id: string;
@@ -14,7 +15,7 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  isAuthLoading: true,
+  isAuthLoading: !!TokenService.refreshToken,
   user: null,
 };
 

@@ -1,10 +1,9 @@
-import { cookieExists } from "src/modules/common/utils/cookieExists";
 import { setIsAuthLoading, setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
 import { AuthApi } from "../api/auth.api";
 import { LoginDto } from "../etc/login.dto";
 import { RegisterDto } from "../etc/register.dto";
-import { REFRESH_TOKEN_NAME, TokenService } from "./token.service";
+import { TokenService } from "./token.service";
 
 export abstract class AuthService {
   static async login(dto: LoginDto) {
@@ -34,7 +33,7 @@ export abstract class AuthService {
   }
 
   static onLoad() {
-    if (cookieExists(REFRESH_TOKEN_NAME)) {
+    if (TokenService.refreshToken) {
       this.refresh()
         .catch(() => {
           TokenService.clearTokens();

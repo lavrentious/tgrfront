@@ -1,10 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { AuthService } from "../users/services/auth.service";
-import {
-  REFRESH_TOKEN_NAME,
-  TokenService,
-} from "../users/services/token.service";
-import { cookieExists } from "./utils/cookieExists";
+import { TokenService } from "../users/services/token.service";
 
 export type ApiError = AxiosError<{ message?: string }>;
 
@@ -24,7 +20,7 @@ function createAxiosResponseInterceptor() {
   const interceptor = api.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      if (error.response?.status !== 401 || !cookieExists(REFRESH_TOKEN_NAME)) {
+      if (error.response?.status !== 401 || !TokenService.refreshToken) {
         TokenService.clearTokens();
         return Promise.reject(error);
       }
