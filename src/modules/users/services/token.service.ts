@@ -1,5 +1,3 @@
-import { getCookie } from "src/modules/common/utils/getCookie";
-import { removeCookie } from "src/modules/common/utils/removeCookie";
 import { setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
 
@@ -8,8 +6,7 @@ export const ACCESS_TOKEN_NAME = "token";
 
 export abstract class TokenService {
   static clearTokens() {
-    localStorage.removeItem(ACCESS_TOKEN_NAME);
-    removeCookie(REFRESH_TOKEN_NAME);
+    this.accessToken = null;
     store.dispatch(setUser(null));
   }
 
@@ -20,9 +17,5 @@ export abstract class TokenService {
 
   static get accessToken(): string | null {
     return localStorage.getItem(ACCESS_TOKEN_NAME);
-  }
-
-  static get refreshToken(): string | undefined {
-    return getCookie(REFRESH_TOKEN_NAME);
   }
 }

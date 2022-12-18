@@ -15,7 +15,7 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  isAuthLoading: !!TokenService.refreshToken,
+  isAuthLoading: !!TokenService.accessToken,
   user: null,
 };
 

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { REFRESH_URL } from "../users/api/auth.api";
+import store from "src/store";
 import { AuthService } from "../users/services/auth.service";
 import { TokenService } from "../users/services/token.service";
 
@@ -21,11 +21,7 @@ function createAxiosResponseInterceptor() {
   const interceptor = api.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      if (
-        error.response?.status !== 401 ||
-        !TokenService.refreshToken ||
-        error.config?.url === REFRESH_URL
-      ) {
+      if (error.response?.status !== 401 || !store.getState().auth.user) {
         TokenService.clearTokens();
         return Promise.reject(error);
       }

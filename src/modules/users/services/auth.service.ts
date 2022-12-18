@@ -32,7 +32,7 @@ export abstract class AuthService {
   }
 
   static onLoad() {
-    if (TokenService.refreshToken) {
+    if (TokenService.accessToken) {
       this.refresh()
         .catch(() => {
           TokenService.clearTokens();
