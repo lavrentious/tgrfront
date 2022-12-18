@@ -12,8 +12,8 @@ import toast from "react-hot-toast";
 import { ApiError } from "src/modules/common/api";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";
-import { validators } from "../../utils/validations";
 import { AuthService } from "../../services/auth.service";
+import { validators } from "../../utils/validations";
 
 interface Values {
   usernameOrEmail: string;
@@ -31,46 +31,47 @@ const validationSchema = yup.object().shape({
   password: validators.password,
 });
 
+const submit = async (values: Values) => {
+  await AuthService.login(values)
+    .then(({ data }) => {
+      toast.success(() => (
+        <span>
+          Вы вошли как <b>{data.user.username ?? data.user.id}</b>
+        </span>
+      ));
+    })
+    .catch((e: ApiError) => {
+      const msg = e.response?.data.message;
+      toast.error(msg ?? e.message);
+    });
+};
+
 const Login: React.FC = () => {
   const [passwordVisible, togglePasswordVisible] = useToggle();
-  const formik = useFormik<Values>({
+
+  const f = useFormik<Values>({
     initialValues: {
       usernameOrEmail: "",
       password: "",
     },
-    onSubmit: async (values) => {
-      await AuthService.login(values)
-        .then(({ data }) => {
-          toast.success(() => (
-            <span>
-              Вы вошли как <b>{data.user.username ?? data.user.id}</b>
-            </span>
-          ));
-        })
-        .catch((e: ApiError) => {
-          const msg = e.response?.data.message;
-          toast.error(msg ?? e.message);
-        });
-    },
+    onSubmit: submit,
     validationSchema,
     validateOnBlur: true,
   });
-
   return (
     <>
       <Container className="mt-2">
         <h4>Авторизация</h4>
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={f.handleSubmit}>
           <Form.Group>
             <Form.Label htmlFor="usernameOrEmail">Email или логин</Form.Label>
             <FormControl
-              onBlur={formik.handleBlur}
+              onBlur={f.handleBlur}
               id="usernameOrEmail"
-              value={formik.values.usernameOrEmail}
-              onChange={formik.handleChange}
+              value={f.values.usernameOrEmail}
+              onChange={f.handleChange}
               isInvalid={
-                formik.touched.usernameOrEmail &&
-                !!formik.errors.usernameOrEmail
+                f.touched.usernameOrEmail && !!f.errors.usernameOrEmail
               }
             />
           </Form.Group>
@@ -78,12 +79,12 @@ const Login: React.FC = () => {
             <Form.Label htmlFor="password">Пароль</Form.Label>
             <InputGroup>
               <Form.Control
-                onBlur={formik.handleBlur}
+                onBlur={f.handleBlur}
                 id="password"
                 type={passwordVisible ? "text" : "password"}
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                isInvalid={formik.touched.password && !!formik.errors.password}
+                value={f.values.password}
+                onChange={f.handleChange}
+                isInvalid={f.touched.password && !!f.errors.password}
               />
               <VisibilityButton
                 variant="outline-secondary"
@@ -93,7 +94,11 @@ const Login: React.FC = () => {
             </InputGroup>
           </Form.Group>
 
-          <Button type="submit" className="mt-2" disabled={!formik.isValid}>
+          <Button
+            type="submit"
+            className="mt-2"
+            disabled={!f.isValid || f.isSubmitting}
+          >
             Войти
           </Button>
         </Form>
