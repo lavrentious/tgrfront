@@ -22,8 +22,7 @@ function createAxiosResponseInterceptor() {
     (response) => response,
     async (error: AxiosError) => {
       if (error.response?.status !== 401 || !store.getState().auth.user) {
-        TokenService.clearTokens();
-        return Promise.reject(error);
+        throw error;
       }
       api.interceptors.response.eject(interceptor);
       return AuthService.refresh()
@@ -31,10 +30,6 @@ function createAxiosResponseInterceptor() {
           if (error.config) {
             return api(error.config);
           }
-        })
-        .catch((refreshError) => {
-          TokenService.clearTokens();
-          return Promise.reject(refreshError);
         })
         .finally(createAxiosResponseInterceptor);
     }

@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { setIsAuthLoading, setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
 import { AuthApi } from "../api/auth.api";
@@ -26,20 +27,25 @@ export abstract class AuthService {
   }
 
   static async refresh() {
-    const res = await AuthApi.refresh();
-    TokenService.accessToken = res.data.accessToken;
-    store.dispatch(setUser(res.data.user));
+    return AuthApi.refresh()
+      .then((res) => {
+        TokenService.accessToken = res.data.accessToken;
+        store.dispatch(setUser(res.data.user));
+      })
+      .catch((e: AxiosError) => {
+        store.dispatch(setUser(null));
+        if (e.response?.status === 401) {
+          TokenService.clearTokens();
+        }
+        throw e;
+      });
   }
 
   static onLoad() {
     if (TokenService.accessToken) {
-      this.refresh()
-        .catch(() => {
-          TokenService.clearTokens();
-        })
-        .finally(() => {
-          store.dispatch(setIsAuthLoading(false));
-        });
+      this.refresh().finally(() => {
+        store.dispatch(setIsAuthLoading(false));
+      });
     } else {
       store.dispatch(setIsAuthLoading(false));
     }
