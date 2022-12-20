@@ -7,7 +7,7 @@ export const ACCESS_TOKEN_NAME = "token";
 export abstract class TokenService {
   static clearTokens() {
     this.accessToken = null;
-    store.dispatch(setUser(null));
+    if (store.getState().auth.user != null) store.dispatch(setUser(null));
   }
 
   static set accessToken(token: string | null) {
