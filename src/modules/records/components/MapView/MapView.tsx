@@ -3,6 +3,7 @@ import { DragEndEvent, LatLngTuple } from "leaflet";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
 import { Button } from "react-bootstrap";
+import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {
   blueIcon as userSpotIcon,
@@ -33,7 +34,17 @@ const MainMap: React.FunctionComponent = () => {
     useSelector((state: RootState) => state.map);
   const dispatch = useAppDispatch();
 
-  const { position } = useGeolocationState();
+  const { position, onError } = useGeolocationState();
+  onError((e) => {
+    switch (e.code) {
+      case e.PERMISSION_DENIED:
+        toast.error("Вы запретили доступ к своему местоположению.");
+        break;
+      default:
+        toast.error("Невозможно получить местоположение.");
+        break;
+    }
+  });
 
   useEffect(() => {
     if (position?.coords) {
