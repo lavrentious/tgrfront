@@ -16,6 +16,7 @@ import {
   Marker,
   Popup,
   TileLayer,
+  Tooltip,
   useMapEvents,
 } from "react-leaflet";
 import arraysEqual from "src/modules/common/utils/arraysEqual";
@@ -28,6 +29,7 @@ export interface IMarker {
   eventHandlers?: LeafletEventHandlerFnMap;
   content?: React.ReactNode;
   visible?: boolean;
+  tooltip?: string | React.ReactNode;
 }
 
 interface ILeafletMapProps {
@@ -124,6 +126,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
             {marker.position != null && marker.visible !== false ? (
               <Marker {...marker} position={marker.position}>
                 {marker.content ? <Popup>{marker.content}</Popup> : <></>}
+                {marker.tooltip && <Tooltip>{marker.tooltip}</Tooltip>}
               </Marker>
             ) : (
               <></>
