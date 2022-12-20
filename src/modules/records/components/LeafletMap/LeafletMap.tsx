@@ -121,7 +121,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
         )}
         {markers?.map((marker) => (
           <React.Fragment key={marker.key}>
-            {marker.position != null && marker.visible ? (
+            {marker.position != null && marker.visible !== false ? (
               <Marker {...marker} position={marker.position}>
                 {marker.content ? <Popup>{marker.content}</Popup> : <></>}
               </Marker>
