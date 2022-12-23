@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import store from "src/store";
 import { AuthService } from "../users/services/auth.service";
 import { TokenService } from "../users/services/token.service";
 
@@ -21,7 +20,7 @@ function createAxiosResponseInterceptor() {
   const interceptor = api.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      if (error.response?.status !== 401 || !store.getState().auth.user) {
+      if (error.response?.status !== 401 || !TokenService.accessToken) {
         throw error;
       }
       api.interceptors.response.eject(interceptor);
