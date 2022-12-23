@@ -20,9 +20,10 @@ export class RecordPhoto {
 }
 
 export class Record {
+  _id: string;
   name: string;
-  description: string;
-  accessibility: string;
+  description?: string;
+  accessibility?: string;
   address: Address;
   lat: number;
   lon: number;
