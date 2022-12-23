@@ -30,6 +30,8 @@ export interface Record {
   type: SpotType;
   author: Partial<User> & { _id: string };
   photos: RecordPhoto[];
+  distance?: number;
+  azimuth?: number;
 }
 export class Record implements Record {
   constructor(record: Record) {

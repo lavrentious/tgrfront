@@ -1,23 +1,14 @@
 import useGeolocationState from "beautiful-react-hooks/useGeolocationState";
-import { DragEndEvent, LatLngTuple } from "leaflet";
-import * as React from "react";
-import { useEffect, useMemo } from "react";
-import { Button } from "react-bootstrap";
+import { LatLngTuple } from "leaflet";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import {
-  blueIcon as userSpotIcon,
-  redIcon as selectedSpotIcon,
-} from "src/assets/markerIcons";
 import AddressSearchModal from "src/modules/records/components/AddressSearch/AddressSearchModal";
 import CreateSpotModal from "src/modules/records/components/CreateSpot/CreateSpotModal";
-import LeafletMap, {
-  IMarker,
-} from "src/modules/records/components/LeafletMap/LeafletMap";
+import LeafletMap from "src/modules/records/components/LeafletMap/LeafletMap";
 import CenterButton from "src/modules/records/components/MapView/CenterButton";
 import ControlButtons from "src/modules/records/components/MapView/ControlButtons";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 import {
   setCenter,
   setIsSelectingSpot,
@@ -25,13 +16,17 @@ import {
   setUserCoords,
   setZoom,
 } from "src/store/map.reducer";
+import { useMarkers } from "../../hooks/useMarkers";
+import { Record } from "../../models/record.model";
+import { RecordsService } from "../../services/records.service";
 import "./mapView.css";
 
 let init = true;
 
 const MainMap: React.FunctionComponent = () => {
-  const { zoom, center, userCoords, selectedSpot, isSelectingSpot } =
-    useSelector((state: RootState) => state.map);
+  const { zoom, center, userCoords, isSelectingSpot } = useSelector(
+    (state: RootState) => state.map
+  );
   const dispatch = useAppDispatch();
 
   const { position, onError } = useGeolocationState();
@@ -59,59 +54,16 @@ const MainMap: React.FunctionComponent = () => {
       }
     }
   }, [dispatch, position]);
+  const [records, setRecords] = useState<Record[]>([]);
   useEffect(() => {
+    RecordsService.findAll().then(setRecords);
     return () => {
       // TODO: various optimizations
       console.log("unmounted");
     };
   }, []);
 
-  const markers = useMemo<IMarker[]>(
-    () => [
-      {
-        key: "userPos",
-        visible: userCoords != null,
-        position: userCoords,
-        icon: userSpotIcon,
-        content: <>Вы находитесь здесь</>,
-      },
-      {
-        key: "selectedSpot",
-        visible: selectedSpot != null,
-        position: selectedSpot,
-        icon: selectedSpotIcon,
-        draggable: true,
-        eventHandlers: {
-          dragend(e: DragEndEvent) {
-            const { lat, lng } = e.target.getLatLng();
-            dispatch(setSelectedSpot([lat, lng]));
-          },
-        },
-        content: (
-          <>
-            Выбранное место
-            <div className="d-flex justify-content-evenly">
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={() => dispatch(setSelectedSpot(null))}
-              >
-                Отмена
-              </Button>
-              <Button
-                size="sm"
-                variant="success"
-                onClick={() => dispatch(setIsCreationFormShown(true))}
-              >
-                Создать
-              </Button>
-            </div>
-          </>
-        ),
-      },
-    ],
-    [dispatch, selectedSpot, userCoords]
-  );
+  const markers = useMarkers(records);
 
   return (
     <>
