@@ -19,7 +19,7 @@ export class RecordPhoto {
   comment: string;
 }
 
-export class Record {
+export interface Record {
   _id: string;
   name: string;
   description?: string;
@@ -28,6 +28,15 @@ export class Record {
   lat: number;
   lon: number;
   type: SpotType;
-  author: User | string;
+  author: Partial<User> & { _id: string };
   photos: RecordPhoto[];
+}
+export class Record implements Record {
+  constructor(record: Record) {
+    Object.assign(this, record);
+    this.author =
+      typeof record.author === "string"
+        ? { _id: record.author }
+        : record.author;
+  }
 }
