@@ -58,9 +58,7 @@ const CreateSpotForm = () => {
           <option disabled value="">
             Выберите тип
           </option>
-          <option value="INTERESTING">
-            Интересное (достопримечательность)
-          </option>
+          <option value="SIGHT">Интересное (достопримечательность)</option>
           <option value="USEFUL">Полезное</option>
           <option value="MISC">Прочее</option>
         </Form.Select>

@@ -11,6 +11,7 @@ export class Address {
 export enum SpotType {
   USEFUL,
   SIGHT,
+  MISC,
 }
 
 export class RecordPhoto {
