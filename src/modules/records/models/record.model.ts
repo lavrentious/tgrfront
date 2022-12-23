@@ -28,6 +28,6 @@ export class Record {
   lat: number;
   lon: number;
   type: SpotType;
-  author: User;
+  author: User | string;
   photos: RecordPhoto[];
 }
