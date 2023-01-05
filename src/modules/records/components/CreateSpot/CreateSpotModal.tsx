@@ -38,7 +38,7 @@ const CreateSpotModal = () => {
         >
           <HideIcon /> Свернуть (вернуться к выбору места)
         </Button>
-        <Button variant="success">
+        <Button variant="success" type="submit" form="createSpotFormId">
           <SubmitIcon /> Создать
         </Button>
       </Modal.Footer>

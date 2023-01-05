@@ -9,9 +9,9 @@ export class Address {
 }
 
 export enum SpotType {
-  USEFUL,
-  SIGHT,
-  MISC,
+  USEFUL = "USEFUL",
+  SIGHT = "SIGHT",
+  MISC = "MISC",
 }
 
 export class RecordPhoto {
