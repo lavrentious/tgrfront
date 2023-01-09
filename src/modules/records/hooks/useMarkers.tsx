@@ -9,8 +9,10 @@ import {
   redIcon as selectedSpotIcon,
 } from "src/assets/markerIcons";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpot.reducer";
-import { setSelectedSpot } from "src/store/map.reducer";
+import {
+  setIsCreationFormShown,
+  setSelectedSpot,
+} from "src/store/createSpot.reducer";
 import { IMarker } from "../components/LeafletMap/LeafletMap";
 import { Record } from "../models/record.model";
 
@@ -36,9 +38,8 @@ export function recordMarker(record: Record): IMarker {
 }
 
 export function useMarkers(records: Record[] = []) {
-  const { userCoords, selectedSpot } = useSelector(
-    (state: RootState) => state.map
-  );
+  const { userCoords } = useSelector((state: RootState) => state.map);
+  const { selectedSpot } = useSelector((state: RootState) => state.createSpot);
   const dispatch = useAppDispatch();
   return useMemo<IMarker[]>(
     () =>

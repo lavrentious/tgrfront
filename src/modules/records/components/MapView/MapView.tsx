@@ -10,12 +10,10 @@ import CenterButton from "src/modules/records/components/MapView/CenterButton";
 import ControlButtons from "src/modules/records/components/MapView/ControlButtons";
 import { RootState, useAppDispatch } from "src/store";
 import {
-  setCenter,
   setIsSelectingSpot,
   setSelectedSpot,
-  setUserCoords,
-  setZoom,
-} from "src/store/map.reducer";
+} from "src/store/createSpot.reducer";
+import { setCenter, setUserCoords, setZoom } from "src/store/map.reducer";
 import { useMarkers } from "../../hooks/useMarkers";
 import { Record } from "../../models/record.model";
 import { RecordsService } from "../../services/records.service";
@@ -24,8 +22,11 @@ import "./mapView.css";
 let init = true;
 
 const MainMap: React.FunctionComponent = () => {
-  const { zoom, center, userCoords, isSelectingSpot } = useSelector(
+  const { zoom, center, userCoords } = useSelector(
     (state: RootState) => state.map
+  );
+  const { isSelectingSpot } = useSelector(
+    (state: RootState) => state.createSpot
   );
   const dispatch = useAppDispatch();
 

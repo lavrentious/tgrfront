@@ -5,14 +5,15 @@ import {
   DashLg as HideIcon,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
+import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { RootState } from "src/store";
 import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 import CreateSpotForm from "./CreateSpotForm";
 
 const CreateSpotModal = () => {
   const dispatch = useDispatch();
-  const { selectedSpot } = useSelector((state: RootState) => state.map);
-  const { isCreationFormShown } = useSelector(
+  const { selectedSpot } = useSelector((state: RootState) => state.createSpot);
+  const { isCreationFormShown, isFormDisabled } = useSelector(
     (state: RootState) => state.createSpot
   );
 
@@ -38,9 +39,15 @@ const CreateSpotModal = () => {
         >
           <HideIcon /> Свернуть (вернуться к выбору места)
         </Button>
-        <Button variant="success" type="submit" form="createSpotFormId">
-          <SubmitIcon /> Создать
-        </Button>
+        <LoadingButton
+          variant="success"
+          type="submit"
+          form="createSpotFormId"
+          isLoading={isFormDisabled}
+          icon={<SubmitIcon />}
+        >
+          Создать
+        </LoadingButton>
       </Modal.Footer>
     </Modal>
   );

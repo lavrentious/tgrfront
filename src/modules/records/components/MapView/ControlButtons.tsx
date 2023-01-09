@@ -9,29 +9,24 @@ import {
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import { AbilityContext } from "src/modules/ability/ability";
-import { deleteFile } from "src/modules/records/components/CreateSpot/CreateSpotForm";
+import { resetForm } from "src/store/createSpot.reducer";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpot.reducer";
+import { setIsCreationFormShown, setIsSelectingSpot } from "src/store/createSpot.reducer";
 import {
   setIsAddressSearchShown,
-  setIsSelectingSpot,
-  setSelectedSpot,
 } from "src/store/map.reducer";
 import { Record } from "../../models/record.model";
 
 const ControlButtons = () => {
-  const { isAddressSearchShown, isSelectingSpot, selectedSpot } = useSelector(
+  const { isAddressSearchShown,  } = useSelector(
     (state: RootState) => state.map
+  );
+  const { isSelectingSpot, selectedSpot  } = useSelector(
+    (state: RootState) => state.createSpot
   );
   const ability = useAbility(AbilityContext);
   const dispatch = useAppDispatch();
-  const { files } = useSelector((state: RootState) => state.createSpot);
-  const cancel = () => {
-    dispatch(setSelectedSpot(null));
-    for (const url of files) {
-      deleteFile(url, dispatch);
-    }
-  };
+  
 
   return (
     <div className="map-view__buttons">
@@ -83,7 +78,7 @@ const ControlButtons = () => {
                 variant="danger"
                 className="m-1 map-view__button p-2 rounded-circle"
                 title="Отменить создание места"
-                onClick={() => cancel()}
+                onClick={() => resetForm(dispatch)}
               >
                 <CancelIcon />
               </Button>

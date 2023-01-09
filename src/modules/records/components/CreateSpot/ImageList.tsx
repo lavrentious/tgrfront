@@ -1,26 +1,24 @@
 import React from "react";
 import { useDrop } from "react-dnd";
-import { useSelector } from "react-redux";
 import arrayMove from "src/modules/common/utils/arrayMove";
-import { RootState, useAppDispatch } from "src/store";
-import { setFiles } from "src/store/createSpot.reducer";
+import { useAppDispatch } from "src/store";
+import { IFile, setFiles } from "src/store/createSpot.reducer";
 import ImageItem from "./ImageItem";
 
 interface ImageListProps {
-  filesMap: Map<string, File>;
+  files: IFile[];
 }
 
-const ImageList: React.FC<ImageListProps> = ({ filesMap }) => {
+const ImageList: React.FC<ImageListProps> = ({ files }) => {
   const dispatch = useAppDispatch();
-  const { files } = useSelector((state: RootState) => state.createSpot);
 
   const [, drop] = useDrop(() => ({ accept: "IMAGE" }));
 
   const findImage = (url: string) => {
-    const file = files.filter((c) => c === url)[0];
+    const index = files.findIndex((c) => c.file.url === url);
     return {
-      file,
-      index: files.indexOf(file),
+      file: index === -1 ? null : files[index],
+      index,
     };
   };
   const moveImage = (url: string, atIndex: number): void => {
@@ -30,20 +28,15 @@ const ImageList: React.FC<ImageListProps> = ({ filesMap }) => {
 
   return (
     <div className="w-100 flex-wrap align-items-start" ref={drop}>
-      {files.map((url, i) => {
-        const f = filesMap.get(url);
-        if (!f) return <></>;
-        const { name, size }: File = f;
-        return (
-          <ImageItem
-            file={{ name, size, url }}
-            key={url}
-            index={i}
-            fileCount={files.length}
-            moveImage={moveImage}
-          />
-        );
-      })}
+      {files.map((file, i) => (
+        <ImageItem
+          key={file.file.url}
+          file={file}
+          index={i}
+          fileCount={files.length}
+          moveImage={moveImage}
+        />
+      ))}
     </div>
   );
 };

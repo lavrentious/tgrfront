@@ -8,8 +8,10 @@ import LoadingButton from "src/modules/common/components/LoadingButton/LoadingBu
 import useFetch from "src/modules/common/hooks/useFetch";
 import haversine from "src/modules/common/utils/haversine";
 import { RootState, useAppDispatch } from "src/store";
-import { pickSpot } from "src/store/map.reducer";
+import { pickSpot } from "src/store/createSpot.reducer";
+import { setCenter, setIsAddressSearchShown } from "src/store/map.reducer";
 
+// TODO: move this to utils
 type SearchItem = {
   id: string;
   lat: number;
@@ -74,6 +76,12 @@ const AddressSearch = () => {
     setResult(res);
   });
 
+  const select = (lat: number, lng: number) => {
+    dispatch(setCenter([lat, lng]));
+    dispatch(pickSpot([lat, lng]));
+    dispatch(setIsAddressSearchShown(false));
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     fetch();
@@ -105,7 +113,7 @@ const AddressSearch = () => {
           <ListGroupItem key={e.id}>
             <strong>{i + 1}. </strong>
             <span
-              onClick={() => dispatch(pickSpot([e.lat, e.lng]))}
+              onClick={() => select(e.lat, e.lng)}
               className="link-primary"
               style={{ cursor: "pointer" }}
             >
