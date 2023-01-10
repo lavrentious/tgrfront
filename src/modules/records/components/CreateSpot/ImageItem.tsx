@@ -6,7 +6,8 @@ import {
 } from "react-bootstrap-icons";
 import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
 
-import React, { memo } from "react";
+import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
+import React, { memo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
@@ -58,15 +59,28 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
     () => ({
       accept: "IMAGE",
       hover(item: IItem) {
-        if (item.url !== file.file.url) {
-          const overIndex = files.findIndex(
-            (f) => f.file.url === file.file.url
-          );
-          moveImage(item.url, overIndex);
-        }
+        if (item.url === file.file.url) return;
+        const overIndex = files.allIds.indexOf(file.file.url);
+        moveImage(item.url, overIndex);
       },
     }),
     [moveImage]
+  );
+
+  const [comment, setComment] = useState<string>("");
+  const saveCommentToStore = (comment: string) => {
+    if (file.dto.comment === comment) return;
+    dispatch(
+      updateFileComment({
+        url: file.file.url,
+        value: comment,
+      })
+    );
+  };
+  const debouncedSave = useDebouncedCallback(
+    saveCommentToStore,
+    [dispatch],
+    500
   );
 
   return (
@@ -121,14 +135,13 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
           <FormControl
             as="textarea"
             placeholder="Тифлокомментарий"
-            value={file.dto.comment}
+            value={comment}
             onChange={(e) => {
-              dispatch(
-                updateFileComment({
-                  url: file.file.url,
-                  value: e.target.value,
-                }) // FIXME: dolgo pizdetz
-              );
+              setComment(e.target.value);
+              debouncedSave(e.target.value);
+            }}
+            onBlur={(e) => {
+              saveCommentToStore(e.target.value);
             }}
           />
         </div>

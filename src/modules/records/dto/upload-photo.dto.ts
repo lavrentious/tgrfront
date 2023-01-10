@@ -5,8 +5,6 @@ export interface PhotoDto {
   comment?: string;
 }
 
-export interface UploadPhotoDto {
-  file: IFile;
-  dto: PhotoDto;
+export interface UploadPhotoDto extends IFile {
   onUploadProgress?: AxiosRequestConfig["onUploadProgress"];
 }

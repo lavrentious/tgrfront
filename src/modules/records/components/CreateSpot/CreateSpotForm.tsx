@@ -58,7 +58,7 @@ const CreateSpotForm = () => {
           lat: selectedSpot[0],
           lon: selectedSpot[1],
         } as CreateRecordDto,
-        files.map((f) => ({ file: f, dto: { comment: "mock comment" } })) // TODO: comment for photos
+        files.allIds.map((url) => files.byId[url])
       )
         /*
       toast("Запись создана!");
@@ -152,9 +152,9 @@ const CreateSpotForm = () => {
           </Form.FloatingLabel>
           <FileUploadField
             maxFilesCount={MAX_FILES_COUNT}
-            filesCount={files.length}
+            filesCount={files.allIds.length}
           />
-          {files.length >= 2 && (
+          {files.allIds.length >= 2 && (
             <Form.Text>
               Вы можете изменить порядок изображений, перетаскивая их
             </Form.Text>

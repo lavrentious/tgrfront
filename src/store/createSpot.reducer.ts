@@ -10,19 +10,27 @@ export interface IFile {
   dto: PhotoDto;
 }
 
-type CreateSpotState = {
+interface NormalizedObjects<T> {
+  byId: { [id: string]: T };
+  allIds: string[];
+}
+
+export interface CreateSpotState {
   selectedSpot: LatLngTuple | null;
   isSelectingSpot: boolean;
   isFormDisabled: boolean;
-  files: IFile[];
+  files: NormalizedObjects<IFile>;
   isCreationFormShown: boolean;
-};
+}
 
 const initialState: CreateSpotState = {
   selectedSpot: null,
   isSelectingSpot: false,
   isFormDisabled: false,
-  files: [],
+  files: {
+    byId: {},
+    allIds: [],
+  },
   isCreationFormShown: false,
 };
 
@@ -31,19 +39,28 @@ const createSpotSlice = createSlice({
   initialState,
   reducers: {
     removeFile(state, action: PayloadAction<string>) {
-      state.files = state.files.filter(
-        (file) => file.file.url !== action.payload
+      state.files.allIds = state.files.allIds.filter(
+        (id) => id !== action.payload
       );
+      delete state.files.byId[action.payload];
     },
-    setFiles(state, action: PayloadAction<IFile[]>) {
-      state.files = [...action.payload];
+    clearFiles(state) {
+      state.files.byId = {};
+      state.files.allIds = [];
+    },
+    addFile(state, action: PayloadAction<IFile>) {
+      state.files.allIds = [...state.files.allIds, action.payload.file.url];
+      state.files.byId[action.payload.file.url] = action.payload;
+    },
+    setFiles(state, action: PayloadAction<string[]>) {
+      state.files.allIds = [...action.payload];
     },
     updateFileComment(
       state,
-      action: PayloadAction<{ url: IFile["file"]["url"]; value: string }>
+      action: PayloadAction<{ url: string; value: string }>
     ) {
-      const file = state.files.find((f) => f.file.url === action.payload.url);
-      if (file) file.dto.comment = action.payload.value;
+      if (state.files.byId[action.payload.url])
+        state.files.byId[action.payload.url].dto.comment = action.payload.value;
     },
     setIsCreationFormShown(state, action: PayloadAction<boolean>) {
       state.isCreationFormShown = action.payload;
@@ -69,13 +86,15 @@ const createSpotSlice = createSlice({
 
 export const {
   removeFile,
-  setFiles,
+  addFile,
+  clearFiles,
   setIsCreationFormShown,
   pickSpot,
   setIsSelectingSpot,
   setSelectedSpot,
   setIsFormDisabled,
   updateFileComment,
+  setFiles,
 } = createSpotSlice.actions;
 
 export const deleteFile = (
@@ -87,8 +106,8 @@ export const deleteFile = (
 };
 export function resetForm(dispatch: ReturnType<typeof useAppDispatch>) {
   dispatch(setSelectedSpot(null));
-  for (const url in store.getState().createSpot.files) {
-    dispatch(setFiles([]));
+  dispatch(clearFiles());
+  for (const url of store.getState().createSpot.files.allIds) {
     URL.revokeObjectURL(url);
   }
 }

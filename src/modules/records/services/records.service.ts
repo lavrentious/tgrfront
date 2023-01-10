@@ -32,7 +32,7 @@ export abstract class PhotosService {
     for (const photo of photos) {
       await RecordPhotosApi.upload(
         recordId,
-        await fetch(photo.file.file.url).then((r) => r.blob()),
+        await fetch(photo.file.url).then((r) => r.blob()),
         photo.dto
       )
         .then(({ data }) => {
