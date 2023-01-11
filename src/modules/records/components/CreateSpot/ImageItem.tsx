@@ -15,7 +15,7 @@ import {
   deleteFile,
   IFile,
   moveFile,
-  updateFileComment,
+  updateFile,
 } from "src/store/createSpot.reducer";
 
 interface IItem {
@@ -70,9 +70,9 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
   const saveCommentToStore = (comment: string) => {
     if (file.dto.comment === comment) return;
     dispatch(
-      updateFileComment({
+      updateFile({
         url: file.file.url,
-        value: comment,
+        value: { ...file, dto: { comment } },
       })
     );
   };

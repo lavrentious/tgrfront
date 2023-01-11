@@ -56,12 +56,9 @@ const createSpotSlice = createSlice({
     setFiles(state, action: PayloadAction<string[]>) {
       state.files.allIds = [...action.payload];
     },
-    updateFileComment(
-      state,
-      action: PayloadAction<{ url: string; value: string }>
-    ) {
+    updateFile(state, action: PayloadAction<{ url: string; value: IFile }>) {
       if (state.files.byId[action.payload.url])
-        state.files.byId[action.payload.url].dto.comment = action.payload.value;
+        state.files.byId[action.payload.url] = { ...action.payload.value };
     },
     setIsCreationFormShown(state, action: PayloadAction<boolean>) {
       state.isCreationFormShown = action.payload;
@@ -94,7 +91,7 @@ export const {
   setIsSelectingSpot,
   setSelectedSpot,
   setIsFormDisabled,
-  updateFileComment,
+  updateFile,
   setFiles,
 } = createSpotSlice.actions;
 
