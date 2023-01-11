@@ -6,9 +6,18 @@ import { PhotoDto } from "src/modules/records/dto/upload-photo.dto";
 import { useAppDispatch } from ".";
 import store from "./index";
 
+export enum FileStatus {
+  PENDING,
+  SUCCESS,
+  FAILED,
+}
 export interface IFile {
   file: { name: string; url: string; size: number };
   dto: PhotoDto;
+  meta?: {
+    progress?: number;
+    status?: FileStatus;
+  };
 }
 
 export interface NormalizedObjects<T> {

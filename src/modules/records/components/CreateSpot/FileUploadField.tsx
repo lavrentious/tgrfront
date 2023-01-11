@@ -27,6 +27,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             size: file.size,
           },
           dto: { comment: "" },
+          meta: { progress: 0 },
         })
       );
     }

@@ -1,15 +1,15 @@
+import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import clsx from "clsx";
+import React, { memo, useMemo, useState } from "react";
 import { Button, CloseButton, FormControl } from "react-bootstrap";
 import {
   ArrowDown as MoveDownIcon,
   ArrowUp as MoveUpIcon,
 } from "react-bootstrap-icons";
-import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
-
-import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
-import React, { memo, useState } from "react";
+import ProgressBar from "react-bootstrap/ProgressBar";
 import { useDrag, useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
+import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
 import { RootState, useAppDispatch } from "src/store";
 import {
   deleteFile,
@@ -17,6 +17,7 @@ import {
   moveFile,
   updateFile,
 } from "src/store/createSpot.reducer";
+import StatusIcon from "./StatusIcon";
 
 interface IItem {
   url: string;
@@ -82,6 +83,11 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
     500
   );
 
+  const progress = useMemo(
+    () => Math.round(((file.meta?.progress ?? 0) / file.file.size) * 100),
+    [file.meta?.progress]
+  );
+
   return (
     <div
       className={clsx(
@@ -120,6 +126,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
           alt={file.file.name}
           className="create-spot__form-image img-thumbnail m-1"
         />
+        <StatusIcon status={file.meta?.status ?? null} />
       </div>
       <div className="d-flex flex-column w-100 mx-2">
         <div>
@@ -144,6 +151,9 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
             }}
           />
         </div>
+        {isFormDisabled && (
+          <ProgressBar now={progress} label={`${progress}%`} />
+        )}
       </div>
       <CloseButton
         disabled={isFormDisabled}

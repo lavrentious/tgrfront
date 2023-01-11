@@ -1,3 +1,5 @@
+import store from "src/store";
+import { FileStatus, updateFile } from "src/store/createSpot.reducer";
 import { FindAllParams, RecordPhotosApi, RecordsApi } from "../api/records.api";
 import { CreateRecordDto } from "../dto/create-record.dto";
 import { UploadPhotoDto } from "../dto/upload-photo.dto";
@@ -27,19 +29,55 @@ export abstract class PhotosService {
   static async uploadPhotos(recordId: Record["_id"], photos: UploadPhotoDto[]) {
     const res = {
       record: { _id: recordId } as Partial<Record>,
-      failed: [] as typeof photos,
+      failed: [] as string[],
     };
     for (const photo of photos) {
+      store.dispatch(
+        updateFile({
+          url: photo.file.url,
+          value: {
+            ...photo,
+            meta: { progress: photo.file.size, status: FileStatus.PENDING },
+          },
+        })
+      );
       await RecordPhotosApi.upload(
         recordId,
         await fetch(photo.file.url).then((r) => r.blob()),
-        photo.dto
+        photo.dto,
+        (e) => {
+          console.log("upload event", e);
+          store.dispatch(
+            updateFile({
+              url: photo.file.url,
+              value: { ...photo, meta: { progress: e.total ?? 0 } },
+            })
+          );
+        }
       )
         .then(({ data }) => {
           res.record = data;
+          store.dispatch(
+            updateFile({
+              url: photo.file.url,
+              value: {
+                ...photo,
+                meta: { progress: photo.file.size, status: FileStatus.SUCCESS },
+              },
+            })
+          );
         })
         .catch(() => {
-          res.failed.push(photo);
+          res.failed.push(photo.file.url);
+          store.dispatch(
+            updateFile({
+              url: photo.file.url,
+              value: {
+                ...photo,
+                meta: { progress: 0, status: FileStatus.FAILED },
+              },
+            })
+          );
         });
     }
     if (photos.length > 0 && photos.length === res.failed.length)
