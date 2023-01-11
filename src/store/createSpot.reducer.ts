@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LatLngTuple } from "leaflet";
+import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
 import { PhotoDto } from "src/modules/records/dto/upload-photo.dto";
 import { useAppDispatch } from ".";
@@ -10,7 +11,7 @@ export interface IFile {
   dto: PhotoDto;
 }
 
-interface NormalizedObjects<T> {
+export interface NormalizedObjects<T> {
   byId: { [id: string]: T };
   allIds: string[];
 }
@@ -97,6 +98,19 @@ export const {
   setFiles,
 } = createSpotSlice.actions;
 
+export const findFile = (url: string) => {
+  const files = store.getState().createSpot.files;
+  const index = files.allIds.indexOf(url);
+  return {
+    file: index === -1 ? null : files.byId[files.allIds[index]],
+    index,
+  };
+};
+export const moveFile = (url: string, atIndex: number): void => {
+  const files = store.getState().createSpot.files;
+  const { index } = findFile(url);
+  store.dispatch(setFiles(arrayMove(files.allIds, atIndex, index)));
+};
 export const deleteFile = (
   url: string,
   dispatch: ReturnType<typeof useAppDispatch>
@@ -104,9 +118,9 @@ export const deleteFile = (
   dispatch(removeFile(url));
   URL.revokeObjectURL(url);
 };
-export function resetForm(dispatch: ReturnType<typeof useAppDispatch>) {
-  dispatch(setSelectedSpot(null));
-  dispatch(clearFiles());
+export function resetForm() {
+  store.dispatch(setSelectedSpot(null));
+  store.dispatch(clearFiles());
   for (const url of store.getState().createSpot.files.allIds) {
     URL.revokeObjectURL(url);
   }

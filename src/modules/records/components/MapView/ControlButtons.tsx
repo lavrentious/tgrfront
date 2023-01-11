@@ -78,7 +78,7 @@ const ControlButtons = () => {
                 variant="danger"
                 className="m-1 map-view__button p-2 rounded-circle"
                 title="Отменить создание места"
-                onClick={() => resetForm(dispatch)}
+                onClick={() => resetForm()}
               >
                 <CancelIcon />
               </Button>

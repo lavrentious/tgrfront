@@ -14,6 +14,7 @@ import { RootState, useAppDispatch } from "src/store";
 import {
   deleteFile,
   IFile,
+  moveFile,
   updateFileComment,
 } from "src/store/createSpot.reducer";
 
@@ -26,14 +27,12 @@ interface ImageItemProps {
   file: IFile;
   index: number;
   fileCount: number;
-  moveImage: (url: string, atIndex: number) => void;
 }
 
 const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
   file,
   index,
   fileCount,
-  moveImage,
 }: ImageItemProps) {
   const dispatch = useAppDispatch();
   const { files, isFormDisabled } = useSelector(
@@ -49,11 +48,11 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       end: (item, monitor) => {
         const { url, index } = item;
         if (!monitor.didDrop()) {
-          moveImage(url, index);
+          moveFile(url, index);
         }
       },
     }),
-    [file.file.url, index, moveImage]
+    [file.file.url, index, moveFile]
   );
   const [, drop] = useDrop(
     () => ({
@@ -61,10 +60,10 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       hover(item: IItem) {
         if (item.url === file.file.url) return;
         const overIndex = files.allIds.indexOf(file.file.url);
-        moveImage(item.url, overIndex);
+        moveFile(item.url, overIndex);
       },
     }),
-    [moveImage]
+    [moveFile]
   );
 
   const [comment, setComment] = useState<string>("");
@@ -100,7 +99,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
           <Button
             className="p-0 text-muted line-height-0"
             variant="transparent"
-            onClick={() => moveImage(file.file.url, index - 1)}
+            onClick={() => moveFile(file.file.url, index - 1)}
           >
             <MoveUpIcon />
           </Button>
@@ -109,7 +108,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
           <Button
             className="p-0 text-muted line-height-0"
             variant="transparent"
-            onClick={() => moveImage(file.file.url, index + 1)}
+            onClick={() => moveFile(file.file.url, index + 1)}
           >
             <MoveDownIcon />
           </Button>

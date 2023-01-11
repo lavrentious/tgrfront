@@ -74,7 +74,7 @@ const CreateSpotForm = () => {
           });
       */
         .then((res) => {
-          resetForm(dispatch);
+          resetForm();
           navigate(`/records/${res.record._id}`);
         })
         .finally(() => {
