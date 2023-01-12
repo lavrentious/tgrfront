@@ -1,6 +1,6 @@
 import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import clsx from "clsx";
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo, useRef, useState } from "react";
 import { Button, CloseButton, FormControl } from "react-bootstrap";
 import {
   ArrowDown as MoveDownIcon,
@@ -11,15 +11,10 @@ import { useDrag, useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
 import { RootState, useAppDispatch } from "src/store";
-import {
-  deleteFile,
-  IFile,
-  moveFile,
-  updateFile,
-} from "src/store/createSpot.reducer";
+import { deleteFile, IFile, updateFile } from "src/store/createSpot.reducer";
 import StatusIcon from "./StatusIcon";
 
-interface IItem {
+export interface IItem {
   url: string;
   index: number;
 }
@@ -28,15 +23,19 @@ interface ImageItemProps {
   file: IFile;
   index: number;
   fileCount: number;
+  moveFile: (fromIndex: number, toIndex: number) => void;
 }
 
 const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
   file,
   index,
   fileCount,
+  moveFile,
 }: ImageItemProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
   const dispatch = useAppDispatch();
-  const { files, isFormDisabled } = useSelector(
+  const { isFormDisabled } = useSelector(
     (state: RootState) => state.createSpot
   );
   const [{ isDragging }, drag] = useDrag(
@@ -46,25 +45,25 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      end: (item, monitor) => {
-        const { url, index } = item;
-        if (!monitor.didDrop()) {
-          moveFile(url, index);
-        }
-      },
+      // end: (item, monitor) => {
+      //   const { url, index } = item;
+      //   if (!monitor.didDrop()) {
+      //     moveFile(url, index);
+      //   }
+      // },
     }),
     [file.file.url, index, moveFile]
   );
-  const [, drop] = useDrop(
+  const [, drop] = useDrop<IItem>(
     () => ({
       accept: "IMAGE",
       hover(item: IItem) {
-        if (item.url === file.file.url) return;
-        const overIndex = files.allIds.indexOf(file.file.url);
-        moveFile(item.url, overIndex);
+        if (item.index === index) return;
+        moveFile(item.index, index);
+        item.index = index;
       },
     }),
-    [moveFile]
+    [moveFile, index]
   );
 
   const [comment, setComment] = useState<string>("");
@@ -88,6 +87,8 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
     [file.meta?.progress]
   );
 
+  drag(drop(ref));
+
   return (
     <div
       className={clsx(
@@ -98,23 +99,24 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         "border rounded",
         isDragging ? "opacity-0" : "opacity-100"
       )}
-      ref={isFormDisabled ? null : (node) => drag(drop(node))}
+      ref={isFormDisabled ? null : ref}
     >
       <div className="d-flex flex-column justify-content-center">
         {!isFormDisabled && index !== 0 && (
           <Button
             className="p-0 text-muted line-height-0"
             variant="transparent"
-            onClick={() => moveFile(file.file.url, index - 1)}
+            onClick={() => moveFile(index, index - 1)}
           >
             <MoveUpIcon />
           </Button>
         )}
+        {index}
         {!isFormDisabled && index < fileCount - 1 && (
           <Button
             className="p-0 text-muted line-height-0"
             variant="transparent"
-            onClick={() => moveFile(file.file.url, index + 1)}
+            onClick={() => moveFile(index, index + 1)}
           >
             <MoveDownIcon />
           </Button>

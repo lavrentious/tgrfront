@@ -104,19 +104,10 @@ export const {
   setFiles,
 } = createSpotSlice.actions;
 
-export const findFile = (url: string) => {
+export function moveFile(fromIndex: number, toIndex: number): void {
   const files = store.getState().createSpot.files;
-  const index = files.allIds.indexOf(url);
-  return {
-    file: index === -1 ? null : files.byId[files.allIds[index]],
-    index,
-  };
-};
-export const moveFile = (url: string, atIndex: number): void => {
-  const files = store.getState().createSpot.files;
-  const { index } = findFile(url);
-  store.dispatch(setFiles(arrayMove(files.allIds, atIndex, index)));
-};
+  store.dispatch(setFiles(arrayMove(files.allIds, fromIndex, toIndex)));
+}
 export const deleteFile = (
   url: string,
   dispatch: ReturnType<typeof useAppDispatch>

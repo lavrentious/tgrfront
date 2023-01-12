@@ -1,6 +1,6 @@
 import React from "react";
 import { useDrop } from "react-dnd";
-import { CreateSpotState } from "src/store/createSpot.reducer";
+import { CreateSpotState, moveFile } from "src/store/createSpot.reducer";
 import ImageItem from "./ImageItem";
 
 interface ImageListProps {
@@ -18,6 +18,7 @@ const ImageList: React.FC<ImageListProps> = ({ files }) => {
           file={files.byId[url]}
           index={i}
           fileCount={files.allIds.length}
+          moveFile={moveFile}
         />
       ))}
     </div>
