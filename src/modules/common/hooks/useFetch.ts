@@ -1,20 +1,20 @@
 import { useState } from "react";
+import { ApiError } from "../api";
 
-const useFetch = (callback: (...args: unknown[]) => unknown) => {
+function useFetch<T = unknown, E = ApiError>(
+  callback: (...args: unknown[]) => Promise<T>
+) {
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [error, setError] = useState<unknown | null>(null);
-  const fetch: () => void = async () => {
+  const [error, setError] = useState<E | null>(null);
+  const fetch: () => Promise<T | void> = async () => {
     setIsFetching(true);
-    setError(null);
-    try {
-      await callback();
-    } catch (e) {
-      setError(e);
-    } finally {
-      setIsFetching(false);
-    }
+    return callback()
+      .catch(setError)
+      .finally(() => {
+        setIsFetching(false);
+      });
   };
-  return {fetch, isFetching, error};
-};
+  return { fetch, isFetching, error, setError };
+}
 
 export default useFetch;
