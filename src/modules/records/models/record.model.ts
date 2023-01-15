@@ -31,6 +31,8 @@ export interface Record {
   type: SpotType;
   author: Partial<User> & { _id: string };
   photos: RecordPhoto[];
+  createdAt: Date;
+  updatedAt: Date;
   distance?: number;
   azimuth?: number;
 }
@@ -41,5 +43,7 @@ export class Record implements Record {
       typeof record.author === "string"
         ? { _id: record.author }
         : record.author;
+    this.createdAt = new Date(record.createdAt);
+    this.updatedAt = new Date(record.updatedAt);
   }
 }
