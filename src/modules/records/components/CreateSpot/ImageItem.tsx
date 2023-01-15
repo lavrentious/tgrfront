@@ -45,12 +45,6 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      // end: (item, monitor) => {
-      //   const { url, index } = item;
-      //   if (!monitor.didDrop()) {
-      //     moveFile(url, index);
-      //   }
-      // },
     }),
     [file.file.url, index, moveFile]
   );
@@ -111,7 +105,6 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
             <MoveUpIcon />
           </Button>
         )}
-        {index}
         {!isFormDisabled && index < fileCount - 1 && (
           <Button
             className="p-0 text-muted line-height-0"
