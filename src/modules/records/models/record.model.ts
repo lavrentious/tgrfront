@@ -15,6 +15,7 @@ export enum SpotType {
 }
 
 export class RecordPhoto {
+  _id: string;
   url: string;
   publicId: string;
   comment: string;
