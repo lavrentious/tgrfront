@@ -75,7 +75,7 @@ const CreateSpotForm = () => {
       */
         .then((res) => {
           resetForm();
-          navigate(`/records/${res.record._id}`);
+          navigate(`/record/${res.record._id}`);
         })
         .finally(() => {
           dispatch(setIsFormDisabled(false));
