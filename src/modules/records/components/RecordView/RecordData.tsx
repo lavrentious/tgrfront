@@ -110,11 +110,11 @@ const PhotoItem: React.FC<{ photo: RecordPhoto }> = ({ photo }) => {
 };
 const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
   return (
-    <div className="d-flex flex-wrap justify-content-around align-items-start">
+    <ListGroup.Item className="d-flex flex-wrap justify-content-around align-items-start">
       {photos.map((photo) => (
         <PhotoItem key={photo._id} photo={photo} />
       ))}
-    </div>
+    </ListGroup.Item>
   );
 };
 
