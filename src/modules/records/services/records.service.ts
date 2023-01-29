@@ -23,6 +23,10 @@ export abstract class RecordsService {
       return PhotosService.uploadPhotos(record._id, photos);
     });
   }
+
+  static async delete(id: string) {
+    return RecordsApi.delete(id);
+  }
 }
 
 export abstract class PhotosService {

@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { api } from "src/modules/common/api";
 import { CreateRecordDto } from "../dto/create-record.dto";
 import { PhotoDto } from "../dto/upload-photo.dto";
-import { Record } from "../models/record.model";
+import { Record, RecordPhoto } from "../models/record.model";
 
 export class FindAllParams {
   userLat?: number;
@@ -22,6 +22,12 @@ export abstract class RecordsApi {
   }
   static async findOne(id: string) {
     return api.get<Record>(`${BASE_URL}/${id}`);
+  }
+  static async delete(id: string) {
+    return api.delete<{
+      record: Record;
+      photos: { deleted: (void | RecordPhoto)[]; failed: string[] };
+    }>(`${BASE_URL}/${id}`);
   }
 }
 export class RecordPhotosApi {
