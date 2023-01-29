@@ -17,20 +17,20 @@ const LongTextItem: React.FC<{
   content: string | undefined;
 }> = ({ title, content }) => {
   if (!content) return <></>;
-  return (
-    <ListGroup.Item>
-      {content.length >= 500 ? (
-        <Accordion flush className="p-0">
+  if (content.length >= 500)
+    return (
+      <ListGroup.Item className="p-0">
+        <Accordion flush>
           <Accordion.Item eventKey="0">
             <Accordion.Header>{title}</Accordion.Header>
             <Accordion.Body>{content}</Accordion.Body>
           </Accordion.Item>
         </Accordion>
-      ) : (
-        <>
-          {title}: {content}
-        </>
-      )}
+      </ListGroup.Item>
+    );
+  return (
+    <ListGroup.Item>
+      {title}: {content}
     </ListGroup.Item>
   );
 };
