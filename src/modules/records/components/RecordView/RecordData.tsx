@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import React from "react";
-import { Accordion, Card, Container, ListGroup } from "react-bootstrap";
+import { Accordion, Card, ListGroup } from "react-bootstrap";
 import {
   Address,
   Record,
@@ -18,9 +18,9 @@ const LongTextItem: React.FC<{
 }> = ({ title, content }) => {
   if (!content) return <></>;
   return (
-    <ListGroup.Item className="p-0">
+    <ListGroup.Item>
       {content.length >= 500 ? (
-        <Accordion flush>
+        <Accordion flush className="p-0">
           <Accordion.Item eventKey="0">
             <Accordion.Header>{title}</Accordion.Header>
             <Accordion.Body>{content}</Accordion.Body>
@@ -120,20 +120,18 @@ const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
 
 const RecordData: React.FC<RecordDataProps> = ({ record }) => {
   return (
-    <Container className="mt-2">
-      <ListGroup>
-        <ListGroup.Item>Название: {record.name}</ListGroup.Item>
-        <LongTextItem title="Описание" content={record.description} />
-        <LongTextItem title="Доступность" content={record.accessibility} />
-        <AddressItem address={record.address} />
-        <ListGroup.Item>
-          Тип: <SpotTypeItem type={record.type} />
-        </ListGroup.Item>
-        <DateItem date={record.createdAt} title="Дата создания" />
-        <DateItem date={record.updatedAt} title="Дата изменения" />
-        <PhotoList photos={record.photos} />
-      </ListGroup>
-    </Container>
+    <ListGroup>
+      <ListGroup.Item>Название: {record.name}</ListGroup.Item>
+      <LongTextItem title="Описание" content={record.description} />
+      <LongTextItem title="Доступность" content={record.accessibility} />
+      <AddressItem address={record.address} />
+      <ListGroup.Item>
+        Тип: <SpotTypeItem type={record.type} />
+      </ListGroup.Item>
+      <DateItem date={record.createdAt} title="Дата создания" />
+      <DateItem date={record.updatedAt} title="Дата изменения" />
+      {record.photos.length > 0 && <PhotoList photos={record.photos} />}
+    </ListGroup>
   );
 };
 
