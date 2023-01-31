@@ -19,7 +19,7 @@ import ImageList from "./ImageList";
 
 const MAX_FILES_COUNT = 10;
 
-const TYPE_PLACEHOLDER = -1;
+const TYPE_PLACEHOLDER = "TYPE_PLACEHOLDER";
 
 export interface CreateSpotValues {
   name: string;
@@ -29,14 +29,13 @@ export interface CreateSpotValues {
   autoAddress: boolean;
   address: Address;
 }
-
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().notRequired(),
   accessibility: yup.string().notRequired(),
   type: yup
     .mixed()
-    .oneOf(Object.values(SpotType) as number[])
+    .oneOf(Object.values(SpotType) as string[])
     .required(),
   address: yup.object().when("autoAddress", {
     is: false,
@@ -136,9 +135,7 @@ const CreateSpotForm: React.FC<CreateSpotFormProps> = ({
               value={f.values.type}
               isInvalid={f.touched.type && !!f.errors.type}
               isValid={f.touched.type && !f.errors.type}
-              onChange={(e) => {
-                f.setFieldValue("type", +e.target.value);
-              }}
+              onChange={f.handleChange}
             >
               <option disabled value={TYPE_PLACEHOLDER}>
                 Выберите тип
