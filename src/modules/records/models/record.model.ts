@@ -1,11 +1,11 @@
 import { User } from "../../users/models/user.model";
 
 export class Address {
-  region: string;
-  city: string;
-  street: string;
-  house: string;
-  displayName: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  house?: string;
+  displayName?: string;
 }
 
 export enum SpotType {

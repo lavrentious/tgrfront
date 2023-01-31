@@ -4,9 +4,15 @@ import { Form } from "react-bootstrap";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
-import { Record, SpotType } from "src/modules/records/models/record.model";
+import {
+  Address,
+  Record,
+  SpotType,
+} from "src/modules/records/models/record.model";
 import { RootState } from "src/store";
 import * as yup from "yup";
+import { getDisplayAddress } from "../../utils/getDisplayAddress";
+import AddressForm from "./AddressForm";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";
 import ImageList from "./ImageList";
@@ -15,11 +21,13 @@ const MAX_FILES_COUNT = 10;
 
 const TYPE_PLACEHOLDER = -1;
 
-interface Values {
+export interface CreateSpotValues {
   name: string;
   description?: string;
   accessibility?: string;
   type: SpotType | typeof TYPE_PLACEHOLDER;
+  autoAddress: boolean;
+  address: Address;
 }
 
 const validationSchema = yup.object().shape({
@@ -30,10 +38,20 @@ const validationSchema = yup.object().shape({
     .mixed()
     .oneOf(Object.values(SpotType) as number[])
     .required(),
+  address: yup.object().when("autoAddress", {
+    is: false,
+    then: yup.object({
+      region: yup.string().optional(),
+      city: yup.string().optional(),
+      street: yup.string().optional(),
+      house: yup.string().optional(),
+      displayName: yup.string().optional(),
+    }),
+  }),
 });
 
 export type CreateSpotFormOnSubmit = (
-  values: Values | { type: SpotType }
+  values: CreateSpotValues | { type: SpotType }
 ) => void;
 interface CreateSpotFormProps {
   record?: Record;
@@ -47,12 +65,20 @@ const CreateSpotForm: React.FC<CreateSpotFormProps> = ({
   const { files, isFormDisabled } = useSelector(
     (state: RootState) => state.createSpot
   );
-  const f = useFormik<Values>({
+  const f = useFormik<CreateSpotValues>({
     initialValues: {
       name: record?.name ?? "",
       description: record?.description ?? "",
       accessibility: record?.accessibility ?? "",
       type: record?.type ?? TYPE_PLACEHOLDER,
+      autoAddress: !record,
+      address: {
+        region: record?.address.region ?? "",
+        city: record?.address.city ?? "",
+        street: record?.address.street ?? "",
+        house: record?.address.house ?? "",
+        displayName: record?.address.displayName ?? "",
+      },
     },
     onSubmit,
     validationSchema,
@@ -124,6 +150,25 @@ const CreateSpotForm: React.FC<CreateSpotFormProps> = ({
               <option value={SpotType.MISC}>Прочее</option>
             </Form.Select>
           </Form.FloatingLabel>
+          <Form.Check
+            id="autoAddress"
+            type="checkbox"
+            checked={f.values.autoAddress}
+            label="Автоматически определить адрес"
+            onChange={f.handleChange}
+          />
+          {!f.values.autoAddress && (
+            <div className="border rounded p-3">
+              <AddressForm
+                f={f}
+                noAutoDisplayName={
+                  record &&
+                  getDisplayAddress(record.address) !==
+                    record.address.displayName
+                }
+              />
+            </div>
+          )}
           <FileUploadField
             maxFilesCount={MAX_FILES_COUNT}
             filesCount={files.allIds.length}

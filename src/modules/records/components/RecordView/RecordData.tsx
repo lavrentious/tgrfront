@@ -56,7 +56,7 @@ const DateItem: React.FC<{ date: Date; title: string }> = ({ date, title }) => {
   );
 };
 const AddressItem: React.FC<{ address: Address }> = ({ address }) => {
-  const items: { name: string; value: string | null }[] = [
+  const items: { name: string; value: string | undefined }[] = [
     {
       name: "Регион",
       value: address.region,
