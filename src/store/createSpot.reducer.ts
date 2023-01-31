@@ -3,6 +3,7 @@ import { LatLngTuple } from "leaflet";
 import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
 import { PhotoDto } from "src/modules/records/dto/upload-photo.dto";
+import { RecordPhoto } from "src/modules/records/models/record.model";
 import { useAppDispatch } from ".";
 import store from "./index";
 
@@ -15,6 +16,7 @@ export interface IFile {
   file: { name: string; url: string; size: number };
   dto: PhotoDto;
   meta?: {
+    fromDB?: RecordPhoto;
     progress?: number;
     status?: FileStatus;
   };
@@ -117,10 +119,10 @@ export const deleteFile = (
 };
 export function resetForm() {
   store.dispatch(setSelectedSpot(null));
-  store.dispatch(clearFiles());
   for (const url of store.getState().createSpot.files.allIds) {
     URL.revokeObjectURL(url);
   }
+  store.dispatch(clearFiles());
 }
 
 export default createSpotSlice.reducer;

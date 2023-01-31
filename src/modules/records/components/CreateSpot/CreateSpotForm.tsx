@@ -4,13 +4,9 @@ import { Form } from "react-bootstrap";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { SpotType } from "src/modules/records/models/record.model";
-import { RootState, useAppDispatch } from "src/store";
-import { resetForm, setIsFormDisabled } from "src/store/createSpot.reducer";
+import { Record, SpotType } from "src/modules/records/models/record.model";
+import { RootState } from "src/store";
 import * as yup from "yup";
-import { CreateRecordDto } from "../../dto/create-record.dto";
-import { RecordsService } from "../../services/records.service";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";
 import ImageList from "./ImageList";
@@ -36,51 +32,29 @@ const validationSchema = yup.object().shape({
     .required(),
 });
 
-const CreateSpotForm = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { files, selectedSpot, isFormDisabled } = useSelector(
+export type CreateSpotFormOnSubmit = (
+  values: Values | { type: SpotType }
+) => void;
+interface CreateSpotFormProps {
+  record?: Record;
+  onSubmit: CreateSpotFormOnSubmit;
+}
+
+const CreateSpotForm: React.FC<CreateSpotFormProps> = ({
+  record,
+  onSubmit,
+}) => {
+  const { files, isFormDisabled } = useSelector(
     (state: RootState) => state.createSpot
   );
   const f = useFormik<Values>({
     initialValues: {
-      name: "",
-      description: "",
-      accessibility: "",
-      type: TYPE_PLACEHOLDER,
+      name: record?.name ?? "",
+      description: record?.description ?? "",
+      accessibility: record?.accessibility ?? "",
+      type: record?.type ?? TYPE_PLACEHOLDER,
     },
-    onSubmit: (values: Values | { type: SpotType }) => {
-      if (!selectedSpot) return;
-      dispatch(setIsFormDisabled(true));
-      RecordsService.create(
-        {
-          ...values,
-          lat: selectedSpot[0],
-          lon: selectedSpot[1],
-        } as CreateRecordDto,
-        files.allIds.map((url) => files.byId[url])
-      )
-        /*
-      toast("Запись создана!");
-          const p = PhotosService.uploadPhotos(
-            record._id,
-            files.map((f) => ({ file: f, dto: { comment: "" } }))
-          );
-          if (!files.length) return p;
-          return toast.promise<Awaited<typeof p>>(p, {
-            loading: "Загрузка фотографий...",
-            success: (data) => `Фотографии загружены! (${files.length - data.failed.length} из ${files.length})`,
-            error: "Ошибка при загрузке",
-          });
-      */
-        .then((res) => {
-          resetForm();
-          navigate(`/record/${res.record._id}`);
-        })
-        .finally(() => {
-          dispatch(setIsFormDisabled(false));
-        });
-    },
+    onSubmit,
     validationSchema,
     validateOnBlur: true,
   });

@@ -4,18 +4,47 @@ import {
   CheckLg as SubmitIcon,
   DashLg as HideIcon,
 } from "react-bootstrap-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import { RootState } from "src/store";
-import { setIsCreationFormShown } from "src/store/createSpot.reducer";
-import CreateSpotForm from "./CreateSpotForm";
+import { RootState, useAppDispatch } from "src/store";
+import {
+  resetForm,
+  setIsCreationFormShown,
+  setIsFormDisabled,
+} from "src/store/createSpot.reducer";
+import { CreateRecordDto } from "../../dto/create-record.dto";
+import { RecordsService } from "../../services/records.service";
+import CreateSpotForm, { CreateSpotFormOnSubmit } from "./CreateSpotForm";
 
 const CreateSpotModal = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { selectedSpot } = useSelector((state: RootState) => state.createSpot);
-  const { isCreationFormShown, isFormDisabled } = useSelector(
+  const { isCreationFormShown, isFormDisabled, files } = useSelector(
     (state: RootState) => state.createSpot
   );
+
+  const onSubmit: CreateSpotFormOnSubmit = (values) => {
+    if (!selectedSpot) return;
+    dispatch(setIsFormDisabled(true));
+    RecordsService.create(
+      {
+        ...values,
+        lat: selectedSpot[0],
+        lon: selectedSpot[1],
+      } as CreateRecordDto,
+      files.allIds.map((url) => files.byId[url])
+    )
+      .then((record) => {
+        resetForm();
+        dispatch(setIsCreationFormShown(false));
+        navigate(`/record/${record.record._id}`);
+      })
+      .finally(() => {
+        dispatch(setIsFormDisabled(false));
+      });
+  };
 
   return (
     <Modal
@@ -29,7 +58,7 @@ const CreateSpotModal = () => {
         <Modal.Title>Создание нового места</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <CreateSpotForm />
+        <CreateSpotForm onSubmit={onSubmit} />
       </Modal.Body>
       <Modal.Footer>
         <Button

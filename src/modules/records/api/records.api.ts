@@ -1,6 +1,8 @@
 import { AxiosRequestConfig } from "axios";
 import { api } from "src/modules/common/api";
 import { CreateRecordDto } from "../dto/create-record.dto";
+import { UpdatePhotoDto } from "../dto/update-photo.dto";
+import { UpdateRecordDto } from "../dto/update-record.dto";
 import { PhotoDto } from "../dto/upload-photo.dto";
 import { Record, RecordPhoto } from "../models/record.model";
 
@@ -29,6 +31,9 @@ export abstract class RecordsApi {
       photos: { deleted: (void | RecordPhoto)[]; failed: string[] };
     }>(`${BASE_URL}/${id}`);
   }
+  static async update(id: string, dto: UpdateRecordDto) {
+    return api.patch<Record>(`${BASE_URL}/${id}`, dto);
+  }
 }
 export class RecordPhotosApi {
   static async upload(
@@ -43,11 +48,26 @@ export class RecordPhotosApi {
       formData.append("comment", dto.comment);
     }
 
-    return api.post<Record>(`/records/${recordId}/photos`, formData, {
+    return api.post<RecordPhoto>(`/records/${recordId}/photos`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
       onUploadProgress,
     });
+  }
+
+  static async delete(recordId: Record["_id"], photoId: RecordPhoto["_id"]) {
+    return api.delete<RecordPhoto>(`${BASE_URL}/${recordId}/photos/${photoId}`);
+  }
+
+  static async update(
+    recordId: Record["_id"],
+    photoId: RecordPhoto["_id"],
+    dto: UpdatePhotoDto
+  ) {
+    return api.patch<RecordPhoto>(
+      `${BASE_URL}/${recordId}/photos/${photoId}`,
+      dto
+    );
   }
 }

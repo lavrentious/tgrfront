@@ -60,7 +60,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
     [moveFile, index]
   );
 
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>(file.dto.comment ?? "");
   const saveCommentToStore = (comment: string) => {
     if (file.dto.comment === comment) return;
     dispatch(
@@ -93,7 +93,10 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         "border rounded",
         isDragging ? "opacity-0" : "opacity-100"
       )}
-      ref={isFormDisabled ? null : ref}
+      onDragStart={(e) => {
+        if (isFormDisabled) e.preventDefault();
+      }}
+      ref={ref}
     >
       <div className="d-flex flex-column justify-content-center">
         {!isFormDisabled && index !== 0 && (
@@ -127,9 +130,11 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         <div>
           <span className="text-break text-wrap">
             {file.file.name}{" "}
-            <small className="text-muted">
-              ({bytesToHumanSize(file.file.size)})
-            </small>
+            {file.file.size > 0 && (
+              <small className="text-muted">
+                ({bytesToHumanSize(file.file.size)})
+              </small>
+            )}
           </span>
         </div>
         <div>
@@ -146,7 +151,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
             }}
           />
         </div>
-        {isFormDisabled && (
+        {isFormDisabled && file.file.size !== 0 && (
           <ProgressBar now={progress} label={`${progress}%`} />
         )}
       </div>
