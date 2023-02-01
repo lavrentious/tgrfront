@@ -6,8 +6,11 @@ import { useSelector } from "react-redux";
 import AddressSearchModal from "src/modules/records/components/AddressSearch/AddressSearchModal";
 import CreateSpotModal from "src/modules/records/components/CreateSpot/CreateSpotModal";
 import LeafletMap from "src/modules/records/components/LeafletMap/LeafletMap";
-import CenterButton from "src/modules/records/components/MapView/CenterButton";
-import ControlButtons from "src/modules/records/components/MapView/ControlButtons";
+import {
+  AddressSearchButton,
+  CenterButton,
+  ControlButtons,
+} from "src/modules/records/components/MapView/ControlButtons";
 import { RootState, useAppDispatch } from "src/store";
 import {
   setIsSelectingSpot,
@@ -83,7 +86,11 @@ const MainMap: React.FunctionComponent = () => {
         }}
         markers={markers}
       />
-      <ControlButtons />
+      <div className="map-view__buttons">
+        <AddressSearchButton />
+        <ControlButtons />
+        <CenterButton />
+      </div>
       <AddressSearchModal />
       <CreateSpotModal />
       {userCoords && <CenterButton />}

@@ -3,33 +3,31 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import {
   CheckLg as SubmitIcon,
+  PinMap as CenterIcon,
   PlusLg as CreateIcon,
   Search as SearchIcon,
   XLg as CancelIcon,
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import { AbilityContext } from "src/modules/ability/ability";
-import { resetForm } from "src/store/createSpot.reducer";
 import { RootState, useAppDispatch } from "src/store";
-import { setIsCreationFormShown, setIsSelectingSpot } from "src/store/createSpot.reducer";
 import {
+  resetForm,
+  setIsCreationFormShown,
+  setIsSelectingSpot,
+} from "src/store/createSpot.reducer";
+import {
+  setCenter,
   setIsAddressSearchShown,
+  setZoom,
 } from "src/store/map.reducer";
 import { Record } from "../../models/record.model";
 
-const ControlButtons = () => {
-  const { isAddressSearchShown,  } = useSelector(
-    (state: RootState) => state.map
-  );
-  const { isSelectingSpot, selectedSpot  } = useSelector(
-    (state: RootState) => state.createSpot
-  );
-  const ability = useAbility(AbilityContext);
+export function AddressSearchButton() {
   const dispatch = useAppDispatch();
-  
-
+  const { isAddressSearchShown } = useSelector((state: RootState) => state.map);
   return (
-    <div className="map-view__buttons">
+    <>
       <Button
         onClick={() => dispatch(setIsAddressSearchShown(!isAddressSearchShown))}
         variant="secondary"
@@ -39,6 +37,39 @@ const ControlButtons = () => {
       >
         <SearchIcon />
       </Button>
+    </>
+  );
+}
+
+export function CenterButton() {
+  const userCoords = useSelector((state: RootState) => state.map.userCoords);
+  const dispatch = useAppDispatch();
+
+  return (
+    <Button
+      variant="info"
+      className="map-view__center-button m-1 mb-3 p-2 rounded-circle"
+      title="Показать мою локацию на карте"
+      onClick={() => {
+        if (!userCoords) return;
+        dispatch(setCenter(userCoords));
+        dispatch(setZoom(10));
+      }}
+    >
+      <CenterIcon />
+    </Button>
+  );
+}
+
+export function ControlButtons() {
+  const { isSelectingSpot, selectedSpot } = useSelector(
+    (state: RootState) => state.createSpot
+  );
+  const ability = useAbility(AbilityContext);
+  const dispatch = useAppDispatch();
+
+  return (
+    <>
       {ability.can("create", Record) && (
         <>
           {!isSelectingSpot && !selectedSpot && (
@@ -86,8 +117,6 @@ const ControlButtons = () => {
           )}
         </>
       )}
-    </div>
+    </>
   );
-};
-
-export default ControlButtons;
+}
