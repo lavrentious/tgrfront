@@ -89,11 +89,10 @@ const MainMap: React.FunctionComponent = () => {
       <div className="map-view__buttons">
         <AddressSearchButton />
         <ControlButtons />
-        <CenterButton />
       </div>
+      {userCoords && <CenterButton />}
       <AddressSearchModal />
       <CreateSpotModal />
-      {userCoords && <CenterButton />}
     </>
   );
 };
