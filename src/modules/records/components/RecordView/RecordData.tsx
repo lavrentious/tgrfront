@@ -102,9 +102,11 @@ const PhotoItem: React.FC<{ photo: RecordPhoto }> = ({ photo }) => {
   return (
     <Card className="m-1" style={{ width: "18rem" }}>
       <Card.Img variant="top" src={photo.url} />
-      <Card.Body>
-        <Card.Text>{photo.comment}</Card.Text>
-      </Card.Body>
+      {photo.comment?.length && (
+        <Card.Body>
+          <Card.Text>{photo.comment}</Card.Text>
+        </Card.Body>
+      )}
     </Card>
   );
 };
