@@ -135,15 +135,31 @@ export abstract class PhotosService {
   }
   static async uploadPhotos(recordId: Record["_id"], photos: UploadPhotoDto[]) {
     const res = {
+      uploaded: [] as RecordPhoto[],
       failed: [] as string[],
     };
-    for (const photo of photos) {
-      await this.uploadOne(recordId, photo).catch(() => {
-        res.failed.push(photo.file.url);
-      });
-    }
+    const idsByUrls = new Map<string, string>();
+    await Promise.all(
+      photos.map(async (photo) => {
+        try {
+          const fromDB = await PhotosService.uploadOne(recordId, photo);
+          idsByUrls.set(photo.file.url, fromDB._id);
+          res.uploaded.push(fromDB);
+        } catch {
+          res.failed.push(photo.file.url);
+        }
+      })
+    );
     if (photos.length > 0 && photos.length === res.failed.length)
       throw new Error("none of the photos uploaded");
+    const photosIds: string[] = [];
+    for (const photo of photos) {
+      const id = idsByUrls.get(photo.file.url);
+      if (id) {
+        photosIds.push(id);
+      }
+    }
+    await RecordsApi.update(recordId, { photos: photosIds });
     return res;
   }
 }
