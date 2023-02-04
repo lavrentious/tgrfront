@@ -18,7 +18,7 @@ export class RecordPhoto {
   _id: string;
   url: string;
   publicId: string;
-  comment: string;
+  comment?: string;
 }
 
 export interface Record {
