@@ -35,9 +35,6 @@ export abstract class RecordsService {
     photos: UploadPhotoDto[],
     initPhotos: RecordPhoto[]
   ) {
-    const deletedPhotos = initPhotos.filter(
-      (ip) => photos.findIndex((p) => p.file.url === ip.url) === -1
-    );
     const addedPhotos = photos.filter(
       (p) => initPhotos.findIndex((ip) => ip.url === p.file.url) === -1
     );
@@ -56,9 +53,6 @@ export abstract class RecordsService {
         idsByUrls.set(photo.file.url, photo.meta?.fromDB?._id);
       }
     }
-    await Promise.all(
-      deletedPhotos.map((p) => RecordPhotosApi.delete(id, p._id))
-    );
     await Promise.all(
       addedPhotos.map(async (p) => {
         const fromDB = await PhotosService.uploadOne(id, p);
