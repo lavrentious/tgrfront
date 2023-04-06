@@ -39,13 +39,14 @@ const validationSchema = yup.object().shape({
     .required(),
   address: yup.object().when("autoAddress", {
     is: false,
-    then: yup.object({
-      region: yup.string().optional(),
-      city: yup.string().optional(),
-      street: yup.string().optional(),
-      house: yup.string().optional(),
-      displayName: yup.string().optional(),
-    }),
+    then: (schema) =>
+      schema.shape({
+        region: yup.string().optional(),
+        city: yup.string().optional(),
+        street: yup.string().optional(),
+        house: yup.string().optional(),
+        displayName: yup.string().optional(),
+      }),
   }),
 });
 
