@@ -7,6 +7,7 @@ import {
   RecordPhoto,
   SpotType,
 } from "../../models/record.model";
+import MapPreview from "./MapPreview";
 
 interface RecordDataProps {
   record: Record;
@@ -133,6 +134,9 @@ const RecordData: React.FC<RecordDataProps> = ({ record }) => {
       <DateItem date={record.createdAt} title="Дата создания" />
       <DateItem date={record.updatedAt} title="Дата изменения" />
       {record.photos.length > 0 && <PhotoList photos={record.photos} />}
+      <ListGroup.Item>
+        <MapPreview record={record} />
+      </ListGroup.Item>
     </ListGroup>
   );
 };
