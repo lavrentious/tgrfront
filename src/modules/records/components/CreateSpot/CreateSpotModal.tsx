@@ -23,7 +23,6 @@ const CreateSpotModal = () => {
 
   const onSubmit: CreateSpotFormOnSubmit = (values) => {
     if (!selectedSpot) return;
-    console.log("submit", values);
     dispatch(setIsFormDisabled(true));
     RecordsService.create(
       {

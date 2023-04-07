@@ -63,7 +63,6 @@ const MainMap: React.FunctionComponent = () => {
     RecordsService.findAll().then(setRecords);
     return () => {
       // TODO: various optimizations
-      console.log("unmounted");
     };
   }, []);
 
