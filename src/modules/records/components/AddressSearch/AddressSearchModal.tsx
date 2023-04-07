@@ -1,11 +1,14 @@
-import React from 'react'
+import React from "react";
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
 import { setIsAddressSearchShown } from "src/store/map.reducer";
 import AddressSearch from "./AddressSearch";
+interface IAddressSearchModalProps {
+  select?: (lat: number, lng: number) => void;
+}
 
-const AddressSearchModal = () => {
+const AddressSearchModal: React.FC<IAddressSearchModalProps> = ({ select }) => {
   const { isAddressSearchShown } = useSelector((state: RootState) => state.map);
   const dispatch = useAppDispatch();
   return (
@@ -18,7 +21,7 @@ const AddressSearchModal = () => {
       >
         <Modal.Header closeButton>Поиск адреса</Modal.Header>
         <Modal.Body>
-          <AddressSearch />
+          <AddressSearch select={select} />
         </Modal.Body>
       </Modal>
     </>

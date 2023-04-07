@@ -61,8 +61,10 @@ async function lookupAddress(
   }
   return processedRes;
 }
-
-const AddressSearch = () => {
+interface IAddressSearchProps {
+  select?: (lat: number, lng: number) => void;
+}
+const AddressSearch: React.FC<IAddressSearchProps> = (props) => {
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<SearchItem[]>([]);
   const userCoords = useSelector((state: RootState) => state.map.userCoords);
@@ -76,11 +78,13 @@ const AddressSearch = () => {
     setResult(res);
   });
 
-  const select = (lat: number, lng: number) => {
-    dispatch(setCenter([lat, lng]));
-    dispatch(pickSpot([lat, lng]));
-    dispatch(setIsAddressSearchShown(false));
-  };
+  const select =
+    props.select ??
+    ((lat: number, lng: number) => {
+      dispatch(setCenter([lat, lng]));
+      dispatch(pickSpot([lat, lng]));
+      dispatch(setIsAddressSearchShown(false));
+    });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

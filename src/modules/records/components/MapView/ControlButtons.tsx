@@ -3,7 +3,6 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import {
   CheckLg as SubmitIcon,
-  PinMap as CenterIcon,
   PlusLg as CreateIcon,
   Search as SearchIcon,
   XLg as CancelIcon,
@@ -16,11 +15,7 @@ import {
   setIsCreationFormShown,
   setIsSelectingSpot,
 } from "src/store/createSpot.reducer";
-import {
-  setCenter,
-  setIsAddressSearchShown,
-  setZoom,
-} from "src/store/map.reducer";
+import { setIsAddressSearchShown } from "src/store/map.reducer";
 import { Record } from "../../models/record.model";
 
 export function AddressSearchButton() {
@@ -38,26 +33,6 @@ export function AddressSearchButton() {
         <SearchIcon />
       </Button>
     </>
-  );
-}
-
-export function CenterButton() {
-  const userCoords = useSelector((state: RootState) => state.map.userCoords);
-  const dispatch = useAppDispatch();
-
-  return (
-    <Button
-      variant="info"
-      className="map-view__center-button m-1 mb-3 p-2 rounded-circle"
-      title="Показать мою локацию на карте"
-      onClick={() => {
-        if (!userCoords) return;
-        dispatch(setCenter(userCoords));
-        dispatch(setZoom(10));
-      }}
-    >
-      <CenterIcon />
-    </Button>
   );
 }
 

@@ -1,14 +1,12 @@
-import { DragEndEvent } from "leaflet";
+import { DragEndEvent, LatLngTuple } from "leaflet";
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  blueIcon as userSpotIcon,
   greyIcon as recordIcon,
   redIcon as selectedSpotIcon,
 } from "src/assets/markerIcons";
-import { RootState, useAppDispatch } from "src/store";
+import { useAppDispatch } from "src/store";
 import {
   setIsCreationFormShown,
   setSelectedSpot,
@@ -37,55 +35,49 @@ export function recordMarker(record: Record): IMarker {
   };
 }
 
-export function useMarkers(records: Record[] = []) {
-  const { userCoords } = useSelector((state: RootState) => state.map);
-  const { selectedSpot } = useSelector((state: RootState) => state.createSpot);
+export function useMarkers(
+  records: Record[] = [],
+  selectedSpot?: LatLngTuple | null
+) {
   const dispatch = useAppDispatch();
-  return useMemo<IMarker[]>(
-    () =>
-      records.map(recordMarker).concat([
-        {
-          key: "userPos",
-          visible: userCoords != null,
-          position: userCoords,
-          icon: userSpotIcon,
-          content: <>Вы находитесь здесь</>,
-        },
-        {
-          key: "selectedSpot",
-          visible: selectedSpot != null,
-          position: selectedSpot,
-          icon: selectedSpotIcon,
-          draggable: true,
-          eventHandlers: {
-            dragend(e: DragEndEvent) {
-              const { lat, lng } = e.target.getLatLng();
-              dispatch(setSelectedSpot([lat, lng]));
-            },
+  return useMemo<IMarker[]>(() => {
+    const markers = records.map(recordMarker);
+    if (selectedSpot) {
+      markers.push({
+        key: "selectedSpot",
+        visible: selectedSpot != null,
+        position: selectedSpot,
+        icon: selectedSpotIcon,
+        draggable: true,
+        eventHandlers: {
+          dragend(e: DragEndEvent) {
+            const { lat, lng } = e.target.getLatLng();
+            dispatch(setSelectedSpot([lat, lng]));
           },
-          content: (
-            <>
-              Выбранное место
-              <div className="d-flex justify-content-evenly">
-                <Button
-                  size="sm"
-                  variant="danger"
-                  onClick={() => dispatch(setSelectedSpot(null))}
-                >
-                  Отмена
-                </Button>
-                <Button
-                  size="sm"
-                  variant="success"
-                  onClick={() => dispatch(setIsCreationFormShown(true))}
-                >
-                  Создать
-                </Button>
-              </div>
-            </>
-          ),
         },
-      ]),
-    [dispatch, selectedSpot, userCoords]
-  );
+        content: (
+          <>
+            Выбранное место
+            <div className="d-flex justify-content-evenly">
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={() => dispatch(setSelectedSpot(null))}
+              >
+                Отмена
+              </Button>
+              <Button
+                size="sm"
+                variant="success"
+                onClick={() => dispatch(setIsCreationFormShown(true))}
+              >
+                Создать
+              </Button>
+            </div>
+          </>
+        ),
+      });
+    }
+    return markers;
+  }, [dispatch, selectedSpot, records]);
 }
