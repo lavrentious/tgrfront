@@ -68,6 +68,7 @@ const AddressSearch: React.FC<IAddressSearchProps> = (props) => {
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<SearchItem[]>([]);
   const userCoords = useSelector((state: RootState) => state.map.userCoords);
+  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
 
   const { fetch, isFetching } = useFetch(async () => {
@@ -82,8 +83,8 @@ const AddressSearch: React.FC<IAddressSearchProps> = (props) => {
     props.select ??
     ((lat: number, lng: number) => {
       dispatch(setCenter([lat, lng]));
-      dispatch(pickSpot([lat, lng]));
       dispatch(setIsAddressSearchShown(false));
+      if (user) dispatch(pickSpot([lat, lng]));
     });
 
   const handleSubmit = (e: FormEvent) => {
