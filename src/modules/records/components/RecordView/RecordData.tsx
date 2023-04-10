@@ -49,7 +49,7 @@ const SpotTypeItem: React.FC<{ type: SpotType }> = ({ type }) => {
   }
 };
 
-const DateItem: React.FC<{ date: Date; title: string }> = ({ date, title }) => {
+export const DateItem: React.FC<{ date: Date; title: string }> = ({ date, title }) => {
   return (
     <ListGroup.Item>
       {title}: {dayjs(date).fromNow()} ({dayjs(date).format("LLL")})

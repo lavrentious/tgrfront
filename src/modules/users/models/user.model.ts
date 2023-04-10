@@ -8,10 +8,10 @@ export enum Role {
 export class User {
   _id: string;
   name?: string;
-  email: string;
+  email?: string;
   username?: string;
-  emailConfirmed: boolean;
+  emailConfirmed?: boolean;
   role: Role;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
