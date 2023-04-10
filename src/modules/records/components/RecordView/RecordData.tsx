@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import React from "react";
 import { Accordion, Card, ListGroup } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import {
   Address,
   Record,
@@ -49,7 +50,10 @@ const SpotTypeItem: React.FC<{ type: SpotType }> = ({ type }) => {
   }
 };
 
-export const DateItem: React.FC<{ date: Date; title: string }> = ({ date, title }) => {
+export const DateItem: React.FC<{ date: Date; title: string }> = ({
+  date,
+  title,
+}) => {
   return (
     <ListGroup.Item>
       {title}: {dayjs(date).fromNow()} ({dayjs(date).format("LLL")})
@@ -124,6 +128,12 @@ const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
 const RecordData: React.FC<RecordDataProps> = ({ record }) => {
   return (
     <ListGroup>
+      <ListGroup.Item>
+        Автор:{" "}
+        <Link to={`/profile/${record.author._id}`}>
+          {record.author.username ?? record.author._id}
+        </Link>
+      </ListGroup.Item>
       <ListGroup.Item>Название: {record.name}</ListGroup.Item>
       <LongTextItem title="Описание" content={record.description} />
       <LongTextItem title="Доступность" content={record.accessibility} />
