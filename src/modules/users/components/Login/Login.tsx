@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
@@ -89,14 +90,17 @@ const Login: React.FC = () => {
             </InputGroup>
           </Form.Group>
 
-          <LoadingButton
-            isLoading={f.isSubmitting}
-            type="submit"
-            className="mt-2"
-            disabled={!f.isValid || f.isSubmitting}
-          >
-            Войти
-          </LoadingButton>
+          <div className="d-flex align-items-center mt-2">
+            <LoadingButton
+              isLoading={f.isSubmitting}
+              type="submit"
+              className="me-2"
+              disabled={!f.isValid || f.isSubmitting}
+            >
+              Войти
+            </LoadingButton>
+            <Link to="/request-password-reset">Сбросить пароль</Link>
+          </div>
         </Form>
       </Container>
     </>

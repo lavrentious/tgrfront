@@ -6,6 +6,8 @@ import RecordView from "src/modules/records/components/RecordView/RecordView";
 import Login from "src/modules/users/components/Login/Login";
 import Profile from "src/modules/users/components/Profile/Profile";
 import Register from "src/modules/users/components/Register/Register";
+import CreatePasswordReset from "src/modules/users/components/ResetPassword/CreatePasswordReset";
+import ResetPassword from "src/modules/users/components/ResetPassword/ResetPassword";
 
 export type Route = {
   path: string;
@@ -20,6 +22,12 @@ const routes: Route[] = [
   { element: <Register />, path: "/register", anonOnly: true },
   { element: <RecordView />, path: "/record/:id" },
   { element: <Profile />, path: "/profile/:idOrUsername" },
+  {
+    element: <CreatePasswordReset />,
+    path: "/request-password-reset",
+    anonOnly: true,
+  },
+  { element: <ResetPassword />, path: "/reset-password/:key", anonOnly: true },
   { element: <NotFound />, path: "/*" },
 ];
 
