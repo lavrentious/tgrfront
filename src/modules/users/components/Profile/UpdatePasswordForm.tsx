@@ -69,6 +69,7 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
           field="oldPassword"
           label="Старый пароль"
           placeholder="Введите старый пароль"
+          type="password"
           required
         />
         <Field
@@ -76,6 +77,7 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
           field="newPassword"
           label="Новый пароль"
           placeholder="Введите новый пароль"
+          type="password"
           required
         />
         <Field
@@ -83,6 +85,7 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
           field="newPasswordRepeat"
           label="Новый пароль повторно"
           placeholder="Введите новый пароль ещё раз"
+          type="password"
           required
         />
         <Form.Check
