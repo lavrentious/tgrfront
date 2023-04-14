@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import React from "react";
-import { Form, FormControl } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -12,46 +12,13 @@ import { setUser as setLoggedUser } from "src/store/auth.reducer";
 import * as yup from "yup";
 import { User } from "../../models/user.model";
 import { UserService } from "../../services/user.service";
+import { Field as FormikField } from "./Field";
 
 interface Values {
   email?: string;
   username?: string;
   name?: string;
 }
-interface IFieldProps {
-  f: ReturnType<typeof useFormik<Values>>;
-  field: keyof Values;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-}
-const Field: React.FC<IFieldProps> = ({
-  f,
-  field,
-  label,
-  placeholder,
-  required,
-}) => {
-  return (
-    <Form.Group className="my-2">
-      {label && (
-        <Form.Label htmlFor={field}>
-          {label}
-          {required && <span className="text-danger"> *</span>}
-        </Form.Label>
-      )}
-      <FormControl
-        id={field}
-        onBlur={f.handleBlur}
-        value={f.values[field]}
-        onChange={f.handleChange}
-        placeholder={placeholder ?? ""}
-        isInvalid={f.touched[field] && !!f.errors[field]}
-        isValid={f.touched[field] && !f.errors[field]}
-      />
-    </Form.Group>
-  );
-};
 
 const validationSchema = yup.object().shape({
   username: validators.username,
@@ -64,6 +31,8 @@ interface EditProfileFormProps {
   setUser?: (u: User) => void;
   setVisible: (v: boolean) => void;
 }
+
+const Field = FormikField<Values>;
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({
   user,
