@@ -7,9 +7,9 @@ export enum Role {
 
 export class User {
   _id: string;
-  name?: string;
   email?: string;
-  username?: string;
+  name?: string | null;
+  username?: string | null;
   emailConfirmed?: boolean;
   role: Role;
   createdAt: Date;

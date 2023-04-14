@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
+import { PencilFill as EditIcon } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "src/modules/users/models/user.model";
 import { UserService } from "src/modules/users/services/user.service";
+import EditProfileModal from "./EditProfileModal";
 import UserData from "./UserData";
 
 const Profile = () => {
   const { idOrUsername } = useParams();
   const [user, setUser] = useState<User | null>(null);
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+
   const { fetch, error, isFetching } = useFetch(() =>
     UserService.findOne(idOrUsername as string)
   );
@@ -20,7 +24,7 @@ const Profile = () => {
     fetch().then((res) => {
       if (!res) return;
       setUser(res);
-      navigate(`/profile/${res.username ?? res._id}`, {replace: true});
+      navigate(`/profile/${res.username ?? res._id}`, { replace: true });
     });
   }, []);
   if (error) {
@@ -31,10 +35,32 @@ const Profile = () => {
   if (isFetching || !user) {
     return <Spinner animation="border" />;
   }
+  const updateUser = (newUser: User) => {
+    if (newUser.username !== user.username)
+      navigate(`/profile/${newUser.username || user._id}`, {
+        replace: true,
+      });
+    setUser(newUser);
+  };
   return (
-    <Container className="mt-2">
-      <UserData user={user} />
-    </Container>
+    <>
+      <EditProfileModal
+        visible={editFormVisible}
+        setVisible={setEditFormVisible}
+        user={user}
+        setUser={updateUser}
+      />
+      <Container className="mt-2">
+        <Button
+          variant="secondary"
+          className="my-2"
+          onClick={() => setEditFormVisible(true)}
+        >
+          <EditIcon /> Изменить профиль
+        </Button>
+        <UserData user={user} />
+      </Container>
+    </>
   );
 };
 
