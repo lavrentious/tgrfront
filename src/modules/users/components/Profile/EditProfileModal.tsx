@@ -86,10 +86,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         username: username || null,
       };
       await UserService.update(user._id, values)
-        .then(() => {
+        .then((newUser) => {
           toast.success("Профиль изменён");
           setVisible(false);
-          if (setUser) setUser(new User({ ...user, ...values }));
+          if (setUser) setUser(new User({ ...user, ...newUser }));
         })
         .catch((e: ApiError) => {
           const msg = e.response?.data.message;
