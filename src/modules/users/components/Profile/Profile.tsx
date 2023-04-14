@@ -21,12 +21,14 @@ const Profile = () => {
 
   useEffect(() => {
     if (!idOrUsername) return navigate("/");
+    if (user && (idOrUsername === user._id || idOrUsername === user.username))
+      return;
     fetch().then((res) => {
       if (!res) return;
       setUser(res);
       navigate(`/profile/${res.username ?? res._id}`, { replace: true });
     });
-  }, []);
+  }, [idOrUsername]);
   if (error) {
     return (
       <ErrorAlert>{error.response?.data?.message ?? error.message}</ErrorAlert>
