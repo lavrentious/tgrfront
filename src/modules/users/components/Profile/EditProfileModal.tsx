@@ -3,6 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import { XLg as CancelIcon } from "react-bootstrap-icons";
 import { User } from "../../models/user.model";
 import EditProfileForm from "./EditProfileForm";
+import UpdatePasswordForm from "./UpdatePasswordForm";
 
 interface EditProfileModalProps {
   user: User;
@@ -33,6 +34,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           setVisible={setVisible}
           setUser={setUser}
         />
+        <hr />
+        <Modal.Title>Изменение пароля</Modal.Title>
+        <UpdatePasswordForm user={user} setVisible={setVisible} />
       </Modal.Body>
       <Modal.Footer>
         <Button
