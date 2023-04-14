@@ -6,9 +6,12 @@ import {
   XLg as CancelIcon,
 } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { validators } from "src/modules/users/utils/validations";
+import { RootState, useAppDispatch } from "src/store";
+import { setUser as setLoggedUser } from "src/store/auth.reducer";
 import * as yup from "yup";
 import { User } from "../../models/user.model";
 import { UserService } from "../../services/user.service";
@@ -73,6 +76,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   setVisible,
   setUser,
 }) => {
+  const loggedUser = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
+
   const f = useFormik<Values>({
     initialValues: {
       email: user.email,
@@ -87,6 +93,16 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       };
       await UserService.update(user._id, values, user)
         .then((newUser) => {
+          if (user._id === loggedUser?.id) {
+            dispatch(
+              setLoggedUser({
+                id: user._id,
+                role: newUser.role,
+                name: newUser.name ?? undefined,
+                username: newUser.username ?? undefined,
+              })
+            );
+          }
           toast.success("Профиль изменён");
           setVisible(false);
           if (setUser) setUser(new User({ ...user, ...newUser }));
@@ -133,9 +149,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             placeholder={user.name || "Введите имя"}
           />
         </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setVisible(false)}>
+        <Button
+          className="me-2"
+          variant="secondary"
+          onClick={() => setVisible(false)}
+        >
           <CancelIcon /> Отмена
         </Button>
         <LoadingButton
@@ -147,7 +165,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         >
           Подтвердить
         </LoadingButton>
-      </Modal.Footer>
+      </Modal.Body>
     </Modal>
   );
 };
