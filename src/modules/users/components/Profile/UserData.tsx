@@ -18,7 +18,8 @@ const UserData: React.FC<UserDataProps> = ({ user }) => {
       <ListGroup.Item>
         Роль: <RoleBadge role={user.role} />
       </ListGroup.Item>
-      <DateItem date={user.createdAt} title="Дата регистрации" />
+      <DateItem date={user.createdAt} title="Зарегистрирован" />
+      <DateItem date={user.updatedAt} title="Обновлён" />
     </ListGroup>
   );
 };
