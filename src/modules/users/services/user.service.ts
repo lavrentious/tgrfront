@@ -1,4 +1,4 @@
-import { updatedDiff } from "deep-object-diff";
+import { diff } from "deep-object-diff";
 import { UsersApi } from "src/modules/users/api/users.api";
 import { User } from "src/modules/users/models/user.model";
 import { UpdateUserDto } from "../dto/update.dto";
@@ -14,7 +14,7 @@ export abstract class UserService {
     user?: User
   ): Promise<User> {
     if (user) {
-      dto = updatedDiff(user, { ...user, ...dto });
+      dto = diff(user, { ...user, ...dto });
     }
     if (Object.keys(dto).length === 0) {
       if (user) return user;
