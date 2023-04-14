@@ -106,6 +106,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
         form="editProfile"
         type="submit"
         isLoading={f.isSubmitting}
+        disabled={!f.isValid || f.isSubmitting}
         icon={<SubmitIcon />}
       >
         Подтвердить
