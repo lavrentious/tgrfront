@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import { XLg as CancelIcon } from "react-bootstrap-icons";
 import { User } from "../../models/user.model";
 import EditProfileForm from "./EditProfileForm";
 
@@ -21,7 +22,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       show={visible}
       onHide={() => setVisible(false)}
       backdrop="static"
-      keyboard={false}
       size="lg"
     >
       <Modal.Header closeButton>
@@ -34,6 +34,15 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           setUser={setUser}
         />
       </Modal.Body>
+      <Modal.Footer>
+        <Button
+          className="me-2"
+          variant="secondary"
+          onClick={() => setVisible(false)}
+        >
+          <CancelIcon /> Отмена
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };

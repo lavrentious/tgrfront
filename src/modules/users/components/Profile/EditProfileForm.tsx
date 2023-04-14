@@ -1,10 +1,7 @@
 import { useFormik } from "formik";
 import React from "react";
-import { Button, Form, FormControl } from "react-bootstrap";
-import {
-  CheckLg as SubmitIcon,
-  XLg as CancelIcon,
-} from "react-bootstrap-icons";
+import { Form, FormControl } from "react-bootstrap";
+import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { ApiError } from "src/modules/common/api";
@@ -135,13 +132,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
           placeholder={user.name || "Введите имя"}
         />
       </Form>
-      <Button
-        className="me-2"
-        variant="secondary"
-        onClick={() => setVisible(false)}
-      >
-        <CancelIcon /> Отмена
-      </Button>
       <LoadingButton
         variant="success"
         form="editProfile"
