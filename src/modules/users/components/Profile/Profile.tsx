@@ -38,11 +38,13 @@ const Profile = () => {
     return <Spinner animation="border" />;
   }
   const updateUser = (newUser: User) => {
-    if (newUser.username !== user.username)
-      navigate(`/profile/${newUser.username || user._id}`, {
+    const oldUser = { ...user };
+    setUser(newUser);
+    if (oldUser.username !== newUser.username) {
+      navigate(`/profile/${newUser.username || oldUser._id}`, {
         replace: true,
       });
-    setUser(newUser);
+    }
   };
   return (
     <>
