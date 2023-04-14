@@ -1,20 +1,19 @@
 import { FormikValues, useFormik } from "formik";
 import React from "react";
-import { Form, FormControl } from "react-bootstrap";
+import { Form, FormControl, FormControlProps } from "react-bootstrap";
 
-interface IFieldProps<Values extends FormikValues> {
+interface IFieldProps<Values extends FormikValues> extends FormControlProps {
   f: ReturnType<typeof useFormik<Values>>;
   field: keyof Values;
   label?: string;
-  placeholder?: string;
   required?: boolean;
 }
 export function Field<Values extends FormikValues>({
   f,
   field,
   label,
-  placeholder,
   required,
+  ...props
 }: IFieldProps<Values>) {
   return (
     <Form.Group className="my-2">
@@ -25,11 +24,11 @@ export function Field<Values extends FormikValues>({
         </Form.Label>
       )}
       <FormControl
+        {...props}
         id={field.toString()}
         onBlur={f.handleBlur}
         value={f.values[field]}
         onChange={f.handleChange}
-        placeholder={placeholder ?? ""}
         isInvalid={f.touched[field] && !!f.errors[field]}
         isValid={f.touched[field] && !f.errors[field]}
       />
