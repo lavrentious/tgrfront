@@ -85,7 +85,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         name: name || null,
         username: username || null,
       };
-      await UserService.update(user._id, values)
+      await UserService.update(user._id, values, user)
         .then((newUser) => {
           toast.success("Профиль изменён");
           setVisible(false);
