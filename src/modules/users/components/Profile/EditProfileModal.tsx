@@ -105,7 +105,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           }
           toast.success("Профиль изменён");
           setVisible(false);
-          if (setUser) setUser(new User({ ...user, ...newUser }));
+          if (setUser) setUser(new User(newUser));
         })
         .catch((e: ApiError) => {
           const msg = e.response?.data.message;
