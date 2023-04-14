@@ -1,7 +1,9 @@
+import { useAbility } from "@casl/react";
 import React, { useEffect, useState } from "react";
 import { Button, Container, Spinner } from "react-bootstrap";
 import { PencilFill as EditIcon } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router-dom";
+import { AbilityContext } from "src/modules/ability/ability";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "src/modules/users/models/user.model";
@@ -13,6 +15,7 @@ const Profile = () => {
   const { idOrUsername } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const ability = useAbility(AbilityContext);
 
   const { fetch, error, isFetching } = useFetch(() =>
     UserService.findOne(idOrUsername as string)
@@ -55,13 +58,15 @@ const Profile = () => {
         setUser={updateUser}
       />
       <Container className="mt-2">
-        <Button
-          variant="secondary"
-          className="my-2"
-          onClick={() => setEditFormVisible(true)}
-        >
-          <EditIcon /> Изменить профиль
-        </Button>
+        {ability.can("update", user) && (
+          <Button
+            variant="secondary"
+            className="my-2"
+            onClick={() => setEditFormVisible(true)}
+          >
+            <EditIcon /> Изменить профиль
+          </Button>
+        )}
         <UserData user={user} />
       </Container>
     </>
