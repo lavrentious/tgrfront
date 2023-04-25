@@ -14,7 +14,21 @@ const UserData: React.FC<UserDataProps> = ({ user }) => {
       <ListGroup.Item>ID: {user._id}</ListGroup.Item>
       {user.username && <ListGroup.Item>Логин: {user.username}</ListGroup.Item>}
       {user.name && <ListGroup.Item>Имя: {user.name}</ListGroup.Item>}
-      {user.email && <ListGroup.Item>Email: {user.email}</ListGroup.Item>}
+      {user.email && (
+        <ListGroup.Item>
+          Email: {user.email}{" "}
+          {user.emailConfirmed != null &&
+            (user.emailConfirmed ? (
+              <>
+                (<span className="text-success">подтверждён</span>)
+              </>
+            ) : (
+              <>
+                (<span className="text-danger">не подтверждён</span>)
+              </>
+            ))}
+        </ListGroup.Item>
+      )}
       <ListGroup.Item>
         Роль: <RoleBadge role={user.role} />
       </ListGroup.Item>
