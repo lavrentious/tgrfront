@@ -30,4 +30,8 @@ export abstract class UserService {
   ): Promise<void> {
     return UsersApi.updatePassword(id, dto);
   }
+
+  static async resendEmail(): Promise<void> {
+    return UsersApi.resendEmail();
+  }
 }

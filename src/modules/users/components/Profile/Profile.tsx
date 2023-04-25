@@ -67,7 +67,7 @@ const Profile = () => {
             <EditIcon /> Изменить профиль
           </Button>
         )}
-        <UserData user={user} />
+        <UserData user={user} setUser={setUser} />
       </Container>
     </>
   );

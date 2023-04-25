@@ -2,13 +2,37 @@ import React from "react";
 import { ListGroup } from "react-bootstrap";
 import { DateItem } from "src/modules/records/components/RecordView/RecordData";
 import { User } from "src/modules/users/models/user.model";
+import ResendEmailButton from "./ResendEmailButton";
 import RoleBadge from "./RoleBadge";
 
 interface UserDataProps {
   user: User;
+  setUser: (user: User) => void;
 }
 
-const UserData: React.FC<UserDataProps> = ({ user }) => {
+const EmailConfirmationState = React.memo(function EmailConfirmationState({
+  user,
+  setUser,
+}: {
+  user: User;
+  setUser: (user: User) => void;
+}) {
+  if (user.emailConfirmed == null) return <></>;
+  return (
+    <>
+      (
+      {user.emailConfirmed ? (
+        <span className="text-success">подтверждён</span>
+      ) : (
+        <span className="text-danger">не подтверждён</span>
+      )}
+      )
+      <ResendEmailButton user={user} setUser={setUser} />
+    </>
+  );
+});
+
+const UserData: React.FC<UserDataProps> = ({ user, setUser }) => {
   return (
     <ListGroup>
       <ListGroup.Item>ID: {user._id}</ListGroup.Item>
@@ -17,16 +41,7 @@ const UserData: React.FC<UserDataProps> = ({ user }) => {
       {user.email && (
         <ListGroup.Item>
           Email: {user.email}{" "}
-          {user.emailConfirmed != null &&
-            (user.emailConfirmed ? (
-              <>
-                (<span className="text-success">подтверждён</span>)
-              </>
-            ) : (
-              <>
-                (<span className="text-danger">не подтверждён</span>)
-              </>
-            ))}
+          <EmailConfirmationState user={user} setUser={setUser} />
         </ListGroup.Item>
       )}
       <ListGroup.Item>

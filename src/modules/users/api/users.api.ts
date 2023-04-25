@@ -20,4 +20,8 @@ export abstract class UsersApi {
   ): Promise<void> {
     return (await api.put<void>(`${BASE_URL}/${id}/password`, dto)).data;
   }
+
+  static async resendEmail(): Promise<void> {
+    return (await api.post<void>(`${BASE_URL}/confirm-email`)).data;
+  }
 }
