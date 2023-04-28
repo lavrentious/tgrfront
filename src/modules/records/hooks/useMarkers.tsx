@@ -15,9 +15,14 @@ import { IMarker } from "../components/LeafletMap/LeafletMap";
 import { Record } from "../models/record.model";
 
 function RecordMarkerContent(record: Record) {
+  let description = <></>;
+  if (!record.description) description = <i>Нет описания</i>;
+  else if (record.description.length > 500)
+    description = <p>{record.description.slice(0, 500)}...</p>;
+  else description = <p>{record.description}</p>;
   return (
     <>
-      <p>{record.description ? record.description : <i>Нет описания</i>}</p>
+      {description}
       <Link to={`/record/${record._id}`}>
         <Button>Открыть</Button>
       </Link>
