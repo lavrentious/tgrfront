@@ -1,12 +1,14 @@
 import { DragEndEvent, LatLngTuple } from "leaflet";
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   greyIcon as recordIcon,
   redIcon as selectedSpotIcon,
+  yellowIcon as ownRecordIcon,
 } from "src/assets/markerIcons";
-import { useAppDispatch } from "src/store";
+import { RootState, useAppDispatch } from "src/store";
 import {
   setIsCreationFormShown,
   setSelectedSpot,
@@ -30,10 +32,10 @@ function RecordMarkerContent(record: Record) {
   );
 }
 
-export function recordMarker(record: Record): IMarker {
+export function recordMarker(record: Record, icon = recordIcon): IMarker {
   return {
     key: record._id,
-    icon: recordIcon,
+    icon,
     position: [record.lat, record.lon],
     tooltip: record.name,
     content: RecordMarkerContent(record),
@@ -45,8 +47,14 @@ export function useMarkers(
   selectedSpot?: LatLngTuple | null
 ) {
   const dispatch = useAppDispatch();
+  const loggedUser = useSelector((state: RootState) => state.auth.user);
   return useMemo<IMarker[]>(() => {
-    const markers = records.map(recordMarker);
+    const markers = records.map((r) =>
+      recordMarker(
+        r,
+        r.author._id === loggedUser?.id ? ownRecordIcon : recordIcon
+      )
+    );
     if (selectedSpot) {
       markers.push({
         key: "selectedSpot",
@@ -84,5 +92,5 @@ export function useMarkers(
       });
     }
     return markers;
-  }, [dispatch, selectedSpot, records]);
+  }, [dispatch, selectedSpot, records, loggedUser]);
 }
