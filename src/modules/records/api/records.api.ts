@@ -1,12 +1,14 @@
 import { AxiosRequestConfig } from "axios";
 import { api } from "src/modules/common/api";
+import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
 import { CreateRecordDto } from "../dto/create-record.dto";
+import { FindAllResultDto } from "../dto/find-all-result.dto";
 import { UpdatePhotoDto } from "../dto/update-photo.dto";
 import { UpdateRecordDto } from "../dto/update-record.dto";
 import { PhotoDto } from "../dto/upload-photo.dto";
 import { Record, RecordPhoto } from "../models/record.model";
 
-export class FindAllParams {
+export class FindAllParams extends PaginateParams {
   userLat?: number;
   userLon?: number;
   radius?: number;
@@ -20,7 +22,7 @@ export abstract class RecordsApi {
     return api.post<Record>(`${BASE_URL}`, dto);
   }
   static async findAll(params?: FindAllParams) {
-    return api.get<Record[]>(`${BASE_URL}`, { params });
+    return api.get<FindAllResultDto>(`${BASE_URL}`, { params });
   }
   static async findOne(id: string) {
     return api.get<Record>(`${BASE_URL}/${id}`);

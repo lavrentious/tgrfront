@@ -27,7 +27,7 @@ const MainMap: React.FunctionComponent = () => {
 
   const [records, setRecords] = useState<Record[]>([]);
   useEffect(() => {
-    RecordsService.findAll().then(setRecords);
+    RecordsService.findAll().then((res) => setRecords(res.docs));
     return () => {
       // TODO: various optimizations
     };
