@@ -64,13 +64,19 @@ const RecordView: React.FC = () => {
         <Button
           className="me-1"
           variant="danger"
-          onClick={() =>
+          onClick={() => {
+            if (
+              !confirm(
+                `Вы уверены, что хотите удалить "${record.name}"? Это действие нельзя отменить.`
+              )
+            )
+              return;
             RecordsService.delete(record._id)
               .then(() => navigate("/map"))
               .catch((e: ApiError) =>
                 toast.error(e.response?.data.message ?? e.message)
-              )
-          }
+              );
+          }}
         >
           <DeleteIcon /> Удалить
         </Button>
