@@ -4,8 +4,7 @@ import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
 import { PhotoDto } from "src/modules/records/dto/upload-photo.dto";
 import { RecordPhoto } from "src/modules/records/models/record.model";
-import { useAppDispatch } from ".";
-import store from "./index";
+import { AppThunk } from ".";
 
 export enum FileStatus {
   PENDING,
@@ -106,23 +105,26 @@ export const {
   setFiles,
 } = createSpotSlice.actions;
 
-export function moveFile(fromIndex: number, toIndex: number): void {
-  const files = store.getState().createSpot.files;
-  store.dispatch(setFiles(arrayMove(files.allIds, fromIndex, toIndex)));
-}
-export const deleteFile = (
-  url: string,
-  dispatch: ReturnType<typeof useAppDispatch>
-) => {
-  dispatch(removeFile(url));
-  URL.revokeObjectURL(url);
-};
-export function resetForm() {
-  store.dispatch(setSelectedSpot(null));
-  for (const url of store.getState().createSpot.files.allIds) {
+export const moveFile =
+  (fromIndex: number, toIndex: number): AppThunk =>
+  (dispatch, getState) => {
+    const files = getState().createSpot.files;
+    const newOrder = arrayMove(files.allIds, fromIndex, toIndex);
+    dispatch(setFiles(newOrder));
+  };
+export const deleteFile =
+  (url: string): AppThunk =>
+  (dispatch) => {
+    dispatch(removeFile(url));
     URL.revokeObjectURL(url);
-  }
-  store.dispatch(clearFiles());
-}
+  };
+export const resetForm = (): AppThunk => (dispatch, getState) => {
+  dispatch(setSelectedSpot(null));
+  const fileUrls = getState().createSpot.files.allIds;
+  fileUrls.forEach((url) => {
+    URL.revokeObjectURL(url);
+  });
+  dispatch(clearFiles());
+};
 
 export default createSpotSlice.reducer;

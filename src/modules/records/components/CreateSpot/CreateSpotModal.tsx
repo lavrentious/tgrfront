@@ -8,7 +8,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { RootState, useAppDispatch } from "src/store";
-import { resetForm, setIsCreationFormShown, setIsFormDisabled } from "src/store/createSpot.reducer";
+import {
+  resetForm,
+  setIsCreationFormShown,
+  setIsFormDisabled,
+} from "src/store/createSpot.reducer";
 import { CreateRecordDto } from "../../dto/create-record.dto";
 import { RecordsService } from "../../services/records.service";
 import CreateSpotForm, { CreateSpotFormOnSubmit } from "./CreateSpotForm";
@@ -33,7 +37,7 @@ const CreateSpotModal = () => {
       files.allIds.map((url) => files.byId[url])
     )
       .then((record) => {
-        resetForm();
+        dispatch(resetForm());
         dispatch(setIsCreationFormShown(false));
         navigate(`/record/${record.record._id}`);
       })

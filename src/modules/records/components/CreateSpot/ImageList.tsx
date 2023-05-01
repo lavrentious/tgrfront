@@ -1,5 +1,6 @@
 import React from "react";
 import { useDrop } from "react-dnd";
+import { useAppDispatch } from "src/store";
 import { CreateSpotState, moveFile } from "src/store/createSpot.reducer";
 import ImageItem from "./ImageItem";
 
@@ -9,6 +10,7 @@ interface ImageListProps {
 
 const ImageList: React.FC<ImageListProps> = ({ files }) => {
   const [, drop] = useDrop(() => ({ accept: "IMAGE" }));
+  const dispatch = useAppDispatch();
 
   return (
     <div className="w-100 flex-wrap align-items-start" ref={drop}>
@@ -18,7 +20,9 @@ const ImageList: React.FC<ImageListProps> = ({ files }) => {
           file={files.byId[url]}
           index={i}
           fileCount={files.allIds.length}
-          moveFile={moveFile}
+          moveFile={(fromIndex: number, toIndex: number) =>
+            dispatch(moveFile(fromIndex, toIndex))
+          }
         />
       ))}
     </div>

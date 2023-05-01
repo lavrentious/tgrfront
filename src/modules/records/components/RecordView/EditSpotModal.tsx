@@ -4,9 +4,9 @@ import {
   CheckLg as SubmitIcon,
   XLg as CancelIcon,
 } from "react-bootstrap-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import { RootState } from "src/store";
+import { RootState, useAppDispatch } from "src/store";
 import {
   addFile,
   resetForm,
@@ -27,7 +27,7 @@ interface EditSpotModalProps {
 }
 
 const EditSpotModal: React.FC<EditSpotModalProps> = ({ record }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { isCreationFormShown, isFormDisabled, files } = useSelector(
     (state: RootState) => state.createSpot
   );
@@ -35,7 +35,7 @@ const EditSpotModal: React.FC<EditSpotModalProps> = ({ record }) => {
   const initPhotos = useRef<RecordPhoto[]>([]);
   useEffect(() => {
     initPhotos.current = record.photos.slice();
-    resetForm();
+    dispatch(resetForm());
     if (isCreationFormShown) {
       for (const photo of record.photos) {
         dispatch(

@@ -158,7 +158,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       <CloseButton
         disabled={isFormDisabled}
         className="bg-light my-auto"
-        onClick={() => deleteFile(file.file.url, dispatch)}
+        onClick={() => dispatch(deleteFile(file.file.url))}
       />
     </div>
   );
