@@ -51,9 +51,10 @@ const UserSearch = () => {
   }, [page]);
 
   return (
-    <Container>
+    <Container className="mt-2">
+      <h4>Поиск пользователей</h4>
       <Form
-        className="my-2"
+        className="mb-2"
         onSubmit={(e) => {
           e.preventDefault();
           fetch();
@@ -62,6 +63,7 @@ const UserSearch = () => {
         <InputGroup>
           <FormControl
             id="searchQuery"
+            placeholder="Поиск по логину и имени"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

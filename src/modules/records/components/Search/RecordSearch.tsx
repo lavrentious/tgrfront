@@ -78,9 +78,10 @@ const RecordSearch = () => {
   }, [page, authorId]);
 
   return (
-    <Container>
+    <Container className="mt-2">
+      <h4>Поиск мест</h4>
       <Form
-        className="my-2"
+        className="mb-2"
         onSubmit={(e) => {
           e.preventDefault();
           fetch();
@@ -89,6 +90,7 @@ const RecordSearch = () => {
         <InputGroup>
           <FormControl
             id="searchQuery"
+            placeholder="Поиск по названию и адресу"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
