@@ -1,4 +1,5 @@
-export class PaginateResultMeta {
+export class PaginateResult<T> {
+  docs: T[];
   totalDocs: number;
   limit: number;
   hasPrevPage: boolean;
