@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { getDisplayAddress } from "../../utils/getDisplayAddress";
-import { CreateSpotValues } from "./CreateSpotForm";
+import { CreateSpotValues } from "./types";
 
 interface AddressFormProps {
   f: ReturnType<typeof useFormik<CreateSpotValues>>;

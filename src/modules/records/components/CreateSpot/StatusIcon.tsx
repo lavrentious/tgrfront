@@ -1,7 +1,7 @@
 import React from "react";
 import { Spinner } from "react-bootstrap";
 import { CheckLg, XLg } from "react-bootstrap-icons";
-import { FileStatus } from "src/store/createSpot.reducer";
+import { FileStatus } from "src/modules/records/records.types";
 
 interface StatusIconProps {
   status: FileStatus | null;

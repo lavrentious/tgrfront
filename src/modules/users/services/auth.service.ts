@@ -4,7 +4,6 @@ import store from "src/store/index";
 import { AuthApi } from "../api/auth.api";
 import { LoginDto } from "../dto/login.dto";
 import { RegisterDto } from "../dto/register.dto";
-import { TokenService } from "./token.service";
 
 export abstract class AuthService {
   static async login(dto: LoginDto) {
@@ -43,11 +42,31 @@ export abstract class AuthService {
 
   static onLoad() {
     if (TokenService.accessToken) {
+      store.dispatch(setIsAuthLoading(true));
       this.refresh().finally(() => {
         store.dispatch(setIsAuthLoading(false));
       });
     } else {
       store.dispatch(setIsAuthLoading(false));
     }
+  }
+}
+
+export const REFRESH_TOKEN_NAME = "refreshToken";
+export const ACCESS_TOKEN_NAME = "token";
+
+export abstract class TokenService {
+  static clearTokens() {
+    this.accessToken = null;
+    if (store.getState().auth.user != null) store.dispatch(setUser(null));
+  }
+
+  static set accessToken(token: string | null) {
+    if (token) localStorage.setItem(ACCESS_TOKEN_NAME, token);
+    else localStorage.removeItem(ACCESS_TOKEN_NAME);
+  }
+
+  static get accessToken(): string | null {
+    return localStorage.getItem(ACCESS_TOKEN_NAME);
   }
 }

@@ -1,11 +1,12 @@
 import store from "src/store";
-import { FileStatus, updateFile } from "src/store/createSpot.reducer";
+import { updateFile } from "src/store/createSpot.reducer";
 import { FindAllParams, RecordPhotosApi, RecordsApi } from "../api/records.api";
 import { CreateRecordDto } from "../dto/create-record.dto";
 import { FindAllResultDto } from "../dto/find-all-result.dto";
 import { UpdateRecordDto } from "../dto/update-record.dto";
 import { UploadPhotoDto } from "../dto/upload-photo.dto";
 import { Record, RecordPhoto } from "../models/record.model";
+import { FileStatus } from "../records.types";
 
 export abstract class RecordsService {
   static async findAll(params?: FindAllParams): Promise<FindAllResultDto> {

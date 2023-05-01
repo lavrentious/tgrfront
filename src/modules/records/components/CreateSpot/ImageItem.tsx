@@ -11,7 +11,8 @@ import { useDrag, useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
 import { RootState, useAppDispatch } from "src/store";
-import { deleteFile, IFile, updateFile } from "src/store/createSpot.reducer";
+import { deleteFile, updateFile } from "src/store/createSpot.reducer";
+import { IFile } from "../../records.types";
 import StatusIcon from "./StatusIcon";
 
 export interface IItem {

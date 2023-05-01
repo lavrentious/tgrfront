@@ -4,11 +4,7 @@ import { Form } from "react-bootstrap";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
-import {
-  Address,
-  Record,
-  SpotType,
-} from "src/modules/records/models/record.model";
+import { Record, SpotType } from "src/modules/records/models/record.model";
 import { RootState } from "src/store";
 import * as yup from "yup";
 import { getDisplayAddress } from "../../utils/getDisplayAddress";
@@ -16,19 +12,10 @@ import AddressForm from "./AddressForm";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";
 import ImageList from "./ImageList";
+import { CreateSpotValues, TYPE_PLACEHOLDER } from "./types";
 
 const MAX_FILES_COUNT = 10;
 
-const TYPE_PLACEHOLDER = "TYPE_PLACEHOLDER";
-
-export interface CreateSpotValues {
-  name: string;
-  description?: string;
-  accessibility?: string;
-  type: SpotType | typeof TYPE_PLACEHOLDER;
-  autoAddress: boolean;
-  address: Address;
-}
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().notRequired(),

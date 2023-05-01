@@ -1,6 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { AuthService } from "../users/services/auth.service";
-import { TokenService } from "../users/services/token.service";
+import { AuthService, TokenService } from "../users/services/auth.service";
 
 export type ApiError = AxiosError<{ message?: string }>;
 

@@ -1,4 +1,4 @@
-import { IFile } from "src/store/createSpot.reducer";
+import { IFile } from "../records.types";
 
 export interface PhotoDto {
   comment?: string;

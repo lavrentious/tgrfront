@@ -1,30 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LatLngTuple } from "leaflet";
+import { NormalizedObjects } from "src/modules/common/types";
 import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
-import { PhotoDto } from "src/modules/records/dto/upload-photo.dto";
-import { RecordPhoto } from "src/modules/records/models/record.model";
+import { IFile } from "src/modules/records/records.types";
 import { AppThunk } from ".";
-
-export enum FileStatus {
-  PENDING,
-  SUCCESS,
-  FAILED,
-}
-export interface IFile {
-  file: { name: string; url: string; size: number };
-  dto: PhotoDto;
-  meta?: {
-    fromDB?: RecordPhoto;
-    progress?: number;
-    status?: FileStatus;
-  };
-}
-
-export interface NormalizedObjects<T> {
-  byId: { [id: string]: T };
-  allIds: string[];
-}
 
 export interface CreateSpotState {
   selectedSpot: LatLngTuple | null;
