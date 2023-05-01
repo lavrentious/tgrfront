@@ -9,6 +9,7 @@ import { PhotoDto } from "../dto/upload-photo.dto";
 import { Record, RecordPhoto } from "../models/record.model";
 
 export class FindAllRecordsParams extends PaginateParams {
+  author?: string;
   userLat?: number;
   userLon?: number;
   radius?: number;

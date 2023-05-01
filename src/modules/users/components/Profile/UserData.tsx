@@ -1,5 +1,6 @@
 import React from "react";
 import { ListGroup } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { DateItem } from "src/modules/records/components/RecordView/RecordData";
 import { User } from "src/modules/users/models/user.model";
 import ResendEmailButton from "./ResendEmailButton";
@@ -49,6 +50,11 @@ const UserData: React.FC<UserDataProps> = ({ user, setUser }) => {
       </ListGroup.Item>
       <DateItem date={user.createdAt} title="Зарегистрирован" />
       <DateItem date={user.updatedAt} title="Обновлён" />
+      <ListGroup.Item>
+        <Link to={`/record-search?author=${user._id}`}>
+          Созданные пользователем места
+        </Link>
+      </ListGroup.Item>
     </ListGroup>
   );
 };

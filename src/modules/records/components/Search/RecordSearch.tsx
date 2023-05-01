@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
+  Button,
   Card,
   Container,
   Form,
@@ -8,7 +10,7 @@ import {
   InputGroup,
   ListGroup,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
 import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
@@ -41,11 +43,15 @@ const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => {
 };
 
 const RecordSearch = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [data, setData] = useState<PaginateResult<Record> | null>(null);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
+
+  const authorId = useMemo(() => searchParams.get("author"), [searchParams]);
 
   const { fetch, isFetching, error } = useFetch(() =>
     RecordsService.findAll({
@@ -53,6 +59,7 @@ const RecordSearch = () => {
       limit,
       pagination: true,
       search: searchQuery || undefined,
+      author: authorId || undefined,
     }).then((res) => {
       if (!res) return;
       setData(res);
@@ -62,7 +69,7 @@ const RecordSearch = () => {
 
   useEffect(() => {
     fetch();
-  }, [page]);
+  }, [page, authorId]);
 
   return (
     <Container>
@@ -84,6 +91,20 @@ const RecordSearch = () => {
           </LoadingButton>
         </InputGroup>
       </Form>
+      {authorId && (
+        <Alert>
+          Показаны места пользователя {authorId}{" "}
+          <Button
+            size="sm"
+            onClick={() => {
+              searchParams.delete("author");
+              setSearchParams(searchParams);
+            }}
+          >
+            Сбросить
+          </Button>
+        </Alert>
+      )}
       <Paginator
         page={page}
         limit={limit}
