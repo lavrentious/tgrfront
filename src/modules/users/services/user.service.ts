@@ -1,5 +1,6 @@
 import { diff } from "deep-object-diff";
-import { UsersApi } from "src/modules/users/api/users.api";
+import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import { FindAllUsersParams, UsersApi } from "src/modules/users/api/users.api";
 import { User } from "src/modules/users/models/user.model";
 import { UpdatePasswordDto } from "../dto/update-password.dto";
 import { UpdateUserDto } from "../dto/update.dto";
@@ -7,6 +8,13 @@ import { UpdateUserDto } from "../dto/update.dto";
 export abstract class UserService {
   static async findOne(idOrUsename: string): Promise<User | null> {
     return new User(await UsersApi.findOne(idOrUsename));
+  }
+
+  static async findAll(
+    params?: FindAllUsersParams
+  ): Promise<PaginateResult<User>> {
+    const res = await UsersApi.findAll(params);
+    return { ...res, docs: res.docs.map((d) => new User(d)) };
   }
 
   static async update(

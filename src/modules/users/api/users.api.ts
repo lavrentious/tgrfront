@@ -1,13 +1,24 @@
 import { api } from "src/modules/common/api";
+import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
+import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import { User } from "src/modules/users/models/user.model";
 import { UpdatePasswordDto } from "../dto/update-password.dto";
 import { UpdateUserDto } from "../dto/update.dto";
 
 const BASE_URL = "/users";
 
+export class FindAllUsersParams extends PaginateParams {
+  search?: string;
+}
+
 export abstract class UsersApi {
   static async findOne(idOrUsername: string) {
     return (await api.get<User>(`${BASE_URL}/${idOrUsername}`)).data;
+  }
+
+  static async findAll(params?: FindAllUsersParams) {
+    return (await api.get<PaginateResult<User>>(`${BASE_URL}`, { params }))
+      .data;
   }
 
   static async update(id: string, dto: UpdateUserDto): Promise<User> {

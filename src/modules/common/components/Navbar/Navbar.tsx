@@ -72,6 +72,9 @@ const Navbar: React.FunctionComponent = () => {
               <LinkContainer to="/record-search">
                 <Nav.Link>🔍 Поиск мест</Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/user-search">
+                <Nav.Link>🔍 Поиск пользователей</Nav.Link>
+              </LinkContainer>
             </div>
             <div className="d-flex flex-wrap">
               <AuthStatus isAuthLoading={isAuthLoading} user={user} />

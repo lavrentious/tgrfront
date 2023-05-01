@@ -9,6 +9,7 @@ import Profile from "src/modules/users/components/Profile/Profile";
 import Register from "src/modules/users/components/Register/Register";
 import CreatePasswordReset from "src/modules/users/components/ResetPassword/CreatePasswordReset";
 import ResetPassword from "src/modules/users/components/ResetPassword/ResetPassword";
+import UserSearch from "src/modules/users/components/Search/UserSearch";
 
 export type Route = {
   path: string;
@@ -30,6 +31,7 @@ const routes: Route[] = [
   },
   { element: <ResetPassword />, path: "/reset-password/:key", anonOnly: true },
   { element: <RecordSearch />, path: "/record-search" },
+  { element: <UserSearch />, path: "/user-search" },
   { element: <NotFound />, path: "/*" },
 ];
 
