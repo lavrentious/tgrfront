@@ -28,6 +28,12 @@ const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => {
       </Card.Header>
       <ListGroup variant="flush">
         <ListGroup.Item>
+          <strong>Автор:</strong>{" "}
+          <Link to={`/profile/${record.author.username ?? record.author._id}`}>
+            {record.author.username ?? record.author._id}
+          </Link>
+        </ListGroup.Item>
+        <ListGroup.Item>
           <strong>Адрес:</strong> {record.address.displayName}
         </ListGroup.Item>
         <ListGroup.Item>
