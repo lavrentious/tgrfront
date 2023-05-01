@@ -17,6 +17,7 @@ interface Values {
   passwordRepeat: string;
   username?: string;
   name?: string;
+  tosAccepted: boolean;
 }
 
 const validationSchema = yup.object().shape({
@@ -25,6 +26,7 @@ const validationSchema = yup.object().shape({
   passwordRepeat: validators.password.oneOf([yup.ref("password")]),
   email: validators.email,
   name: validators.name,
+  tosAccepted: yup.boolean().equals([true]),
 });
 
 const Register: React.FC = () => {
@@ -36,6 +38,7 @@ const Register: React.FC = () => {
       passwordRepeat: "",
       email: "",
       name: "",
+      tosAccepted: false,
     },
     onSubmit: async ({ email, password, name, username }) => {
       await AuthService.register({
@@ -151,6 +154,29 @@ const Register: React.FC = () => {
               isValid={f.touched.passwordRepeat && !f.errors.passwordRepeat}
             />
           </Form.FloatingLabel>
+
+          <Form.Group controlId="tosAccepted">
+            <Form.Check
+              id="tosAccepted"
+              type="checkbox"
+              checked={f.values.tosAccepted}
+              onChange={f.handleChange}
+              isInvalid={f.touched.tosAccepted && !!f.errors.tosAccepted}
+              isValid={f.touched.tosAccepted && !f.errors.tosAccepted}
+              label={
+                <>
+                  Принимаю{" "}
+                  <a
+                    href="http://new.crsnaumova.ru/index.php/it-platforma-tiflogid/politika-konfidentsialnosti"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    политику конфиденциальности
+                  </a>
+                </>
+              }
+            />
+          </Form.Group>
 
           <LoadingButton
             isLoading={f.isSubmitting}
