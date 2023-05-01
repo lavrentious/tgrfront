@@ -37,7 +37,7 @@ const LongTextItem: React.FC<{
   );
 };
 
-const SpotTypeItem: React.FC<{ type: SpotType }> = ({ type }) => {
+export const SpotTypeItem: React.FC<{ type: SpotType }> = ({ type }) => {
   switch (type) {
     case SpotType.SIGHT:
       return <>Достопримечательность</>;

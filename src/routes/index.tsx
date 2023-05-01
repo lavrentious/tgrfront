@@ -3,6 +3,7 @@ import About from "src/modules/about/components/About/About";
 import NotFound from "src/modules/common/components/NotFound/NotFound";
 import MainMap from "src/modules/records/components/MapView/MapView";
 import RecordView from "src/modules/records/components/RecordView/RecordView";
+import RecordSearch from "src/modules/records/components/Search/RecordSearch";
 import Login from "src/modules/users/components/Login/Login";
 import Profile from "src/modules/users/components/Profile/Profile";
 import Register from "src/modules/users/components/Register/Register";
@@ -28,6 +29,7 @@ const routes: Route[] = [
     anonOnly: true,
   },
   { element: <ResetPassword />, path: "/reset-password/:key", anonOnly: true },
+  { element: <RecordSearch />, path: "/record-search" },
   { element: <NotFound />, path: "/*" },
 ];
 
