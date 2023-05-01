@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { Alert, Container, Image, ListGroup } from "react-bootstrap";
 import {
   BsEnvelopeAtFill as EmailIcon,
@@ -7,8 +8,15 @@ import {
   BsTelegram as TgIcon,
 } from "react-icons/bs";
 import TgLogo from "src/assets/tg_logo.png";
+import { HealthCheckResult } from "../../about.api";
+import { AboutService } from "../../about.service";
+import dayjs from "dayjs";
 
 const About: React.FunctionComponent = () => {
+  const [health, setHealth] = useState<HealthCheckResult | null>(null);
+  useEffect(() => {
+    AboutService.getHealth().then(setHealth);
+  }, []); // TODO: move to redux store?
   return (
     <Container>
       <h1 className="text-center">О проекте</h1>
@@ -82,6 +90,16 @@ const About: React.FunctionComponent = () => {
           </Alert>
         </div>
       </div>
+      <footer className="text-muted">
+        Версия приложения: {process.env.REACT_APP_VERSION}
+        <br />
+        {health && (
+          <>
+            Версия API: {health.version} (от{" "}
+            {dayjs(health.lastCommitDate).format('LLL')})
+          </>
+        )}
+      </footer>
     </Container>
   );
 };
