@@ -19,7 +19,7 @@ const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
     return (
       <>
         <LinkContainer to={`/profile/${user.username ?? user.id}`}>
-          <Nav.Link>Мой профиль</Nav.Link>
+          <Nav.Link>{user.username ?? user.name ?? "Мой профиль"}</Nav.Link>
         </LinkContainer>
         <Button variant="danger" onClick={AuthService.logout}>
           Выход
