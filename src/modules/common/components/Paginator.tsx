@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Pagination } from "react-bootstrap";
 
-interface Props<T> {
+interface PaginatorProps {
   page: number;
   setPage: (page: number) => void;
   limit: number;
   totalPages: number;
 }
 
-export function Paginator<T>({ page, limit, totalPages, setPage }: Props<T>) {
+export function Paginator({ page, totalPages, setPage }: PaginatorProps) {
   useEffect(() => {
     if (totalPages < page) setPage(totalPages);
   }, [totalPages]);
