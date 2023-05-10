@@ -27,6 +27,7 @@ import arraysEqual from "src/modules/common/utils/arraysEqual";
 import { RootState, useAppDispatch } from "src/store";
 import { setUserCoords } from "src/store/map.reducer";
 import CenterButton from "./CenterButton";
+import LeafletAttribution from "./LeafletAttribution";
 
 export interface IMarker {
   position: LatLngTuple | null;
@@ -167,6 +168,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
           whenReady={({ target }) => {
             map.current = target;
           }}
+          attributionControl={false}
         >
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -194,6 +196,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
             })}
           {children}
         </MapContainer>
+        <LeafletAttribution />
         <div className="leaflet-map__buttons">{btnBlockChildren}</div>
         {userCoords && setCenter && setZoom && (
           <CenterButton
