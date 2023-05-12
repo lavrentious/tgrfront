@@ -9,6 +9,7 @@ import {
   SpotType,
 } from "../../models/record.model";
 import MapPreview from "./MapPreview";
+import "./recordData.css";
 
 interface RecordDataProps {
   record: Record;
@@ -19,7 +20,7 @@ const LongTextItem: React.FC<{
   content: string | undefined;
 }> = ({ title, content }) => {
   if (!content) return <></>;
-  if (content.length >= 500)
+  if (content.length >= 500 || content.includes("\n"))
     return (
       <ListGroup.Item className="p-0">
         <Accordion flush>
@@ -127,7 +128,7 @@ const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
 
 const RecordData: React.FC<RecordDataProps> = ({ record }) => {
   return (
-    <ListGroup>
+    <ListGroup className="record-data__container">
       <ListGroup.Item>
         Автор:{" "}
         <Link to={`/profile/${record.author._id}`}>
