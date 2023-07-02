@@ -1,15 +1,16 @@
 import dayjs from "dayjs";
-import React from "react";
+import React, { useState } from "react";
 import { Accordion, Card, ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import ImageViewer from "src/modules/common/components/ImageViewer/ImageViewer";
 import {
   Address,
   Record,
   RecordPhoto,
   SpotType,
 } from "../../models/record.model";
-import MapPreview from "./MapPreview";
 import "./recordData.css";
+import MapPreview from "./MapPreview";
 
 interface RecordDataProps {
   record: Record;
@@ -104,10 +105,18 @@ const AddressItem: React.FC<{ address: Address }> = ({ address }) => {
   );
 };
 
-const PhotoItem: React.FC<{ photo: RecordPhoto }> = ({ photo }) => {
+const PhotoItem: React.FC<{ photo: RecordPhoto; imgOnClick: () => void }> = ({
+  photo,
+  imgOnClick,
+}) => {
   return (
     <Card className="m-1" style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={photo.url} />
+      <Card.Img src={photo.url} alt={photo.comment} onClick={imgOnClick} />
+      {/* <ViewableImage
+        src={photo.url}
+        alt={photo.comment}
+        className="card-img-top"
+      /> */}
       {photo.comment && (
         <Card.Body>
           <Card.Text>{photo.comment}</Card.Text>
@@ -117,12 +126,31 @@ const PhotoItem: React.FC<{ photo: RecordPhoto }> = ({ photo }) => {
   );
 };
 const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [i, setI] = useState<number>(0);
   return (
-    <ListGroup.Item className="d-flex flex-wrap justify-content-around align-items-start">
-      {photos.map((photo) => (
-        <PhotoItem key={photo._id} photo={photo} />
-      ))}
-    </ListGroup.Item>
+    <>
+      {isFullscreen && (
+        <ImageViewer
+          images={photos.map((p) => ({ src: p.url, alt: p.comment }))}
+          i={i}
+          setI={setI}
+          setIsFullscreen={setIsFullscreen}
+        />
+      )}
+      <ListGroup.Item className="d-flex flex-wrap justify-content-around align-items-start">
+        {photos.map((photo, i) => (
+          <PhotoItem
+            key={photo._id}
+            photo={photo}
+            imgOnClick={() => {
+              setIsFullscreen(true);
+              setI(i);
+            }}
+          />
+        ))}
+      </ListGroup.Item>
+    </>
   );
 };
 
