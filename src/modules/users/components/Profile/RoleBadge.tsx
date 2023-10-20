@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "react";
+import React, { useMemo } from "react";
 import { Badge, BadgeProps } from "react-bootstrap";
 import {
   RiShieldUserFill as ModeratorIcon,
@@ -40,22 +40,33 @@ const badges: Record<Role, BadgeData> = {
 
 interface IRoleBadgeProps extends BadgeProps {
   role: Role;
+  small?: boolean;
 }
 
 const RoleBadge: React.FC<IRoleBadgeProps> = React.memo(function RoleBadge({
-  role,
+  role: userRole,
+  small,
   ...props
 }: IRoleBadgeProps) {
+  const role = useMemo(() => userRole || Role.USER, []);
+  const badge = badges[role];
   return (
     <Badge
-      bg={badges[role]?.bg ?? badges[Role.USER].bg}
+      bg={badge.bg}
       {...props}
-      className={clsx("shadow p-2", props.className)}
+      className={clsx("shadow p-2", props.className, {
+        "rounded-circle": small,
+      })}
+      style={small ? { lineHeight: 0 } : {}}
+      title={badge.title}
     >
-      <h6 className="m-0">
-        {badges[role]?.icon ?? badges[Role.USER].icon}{" "}
-        {badges[role]?.title ?? badges[Role.USER].title}
-      </h6>
+      {small ? (
+        badge.icon
+      ) : (
+        <h6 className="m-0">
+          {badge.icon} {badge.title}
+        </h6>
+      )}
     </Badge>
   );
 });

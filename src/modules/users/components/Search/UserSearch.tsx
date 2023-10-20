@@ -14,12 +14,13 @@ import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "../../models/user.model";
 import { UserService } from "../../services/user.service";
+import RoleBadge from "../Profile/RoleBadge";
 
 const UserData: React.FC<{ doc: User }> = ({ doc: user }) => {
   return (
     <ListGroup.Item>
-      {" "}
       <Link to={`/profile/${user.username ?? user._id}`}>
+        <RoleBadge role={user.role} small className="me-2" />
         {user.username || user._id} {user.name && <>({user.name})</>}
       </Link>
     </ListGroup.Item>
