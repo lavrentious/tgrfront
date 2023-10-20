@@ -48,8 +48,10 @@ const UserData: React.FC<UserDataProps> = ({ user, setUser }) => {
       <ListGroup.Item>
         Роль: <RoleBadge role={user.role} />
       </ListGroup.Item>
-      <DateItem date={user.createdAt} title="Зарегистрирован" />
-      <DateItem date={user.updatedAt} title="Обновлён" />
+      {user.createdAt && (
+        <DateItem date={user.createdAt} title="Зарегистрирован" />
+      )}
+      {user.updatedAt && <DateItem date={user.updatedAt} title="Обновлён" />}
       <ListGroup.Item>
         <Link to={`/record-search?author=${user._id}`}>
           Созданные пользователем места

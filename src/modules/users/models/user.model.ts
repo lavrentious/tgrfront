@@ -12,13 +12,13 @@ export interface User {
   username?: string | null;
   emailConfirmed?: boolean;
   role: Role;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export class User implements User {
   constructor(user: User) {
     Object.assign(this, user);
-    this.createdAt = new Date(user.createdAt);
-    this.updatedAt = new Date(user.updatedAt);
+    if (user.createdAt) this.createdAt = new Date(user.createdAt);
+    if (user.updatedAt) this.updatedAt = new Date(user.updatedAt);
   }
 }
