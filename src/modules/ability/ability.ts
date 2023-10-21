@@ -24,7 +24,7 @@ export default function defineRulesFor(user: StoredUser | null) {
 
   const defineForAnon = () => {
     can("read", Record);
-    can("read", User, ["username", "name", "role"]);
+    can("read", User, ["_id", "username", "role"]);
   };
 
   defineForAnon();
@@ -32,14 +32,10 @@ export default function defineRulesFor(user: StoredUser | null) {
 
   const defineForUser = () => {
     can("read", User, { _id: user.id });
-    can("update", User, ["username", "name", "email", "password"], {
+    can("update", User, ["username", "name", "email"], {
       _id: user.id,
     });
     // TODO: store emailConfirmed in redux; verification requests module
-    // if (user.emailConfirmed) {
-    // can('create', 'VerificationRequest');
-    // can(['delete', 'read'], 'VerificationRequest', { userId: user._id });
-    // }
   };
   const defineForVerified = () => {
     can("create", Record);
@@ -61,13 +57,11 @@ export default function defineRulesFor(user: StoredUser | null) {
         "author._id": user.id,
       }
     );
-    can("read", User, ["createdAt"]);
-    // cannot('create', 'VerificationRequest');
+    can("read", User, ["name", "email", "emailConfirmed", "createdAt"]);
   };
   const defineForModerator = () => {
-    can("read", User);
+    can("read", User, "updatedAt");
     can("update", User, ["role"], { role: Role.USER });
-    // can(['read', 'delete'], 'VerificationRequest');
   };
   const defineForAdmin = () => {
     can("manage", "all");
