@@ -27,7 +27,11 @@ const LongTextItem: React.FC<{
         <Accordion flush>
           <Accordion.Item eventKey="0">
             <Accordion.Header>{title}</Accordion.Header>
-            <Accordion.Body>{content}</Accordion.Body>
+            <Accordion.Body>
+              {content.split("\n").map((b, i) => (
+                <p key={i}>{b}</p>
+              ))}
+            </Accordion.Body>
           </Accordion.Item>
         </Accordion>
       </ListGroup.Item>
