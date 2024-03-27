@@ -16,6 +16,7 @@ import {
 import { CreateRecordDto } from "../../dto/create-record.dto";
 import { RecordsService } from "../../services/records.service";
 import CreateSpotForm, { CreateSpotFormOnSubmit } from "./CreateSpotForm";
+import toast from "react-hot-toast";
 
 const CreateSpotModal = () => {
   const dispatch = useAppDispatch();
@@ -36,10 +37,13 @@ const CreateSpotModal = () => {
       } as CreateRecordDto,
       files.allIds.map((url) => files.byId[url])
     )
-      .then((record) => {
+      .then((res) => {
         dispatch(resetForm());
         dispatch(setIsCreationFormShown(false));
-        navigate(`/record/${record.record._id}`);
+        for (const photo of res.photos.failed) {
+          toast.error(`Фото №${photo.i + 1} не добавлено: ${photo.error}`);
+        }
+        navigate(`/record/${res.record._id}`);
       })
       .finally(() => {
         dispatch(setIsFormDisabled(false));

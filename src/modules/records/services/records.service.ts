@@ -11,6 +11,7 @@ import { UpdateRecordDto } from "../dto/update-record.dto";
 import { UploadPhotoDto } from "../dto/upload-photo.dto";
 import { Record, RecordPhoto } from "../models/record.model";
 import { FileStatus } from "../records.types";
+import { AxiosError } from "axios";
 
 export abstract class RecordsService {
   static async findAll(
@@ -145,22 +146,26 @@ export abstract class PhotosService {
   static async uploadPhotos(recordId: Record["_id"], photos: UploadPhotoDto[]) {
     const res = {
       uploaded: [] as RecordPhoto[],
-      failed: [] as string[],
+      failed: [] as { i: number; url: string; error: string }[],
     };
     const idsByUrls = new Map<string, string>();
     await Promise.all(
-      photos.map(async (photo) => {
+      photos.map(async (photo, i) => {
         try {
           const fromDB = await PhotosService.uploadOne(recordId, photo);
           idsByUrls.set(photo.file.url, fromDB._id);
           res.uploaded.push(fromDB);
-        } catch {
-          res.failed.push(photo.file.url);
+        } catch (e) {
+          if (e instanceof AxiosError) {
+            res.failed.push({
+              i,
+              url: photo.file.url,
+              error: e.response?.data?.message,
+            });
+          }
         }
       })
     );
-    if (photos.length > 0 && photos.length === res.failed.length)
-      throw new Error("none of the photos uploaded");
     const photosIds: string[] = [];
     for (const photo of photos) {
       const id = idsByUrls.get(photo.file.url);
@@ -168,7 +173,9 @@ export abstract class PhotosService {
         photosIds.push(id);
       }
     }
-    await RecordsApi.update(recordId, { photos: photosIds });
+    if (photosIds.length) {
+      await RecordsApi.update(recordId, { photos: photosIds });
+    }
     return res;
   }
 }
