@@ -1,16 +1,16 @@
+import dayjs from "dayjs";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Alert, Container, Image, ListGroup } from "react-bootstrap";
 import {
+  BsPersonLinesFill as ContactsIcon,
   BsEnvelopeAtFill as EmailIcon,
   BsGearFill as TechInfoIcon,
-  BsPersonLinesFill as ContactsIcon,
   BsTelegram as TgIcon,
 } from "react-icons/bs";
 import TgLogo from "src/assets/tg_logo.png";
 import { HealthCheckResult } from "../../about.api";
 import { AboutService } from "../../about.service";
-import dayjs from "dayjs";
 
 const About: React.FunctionComponent = () => {
   const [health, setHealth] = useState<HealthCheckResult | null>(null);
@@ -91,12 +91,13 @@ const About: React.FunctionComponent = () => {
         </div>
       </div>
       <footer className="text-muted">
-        Версия приложения: {process.env.REACT_APP_VERSION}
+        Версия приложения: {process.env.REACT_APP_VERSION} (от{" "}
+        {dayjs(process.env.REACT_APP_LAST_COMMIT_DATE).format("LLL")})
         <br />
         {health && (
           <>
             Версия API: {health.version} (от{" "}
-            {dayjs(health.lastCommitDate).format('LLL')})
+            {dayjs(health.lastCommitDate).format("LLL")})
           </>
         )}
       </footer>

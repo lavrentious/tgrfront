@@ -40,6 +40,8 @@
   "scripts": {
     "start": "cross-env PORT=8080 react-scripts start",
     "lint": "eslint src",
+    "prestart": "./update-env-commit-date.sh .env.development",
+    "prebuild": "./update-env-commit-date.sh .env.production",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
