@@ -7,11 +7,10 @@ if [ ! -f $file_path ]; then
   touch $file_path
 fi
 
-if grep -q "^REACT_APP_LAST_COMMIT_DATE=" $file_path; then
-  sed -i '' "s/^REACT_APP_LAST_COMMIT_DATE=.*/$commit_date/" $file_path
-else
-  if [ -n "$(tail -c 1 $file_path)" ]; then
-    echo "" >> $file_path
-  fi
-  echo "$commit_date" >> $file_path
+grep -v -E '^REACT_APP_LAST_COMMIT_DATE.+$' $file_path > /tmp/$file_path
+cat /tmp/$file_path > $file_path
+rm /tmp/$file_path
+if [ -n "$(tail -c 1 $file_path)" ]; then
+  echo "" >> $file_path
 fi
+echo "$commit_date" >> $file_path
