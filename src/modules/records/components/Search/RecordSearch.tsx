@@ -16,6 +16,8 @@ import { Paginator } from "src/modules/common/components/Paginator";
 import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
+import { User } from "src/modules/users/models/user.model";
+import { UserService } from "src/modules/users/services/user.service";
 import { Record } from "../../models/record.model";
 import { RecordsService } from "../../services/records.service";
 import { SpotTypeItem } from "../RecordView/RecordData";
@@ -58,6 +60,7 @@ const RecordSearch = () => {
   const limit = 10;
 
   const authorId = useMemo(() => searchParams.get("author"), [searchParams]);
+  const [user, setUser] = useState<User | null>(null);
 
   const { fetch, isFetching, error } = useFetch(() =>
     RecordsService.findAll({
@@ -70,11 +73,14 @@ const RecordSearch = () => {
       if (!res) return;
       setData(res);
       setTotalPages(res.totalPages);
-    })
+    }),
   );
 
   useEffect(() => {
     fetch();
+    if (authorId) {
+      UserService.findOne(authorId).then((res) => setUser(res));
+    }
   }, [page, authorId]);
 
   return (
@@ -101,7 +107,8 @@ const RecordSearch = () => {
       </Form>
       {authorId && (
         <Alert>
-          Показаны места пользователя {authorId}{" "}
+          Показаны места, созданные пользователем{" "}
+          <a href={"profile/" + authorId}>{user?.username || authorId}{user?.name && ` (${user.name})`}</a>{" "}
           <Button
             size="sm"
             onClick={() => {
