@@ -1,15 +1,18 @@
+import { useAbility } from "@casl/react";
 import axios from "axios";
 import { LatLngTuple } from "leaflet";
 import React, { FormEvent, useState } from "react";
 import { Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Search as SearchIcon } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
+import { AbilityContext } from "src/modules/ability/ability";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import useFetch from "src/modules/common/hooks/useFetch";
 import haversine from "src/modules/common/utils/haversine";
 import { RootState, useAppDispatch } from "src/store";
 import { pickSpot } from "src/store/createSpot.reducer";
 import { setCenter, setIsAddressSearchShown } from "src/store/map.reducer";
+import { Record } from "../../models/record.model";
 
 // TODO: move this to utils
 type SearchItem = {
@@ -23,7 +26,7 @@ type SearchItem = {
 
 async function lookupAddress(
   query: string,
-  userCoords?: LatLngTuple
+  userCoords?: LatLngTuple,
 ): Promise<SearchItem[]> {
   const res = await axios.get("https://nominatim.openstreetmap.org/search", {
     params: {
@@ -49,14 +52,14 @@ async function lookupAddress(
       ...(userCoords && {
         distance: haversine(e.lat, e.lon, userCoords[0], userCoords[1]),
       }),
-    })
+    }),
   );
   if (userCoords) {
     processedRes = processedRes.sort(
       (
         a: SearchItem & { distance: number },
-        b: SearchItem & { distance: number }
-      ) => a.distance - b.distance
+        b: SearchItem & { distance: number },
+      ) => a.distance - b.distance,
     );
   }
   return processedRes;
@@ -68,24 +71,24 @@ const AddressSearch: React.FC<IAddressSearchProps> = (props) => {
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<SearchItem[]>([]);
   const userCoords = useSelector((state: RootState) => state.map.userCoords);
-  const { user } = useSelector((state: RootState) => state.auth);
+  const ability = useAbility(AbilityContext);
   const dispatch = useAppDispatch();
-
-  const { fetch, isFetching } = useFetch(async () => {
-    const res = await lookupAddress(query, userCoords || undefined);
-    if (res.length === 1) {
-      dispatch(pickSpot([res[0].lat, res[0].lng]));
-    }
-    setResult(res);
-  });
 
   const select =
     props.select ??
     ((lat: number, lng: number) => {
       dispatch(setCenter([lat, lng]));
       dispatch(setIsAddressSearchShown(false));
-      if (user) dispatch(pickSpot([lat, lng]));
+      if (ability.can("create", Record)) dispatch(pickSpot([lat, lng]));
     });
+
+  const { fetch, isFetching } = useFetch(async () => {
+    const res = await lookupAddress(query, userCoords || undefined);
+    if (res.length === 1) {
+      select(res[0].lat, res[0].lng);
+    }
+    setResult(res);
+  });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
