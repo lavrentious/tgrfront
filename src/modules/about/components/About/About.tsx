@@ -47,9 +47,9 @@ const About: React.FunctionComponent = () => {
                 className="text-decoration-none"
                 target="_blank"
                 rel="noreferrer"
-                href="tg://resolve?domain=elliottrodgerwitt"
+                href="tg://resolve?domain=elliottmiragewitt"
               >
-                <TgIcon /> @elliottrodgerwitt
+                <TgIcon /> @elliottmiragewitt
               </a>
             </ListGroup.Item>
             <ListGroup.Item>
