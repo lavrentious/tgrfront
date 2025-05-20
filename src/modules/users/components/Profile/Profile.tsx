@@ -1,9 +1,10 @@
 import { useAbility } from "@casl/react";
 import { useEffect, useState } from "react";
-import { Button, Container, Spinner } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import { PencilFill as EditIcon } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
+import LoadingPage from "src/modules/common/components/LoadingPage";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "src/modules/users/models/user.model";
@@ -38,7 +39,7 @@ const Profile = () => {
     );
   }
   if (isFetching || !user) {
-    return <Spinner animation="border" />;
+    return <LoadingPage />;
   }
   const updateUser = (newUser: User) => {
     const oldUser = { ...user };

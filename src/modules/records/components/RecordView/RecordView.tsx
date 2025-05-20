@@ -1,6 +1,6 @@
 import { useAbility } from "@casl/react";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Spinner } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import {
   Trash as DeleteIcon,
   PencilFill as EditIcon,
@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
 import type { ApiError } from "src/modules/common/api";
+import LoadingPage from "src/modules/common/components/LoadingPage";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { useAppDispatch } from "src/store";
@@ -50,7 +51,7 @@ const RecordView: React.FC = () => {
   };
 
   if (isFetching || !record) {
-    return <Spinner animation="border" />;
+    return <LoadingPage />;
   }
 
   return (
