@@ -1,4 +1,4 @@
-import { IFile } from "../records.types";
+import type { IFile } from "../records.types";
 
 export interface PhotoDto {
   comment?: string;

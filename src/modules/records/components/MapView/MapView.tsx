@@ -7,7 +7,7 @@ import {
   AddressSearchButton,
   ControlButtons,
 } from "src/modules/records/components/MapView/ControlButtons";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import {
   setIsSelectingSpot,
   setSelectedSpot,
@@ -21,7 +21,7 @@ import "./mapView.css";
 const MainMap: React.FunctionComponent = () => {
   const { zoom, center } = useSelector((state: RootState) => state.map);
   const { isSelectingSpot, selectedSpot } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
   const dispatch = useAppDispatch();
 

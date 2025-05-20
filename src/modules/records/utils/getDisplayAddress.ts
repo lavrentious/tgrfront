@@ -1,4 +1,4 @@
-import { Address } from "../models/record.model";
+import type { Address } from "../models/record.model";
 
 export function getDisplayAddress(address: Address): string {
   const { region, city, street, house } = address;

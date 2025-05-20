@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LatLngTuple } from "leaflet";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { LatLngTuple } from "leaflet";
 
 type MapState = {
   center: LatLngTuple;

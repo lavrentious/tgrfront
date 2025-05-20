@@ -13,7 +13,7 @@ import {
 import { Link, useSearchParams } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "src/modules/users/models/user.model";
@@ -108,7 +108,10 @@ const RecordSearch = () => {
       {authorId && (
         <Alert>
           Показаны места, созданные пользователем{" "}
-          <a href={"profile/" + authorId}>{user?.username || authorId}{user?.name && ` (${user.name})`}</a>{" "}
+          <a href={"profile/" + authorId}>
+            {user?.username || authorId}
+            {user?.name && ` (${user.name})`}
+          </a>{" "}
           <Button
             size="sm"
             onClick={() => {

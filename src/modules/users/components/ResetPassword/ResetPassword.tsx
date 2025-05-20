@@ -1,10 +1,10 @@
 import useToggle from "beautiful-react-hooks/useToggle";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Container, Form, InputGroup, Spinner } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import useFetch from "src/modules/common/hooks/useFetch";

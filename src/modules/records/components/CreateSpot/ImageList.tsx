@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrop } from "react-dnd";
 import { useAppDispatch } from "src/store";
-import { CreateSpotState, moveFile } from "src/store/createSpot.reducer";
+import { type CreateSpotState, moveFile } from "src/store/createSpot.reducer";
 import ImageItem from "./ImageItem";
 
 interface ImageListProps {
@@ -13,6 +13,7 @@ const ImageList: React.FC<ImageListProps> = ({ files }) => {
   const dispatch = useAppDispatch();
 
   return (
+    // @ts-expect-error seems to work?
     <div className="w-100 flex-wrap align-items-start" ref={drop}>
       {files.allIds.map((url, i) => (
         <ImageItem

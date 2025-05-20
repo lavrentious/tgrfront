@@ -1,15 +1,14 @@
 import { useAbility } from "@casl/react";
-import React from "react";
 import { Button } from "react-bootstrap";
 import {
-  CheckLg as SubmitIcon,
+  XLg as CancelIcon,
   PlusLg as CreateIcon,
   Search as SearchIcon,
-  XLg as CancelIcon,
+  CheckLg as SubmitIcon,
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import { AbilityContext } from "src/modules/ability/ability";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import {
   resetForm,
   setIsCreationFormShown,
@@ -38,7 +37,7 @@ export function AddressSearchButton() {
 
 export function ControlButtons() {
   const { isSelectingSpot, selectedSpot } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
   const ability = useAbility(AbilityContext);
   const dispatch = useAppDispatch();

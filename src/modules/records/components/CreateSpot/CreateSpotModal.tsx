@@ -1,29 +1,28 @@
-import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import {
-  CheckLg as SubmitIcon,
   DashLg as HideIcon,
+  CheckLg as SubmitIcon,
 } from "react-bootstrap-icons";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import {
   resetForm,
   setIsCreationFormShown,
   setIsFormDisabled,
 } from "src/store/createSpot.reducer";
-import { CreateRecordDto } from "../../dto/create-record.dto";
+import type { CreateRecordDto } from "../../dto/create-record.dto";
 import { RecordsService } from "../../services/records.service";
-import CreateSpotForm, { CreateSpotFormOnSubmit } from "./CreateSpotForm";
-import toast from "react-hot-toast";
+import CreateSpotForm, { type CreateSpotFormOnSubmit } from "./CreateSpotForm";
 
 const CreateSpotModal = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { selectedSpot } = useSelector((state: RootState) => state.createSpot);
   const { isCreationFormShown, isFormDisabled, files } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
 
   const onSubmit: CreateSpotFormOnSubmit = (values) => {
@@ -35,7 +34,7 @@ const CreateSpotModal = () => {
         lat: selectedSpot[0],
         lon: selectedSpot[1],
       } as CreateRecordDto,
-      files.allIds.map((url) => files.byId[url])
+      files.allIds.map((url) => files.byId[url]),
     )
       .then((res) => {
         dispatch(resetForm());

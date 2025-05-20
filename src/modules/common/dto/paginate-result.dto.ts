@@ -1,4 +1,4 @@
-export class PaginateResult<T> {
+export interface PaginateResult<T> {
   docs: T[];
   totalDocs: number;
   limit: number;

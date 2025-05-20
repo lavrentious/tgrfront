@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import routes, { Route as RouteType } from "src/routes";
-import { RootState } from "src/store";
-import { StoredUser } from "src/store/auth.reducer";
+import routes, { type Route as RouteType } from "src/routes";
+import type { RootState } from "src/store";
+import type { StoredUser } from "src/store/auth.reducer";
 
 interface AppRouterProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ interface AppRouterProps {
 function getRouteElement(
   route: RouteType,
   user: StoredUser | null,
-  isAuthLoading: boolean
+  isAuthLoading: boolean,
 ): React.ReactNode {
   const isLoggedIn = user != null;
   if (!route.anonOnly && !route.authOnly) return route.element;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, ButtonProps } from "react-bootstrap";
+import { Button, type ButtonProps } from "react-bootstrap";
 import {
   EyeFill as HiddenIcon,
   EyeSlashFill as VisibleIcon,

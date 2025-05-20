@@ -4,7 +4,7 @@ import { AuthService, TokenService } from "../users/services/auth.service";
 export type ApiError = AxiosError<{ message?: string }>;
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -30,7 +30,7 @@ function createAxiosResponseInterceptor() {
           }
         })
         .finally(createAxiosResponseInterceptor);
-    }
+    },
   );
 }
 createAxiosResponseInterceptor();

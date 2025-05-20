@@ -1,7 +1,7 @@
 export default function arrayMove<T>(
   array: T[],
   fromIndex: number,
-  toIndex: number
+  toIndex: number,
 ): T[] {
   const res = [...array];
   if (toIndex >= res.length) toIndex = res.length - 1;

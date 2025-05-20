@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LatLngTuple } from "leaflet";
-import { NormalizedObjects } from "src/modules/common/types";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { LatLngTuple } from "leaflet";
+import type { NormalizedObjects } from "src/modules/common/types";
 import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
-import { IFile } from "src/modules/records/records.types";
-import { AppThunk } from ".";
+import type { IFile } from "src/modules/records/records.types";
+import type { AppThunk } from ".";
 
 export interface CreateSpotState {
   selectedSpot: LatLngTuple | null;
@@ -31,7 +31,7 @@ const createSpotSlice = createSlice({
   reducers: {
     removeFile(state, action: PayloadAction<string>) {
       state.files.allIds = state.files.allIds.filter(
-        (id) => id !== action.payload
+        (id) => id !== action.payload,
       );
       delete state.files.byId[action.payload];
     },

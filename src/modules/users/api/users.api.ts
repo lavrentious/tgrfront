@@ -1,9 +1,9 @@
 import { api } from "src/modules/common/api";
 import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
-import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import { User } from "src/modules/users/models/user.model";
-import { UpdatePasswordDto } from "../dto/update-password.dto";
-import { UpdateUserDto } from "../dto/update.dto";
+import type { UpdatePasswordDto } from "../dto/update-password.dto";
+import type { UpdateUserDto } from "../dto/update.dto";
 
 const BASE_URL = "/users";
 
@@ -27,7 +27,7 @@ export abstract class UsersApi {
 
   static async updatePassword(
     id: string,
-    dto: UpdatePasswordDto
+    dto: UpdatePasswordDto,
   ): Promise<void> {
     return (await api.put<void>(`${BASE_URL}/${id}/password`, dto)).data;
   }

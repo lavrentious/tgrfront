@@ -9,7 +9,7 @@ import {
   BsTelegram as TgIcon,
 } from "react-icons/bs";
 import TgLogo from "src/assets/tg_logo.png";
-import { HealthCheckResult } from "../../about.api";
+import type { HealthCheckResult } from "../../about.api";
 import { AboutService } from "../../about.service";
 
 const About: React.FunctionComponent = () => {
@@ -91,8 +91,8 @@ const About: React.FunctionComponent = () => {
         </div>
       </div>
       <footer className="text-muted">
-        Версия приложения: {process.env.REACT_APP_VERSION} (от{" "}
-        {dayjs(process.env.REACT_APP_LAST_COMMIT_DATE).format("LLL")})
+        Версия приложения: {import.meta.env.VITE_APP_VERSION} (от{" "}
+        {dayjs(import.meta.env.VITE_LAST_COMMIT_DATE).format("LLL")})
         <br />
         {health && (
           <>

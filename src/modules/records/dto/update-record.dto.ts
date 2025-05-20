@@ -1,4 +1,4 @@
-import { Record, RecordPhoto } from "../models/record.model";
+import { Record, type RecordPhoto } from "../models/record.model";
 
 export type UpdateRecordDto =
   | (Partial<Record> & { autoAddress?: boolean })

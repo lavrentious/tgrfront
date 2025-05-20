@@ -1,5 +1,3 @@
-import React from "react";
-
 const LeafletAttribution = () => {
   return (
     <div className="leaflet-map__attribution">

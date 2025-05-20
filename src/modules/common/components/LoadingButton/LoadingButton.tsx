@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, ButtonProps, Spinner } from "react-bootstrap";
+import { Button, type ButtonProps, Spinner } from "react-bootstrap";
 
 interface LoadingButtonProps extends ButtonProps {
   isLoading: boolean;

@@ -2,8 +2,8 @@ import { AxiosError } from "axios";
 import { setIsAuthLoading, setUser } from "src/store/auth.reducer";
 import store from "src/store/index";
 import { AuthApi } from "../api/auth.api";
-import { LoginDto } from "../dto/login.dto";
-import { RegisterDto } from "../dto/register.dto";
+import type { LoginDto } from "../dto/login.dto";
+import type { RegisterDto } from "../dto/register.dto";
 
 export abstract class AuthService {
   static async login(dto: LoginDto) {

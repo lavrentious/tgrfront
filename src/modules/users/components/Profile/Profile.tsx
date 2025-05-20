@@ -1,5 +1,5 @@
 import { useAbility } from "@casl/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container, Spinner } from "react-bootstrap";
 import { PencilFill as EditIcon } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,7 +18,7 @@ const Profile = () => {
   const ability = useAbility(AbilityContext);
 
   const { fetch, error, isFetching } = useFetch(() =>
-    UserService.findOne(idOrUsername as string)
+    UserService.findOne(idOrUsername as string),
   );
   const navigate = useNavigate();
 

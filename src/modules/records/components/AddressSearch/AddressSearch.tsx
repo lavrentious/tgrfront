@@ -1,7 +1,7 @@
 import { useAbility } from "@casl/react";
 import axios from "axios";
-import { LatLngTuple } from "leaflet";
-import React, { FormEvent, useState } from "react";
+import type { LatLngTuple } from "leaflet";
+import React, { type FormEvent, useState } from "react";
 import { Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Search as SearchIcon } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import { AbilityContext } from "src/modules/ability/ability";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import useFetch from "src/modules/common/hooks/useFetch";
 import haversine from "src/modules/common/utils/haversine";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import { pickSpot } from "src/store/createSpot.reducer";
 import { setCenter, setIsAddressSearchShown } from "src/store/map.reducer";
 import { Record } from "../../models/record.model";

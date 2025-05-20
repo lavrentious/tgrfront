@@ -1,19 +1,19 @@
-import { DragEndEvent, LatLngTuple } from "leaflet";
-import React, { useMemo } from "react";
+import type { DragEndEvent, LatLngTuple } from "leaflet";
+import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
+  yellowIcon as ownRecordIcon,
   greyIcon as recordIcon,
   redIcon as selectedSpotIcon,
-  yellowIcon as ownRecordIcon,
 } from "src/assets/markerIcons";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import {
   setIsCreationFormShown,
   setSelectedSpot,
 } from "src/store/createSpot.reducer";
-import { IMarker } from "../components/LeafletMap/LeafletMap";
+import type { IMarker } from "../components/LeafletMap/LeafletMap";
 import { Record } from "../models/record.model";
 
 function RecordMarkerContent(record: Record) {
@@ -44,7 +44,7 @@ export function recordMarker(record: Record, icon = recordIcon): IMarker {
 
 export function useMarkers(
   records: Record[] = [],
-  selectedSpot?: LatLngTuple | null
+  selectedSpot?: LatLngTuple | null,
 ) {
   const dispatch = useAppDispatch();
   const loggedUser = useSelector((state: RootState) => state.auth.user);
@@ -52,8 +52,8 @@ export function useMarkers(
     const markers = records.map((r) =>
       recordMarker(
         r,
-        r.author._id === loggedUser?.id ? ownRecordIcon : recordIcon
-      )
+        r.author._id === loggedUser?.id ? ownRecordIcon : recordIcon,
+      ),
     );
     if (selectedSpot) {
       markers.push({

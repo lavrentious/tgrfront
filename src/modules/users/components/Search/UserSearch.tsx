@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { User } from "../../models/user.model";
@@ -44,7 +44,7 @@ const UserSearch = () => {
       if (!res) return;
       setData(res);
       setTotalPages(res.totalPages);
-    })
+    }),
   );
 
   useEffect(() => {

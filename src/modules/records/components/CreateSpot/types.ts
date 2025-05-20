@@ -1,4 +1,4 @@
-import { Address, SpotType } from "../../models/record.model";
+import { type Address, SpotType } from "../../models/record.model";
 
 export const TYPE_PLACEHOLDER = "TYPE_PLACEHOLDER";
 export interface CreateSpotValues {

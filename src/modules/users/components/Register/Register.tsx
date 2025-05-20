@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";

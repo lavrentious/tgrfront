@@ -1,4 +1,4 @@
-import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
-import { FindAllRecord } from "./find-all-record.dto";
+import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import type { FindAllRecord } from "./find-all-record.dto";
 
 export type FindAllRecordsResultDto = PaginateResult<FindAllRecord>;

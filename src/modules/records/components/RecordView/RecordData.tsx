@@ -4,13 +4,13 @@ import { Accordion, Card, ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ImageViewer from "src/modules/common/components/ImageViewer/ImageViewer";
 import {
-  Address,
+  type Address,
   Record,
-  RecordPhoto,
+  type RecordPhoto,
   SpotType,
 } from "../../models/record.model";
-import "./recordData.css";
 import MapPreview from "./MapPreview";
+import "./recordData.css";
 
 interface RecordDataProps {
   record: Record;

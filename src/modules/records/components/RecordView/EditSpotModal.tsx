@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Button, Modal } from "react-bootstrap";
 import {
-  CheckLg as SubmitIcon,
   XLg as CancelIcon,
+  CheckLg as SubmitIcon,
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import {
   addFile,
   resetForm,
@@ -15,11 +15,11 @@ import {
   setIsFormDisabled,
 } from "src/store/createSpot.reducer";
 import CreateSpotForm, {
-  CreateSpotFormOnSubmit,
+  type CreateSpotFormOnSubmit,
 } from "../CreateSpot/CreateSpotForm";
 
-import { UpdateRecordDto } from "../../dto/update-record.dto";
-import { Record, RecordPhoto } from "../../models/record.model";
+import type { UpdateRecordDto } from "../../dto/update-record.dto";
+import { Record, type RecordPhoto } from "../../models/record.model";
 import { RecordsService } from "../../services/records.service";
 
 interface EditSpotModalProps {
@@ -29,7 +29,7 @@ interface EditSpotModalProps {
 const EditSpotModal: React.FC<EditSpotModalProps> = ({ record }) => {
   const dispatch = useAppDispatch();
   const { isCreationFormShown, isFormDisabled, files } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
 
   const initPhotos = useRef<RecordPhoto[]>([]);
@@ -43,7 +43,7 @@ const EditSpotModal: React.FC<EditSpotModalProps> = ({ record }) => {
             dto: { comment: photo.comment },
             file: { name: photo.url, url: photo.url, size: 0 },
             meta: { fromDB: photo },
-          })
+          }),
         );
       }
       dispatch(setFiles(record.photos.map((p) => p.url)));
@@ -56,7 +56,7 @@ const EditSpotModal: React.FC<EditSpotModalProps> = ({ record }) => {
       record._id,
       values as UpdateRecordDto,
       files.allIds.map((url) => files.byId[url]),
-      initPhotos.current
+      initPhotos.current,
     )
       .then(() => {
         window.location.reload();

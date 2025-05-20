@@ -7,7 +7,12 @@
  * @returns {Number} distance between points in meters
  */
 
-const haversine = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+const haversine = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number,
+): number => {
   const p = 0.017453292519943295; // Math.PI / 180
   const c = Math.cos;
   const a =

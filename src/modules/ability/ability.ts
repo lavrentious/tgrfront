@@ -1,14 +1,14 @@
 import {
   Ability,
   AbilityBuilder,
-  AbilityClass,
-  ExtractSubjectType,
-  InferSubjects,
+  type AbilityClass,
+  type ExtractSubjectType,
+  type InferSubjects,
 } from "@casl/ability";
 import { createContext } from "react";
 import { Record } from "src/modules/records/models/record.model";
 import { Role, User } from "src/modules/users/models/user.model";
-import { StoredUser } from "src/store/auth.reducer";
+import type { StoredUser } from "src/store/auth.reducer";
 
 type Action = "manage" | "create" | "read" | "update" | "delete";
 type Subjects = InferSubjects<typeof User | typeof Record> | "all";
@@ -55,7 +55,7 @@ export default function defineRulesFor(user: StoredUser | null) {
       ],
       {
         "author._id": user.id,
-      }
+      },
     );
     can("read", User, ["name", "email", "emailConfirmed", "createdAt"]);
   };

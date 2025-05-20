@@ -1,6 +1,6 @@
 import { User } from "../../users/models/user.model";
 
-export class Address {
+export interface Address {
   region?: string;
   city?: string;
   street?: string;
@@ -14,7 +14,7 @@ export enum SpotType {
   MISC = "MISC",
 }
 
-export class RecordPhoto {
+export interface RecordPhoto {
   _id: string;
   url: string;
   publicId: string;

@@ -1,8 +1,8 @@
 import {
-  Action,
+  type Action,
   combineReducers,
   configureStore,
-  ThunkAction,
+  type ThunkAction,
 } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import authReducer from "./auth.reducer";

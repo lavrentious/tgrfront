@@ -1,10 +1,10 @@
 import { default as React, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import useFetch from "src/modules/common/hooks/useFetch";
-import { RootState } from "src/store";
+import type { RootState } from "src/store";
 import { User } from "../../models/user.model";
 import { UserService } from "../../services/user.service";
 
@@ -21,7 +21,7 @@ const ResendEmailButton: React.FC<ResendEmailButtonProps> = React.memo(
       UserService.resendEmail()
         .then(() => {
           toast.success(
-            `Письмо с подтверждением отправлено на почту ${user.email}`
+            `Письмо с подтверждением отправлено на почту ${user.email}`,
           );
           setIsShown(false);
         })
@@ -29,7 +29,7 @@ const ResendEmailButton: React.FC<ResendEmailButtonProps> = React.memo(
           if (e?.response?.status === 400) {
             setUser({ ...user, emailConfirmed: true });
           }
-        })
+        }),
     );
     return (
       <>
@@ -45,7 +45,7 @@ const ResendEmailButton: React.FC<ResendEmailButtonProps> = React.memo(
         )}
       </>
     );
-  }
+  },
 );
 
 export default ResendEmailButton;

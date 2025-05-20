@@ -1,5 +1,5 @@
-import { PhotoDto } from "./dto/upload-photo.dto";
-import { RecordPhoto } from "./models/record.model";
+import type { PhotoDto } from "./dto/upload-photo.dto";
+import type { RecordPhoto } from "./models/record.model";
 
 export enum FileStatus {
   PENDING,

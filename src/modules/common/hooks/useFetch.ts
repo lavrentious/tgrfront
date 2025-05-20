@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { ApiError } from "../api";
+import type { ApiError } from "../api";
 
 function useFetch<T = unknown, E = ApiError>(
-  callback: (...args: unknown[]) => Promise<T>
+  callback: (...args: unknown[]) => Promise<T>,
 ) {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [error, setError] = useState<E | null>(null);

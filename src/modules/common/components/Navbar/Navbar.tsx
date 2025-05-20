@@ -7,10 +7,10 @@ import { useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import Logo from "src/assets/tg_logo.png";
 import { AuthService } from "src/modules/users/services/auth.service";
-import { RootState } from "src/store";
+import * as store from "src/store";
 import "./Navbar.css";
 
-const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
+const AuthStatus = ({ user, isAuthLoading }: store.RootState["auth"]) => {
   const isLoggedIn = !!user;
   if (isAuthLoading) {
     return <Spinner animation="border" className="align-self-center" />;
@@ -40,7 +40,9 @@ const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
 };
 
 const Navbar: React.FunctionComponent = () => {
-  const { user, isAuthLoading } = useSelector((state: RootState) => state.auth);
+  const { user, isAuthLoading } = useSelector(
+    (state: store.RootState) => state.auth,
+  );
   return (
     <BootstrapNavbar
       id="navbar"

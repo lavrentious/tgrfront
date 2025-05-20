@@ -1,5 +1,5 @@
 import { useAbility } from "@casl/react";
-import { LatLngTuple } from "leaflet";
+import type { LatLngTuple } from "leaflet";
 import React, { useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Pencil, Save, XLg } from "react-bootstrap-icons";
@@ -11,7 +11,7 @@ import { setIsAddressSearchShown } from "src/store/map.reducer";
 import { RecordsApi } from "../../api/records.api";
 import AddressSearchModal from "../AddressSearch/AddressSearchModal";
 import CenterButton from "../LeafletMap/CenterButton";
-import LeafletMap, { IMarker } from "../LeafletMap/LeafletMap";
+import LeafletMap, { type IMarker } from "../LeafletMap/LeafletMap";
 import { AddressSearchButton } from "../MapView/ControlButtons";
 
 interface MapPreviewProps {
@@ -93,7 +93,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({ record }) => {
     if (marker.current.position == null) return;
     const [lat, lon] = marker.current.position;
     RecordsApi.update(record._id, { lat, lon, autoAddress }).then(() =>
-      window.location.reload()
+      window.location.reload(),
     );
   };
   const select = (lat: number, lng: number) => {

@@ -1,9 +1,8 @@
 import { useFormik } from "formik";
-import React from "react";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import * as yup from "yup";
 import { PasswordResetsApi } from "../../api/password-resets.api";
@@ -19,7 +18,7 @@ const validationSchema = yup.object().shape({
     .required()
     .test(
       (v) =>
-        validators.email.isValidSync(v) || validators.username.isValidSync(v)
+        validators.email.isValidSync(v) || validators.username.isValidSync(v),
     ),
 });
 

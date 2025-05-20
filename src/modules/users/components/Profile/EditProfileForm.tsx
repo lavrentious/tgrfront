@@ -4,10 +4,10 @@ import { Form } from "react-bootstrap";
 import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { validators } from "src/modules/users/utils/validations";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import { setUser as setLoggedUser } from "src/store/auth.reducer";
 import * as yup from "yup";
 import { User } from "../../models/user.model";
@@ -63,7 +63,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
                 role: newUser.role,
                 name: newUser.name ?? undefined,
                 username: newUser.username ?? undefined,
-              })
+              }),
             );
           }
           toast.success("Профиль изменён");

@@ -1,9 +1,9 @@
 import { diff } from "deep-object-diff";
-import { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
+import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import { FindAllUsersParams, UsersApi } from "src/modules/users/api/users.api";
 import { User } from "src/modules/users/models/user.model";
-import { UpdatePasswordDto } from "../dto/update-password.dto";
-import { UpdateUserDto } from "../dto/update.dto";
+import type { UpdatePasswordDto } from "../dto/update-password.dto";
+import type { UpdateUserDto } from "../dto/update.dto";
 
 export abstract class UserService {
   static async findOne(idOrUsename: string): Promise<User | null> {
@@ -11,7 +11,7 @@ export abstract class UserService {
   }
 
   static async findAll(
-    params?: FindAllUsersParams
+    params?: FindAllUsersParams,
   ): Promise<PaginateResult<User>> {
     const res = await UsersApi.findAll(params);
     return { ...res, docs: res.docs.map((d) => new User(d)) };
@@ -20,7 +20,7 @@ export abstract class UserService {
   static async update(
     id: string,
     dto: UpdateUserDto,
-    user?: User
+    user?: User,
   ): Promise<User> {
     if (user) {
       dto = diff(user, { ...user, ...dto });
@@ -34,7 +34,7 @@ export abstract class UserService {
 
   static async updatePassword(
     id: string,
-    dto: UpdatePasswordDto
+    dto: UpdatePasswordDto,
   ): Promise<void> {
     return UsersApi.updatePassword(id, dto);
   }

@@ -3,7 +3,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { validators } from "src/modules/users/utils/validations";
 import * as yup from "yup";

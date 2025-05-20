@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
-import { Badge, BadgeProps } from "react-bootstrap";
+import { Badge, type BadgeProps } from "react-bootstrap";
 import {
-  RiShieldUserFill as ModeratorIcon,
   RiStarFill as AdminIcon,
+  RiShieldUserFill as ModeratorIcon,
   RiUserFill as UserIcon,
   RiUserFollowFill as VerifiedIcon,
 } from "react-icons/ri";

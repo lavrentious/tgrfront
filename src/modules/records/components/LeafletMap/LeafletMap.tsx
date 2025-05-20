@@ -3,15 +3,15 @@
 import useGeolocationState from "beautiful-react-hooks/useGeolocationState";
 import {
   Icon,
-  LatLngTuple,
-  LeafletEventHandlerFnMap,
-  LeafletMouseEvent,
+  type LatLngTuple,
+  type LeafletEventHandlerFnMap,
+  type LeafletMouseEvent,
   Map,
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/leaflet.js";
 import * as React from "react";
-import { memo, RefObject, useEffect, useRef } from "react";
+import { memo, type RefObject, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import {
   MapContainer,
@@ -24,7 +24,7 @@ import {
 import { useSelector } from "react-redux";
 import { blueIcon as userSpotIcon } from "src/assets/markerIcons";
 import arraysEqual from "src/modules/common/utils/arraysEqual";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import { setUserCoords } from "src/store/map.reducer";
 import CenterButton from "./CenterButton";
 import LeafletAttribution from "./LeafletAttribution";
@@ -58,7 +58,7 @@ interface ILeafletMapProps extends React.HTMLProps<HTMLDivElement> {
 const centerOn = (
   map: RefObject<Map | null>,
   center: LatLngTuple,
-  zoom: number
+  zoom: number,
 ) => {
   if (!map.current) return;
   map.current.setView(center, zoom, {
@@ -97,7 +97,7 @@ const EventHandlers = ({
 export function markerFromData(marker: IMarker): React.ReactNode {
   if (!marker.position || marker.visible === false) return <></>;
   return (
-    <Marker {...marker} position={marker.position}>
+    <Marker {...marker} key={marker.key} position={marker.position}>
       {marker.content ? <Popup>{marker.content}</Popup> : <></>}
       {marker.tooltip && <Tooltip>{marker.tooltip}</Tooltip>}
     </Marker>
@@ -177,15 +177,13 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
           {(setZoom || setCenter) && (
             <EventHandlers {...{ onMapClick, setCenter, setZoom }} />
           )}
-          {markers?.map((marker) => (
-            <React.Fragment key={marker.key}>
-              {marker.position != null && marker.visible !== false ? (
-                markerFromData(marker)
-              ) : (
-                <></>
-              )}
-            </React.Fragment>
-          ))}
+          {markers
+            ?.filter((m) => !!m.position && m.visible !== false)
+            .map((marker) => (
+              <React.Fragment key={marker.key}>
+                {markerFromData(marker)}
+              </React.Fragment>
+            ))}
           {userCoords &&
             markerFromData({
               key: "userPos",
@@ -209,7 +207,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 export default LeafletMap;

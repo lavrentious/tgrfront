@@ -1,6 +1,6 @@
-import { Address, SpotType } from "../models/record.model";
+import { type Address, SpotType } from "../models/record.model";
 
-export class CreateRecordDto {
+export interface CreateRecordDto {
   name: string;
   description?: string;
   accessibility?: string;

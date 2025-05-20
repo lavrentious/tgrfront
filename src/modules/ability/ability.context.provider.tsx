@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "src/store";
+import type { RootState } from "src/store";
 import { AbilityContext, buildAbilityFor } from "./ability";
 
 interface AbilityContextProviderProps {

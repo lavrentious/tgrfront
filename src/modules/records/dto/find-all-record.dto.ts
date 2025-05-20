@@ -1,6 +1,6 @@
-import { Record } from "../models/record.model";
+import type { Record } from "../models/record.model";
 
-export class FindAllRecord extends Record {
+export interface FindAllRecord extends Record {
   distance?: number;
   direction?: string;
   azimuth?: number;

@@ -2,13 +2,13 @@ import { useAbility } from "@casl/react";
 import React, { useEffect, useState } from "react";
 import { Button, Container, Spinner } from "react-bootstrap";
 import {
-  PencilFill as EditIcon,
   Trash as DeleteIcon,
+  PencilFill as EditIcon,
 } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
-import { ApiError } from "src/modules/common/api";
+import type { ApiError } from "src/modules/common/api";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
 import useFetch from "src/modules/common/hooks/useFetch";
 import { useAppDispatch } from "src/store";
@@ -28,7 +28,7 @@ const RecordView: React.FC = () => {
 
   const [record, setRecord] = useState<Record | null>(null);
   const { fetch, error, isFetching } = useFetch(() =>
-    RecordsService.findOne(id as string)
+    RecordsService.findOne(id as string),
   );
 
   useEffect(() => {
@@ -67,14 +67,14 @@ const RecordView: React.FC = () => {
           onClick={() => {
             if (
               !confirm(
-                `Вы уверены, что хотите удалить "${record.name}"? Это действие нельзя отменить.`
+                `Вы уверены, что хотите удалить "${record.name}"? Это действие нельзя отменить.`,
               )
             )
               return;
             RecordsService.delete(record._id)
               .then(() => navigate("/map"))
               .catch((e: ApiError) =>
-                toast.error(e.response?.data.message ?? e.message)
+                toast.error(e.response?.data.message ?? e.message),
               );
           }}
         >

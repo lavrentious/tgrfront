@@ -1,12 +1,12 @@
-import { AxiosRequestConfig } from "axios";
+import type { AxiosRequestConfig } from "axios";
 import { api } from "src/modules/common/api";
 import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
-import { CreateRecordDto } from "../dto/create-record.dto";
-import { FindAllRecordsResultDto } from "../dto/find-all-records-result.dto";
-import { UpdatePhotoDto } from "../dto/update-photo.dto";
-import { UpdateRecordDto } from "../dto/update-record.dto";
-import { PhotoDto } from "../dto/upload-photo.dto";
-import { Record, RecordPhoto } from "../models/record.model";
+import type { CreateRecordDto } from "../dto/create-record.dto";
+import type { FindAllRecordsResultDto } from "../dto/find-all-records-result.dto";
+import type { UpdatePhotoDto } from "../dto/update-photo.dto";
+import type { UpdateRecordDto } from "../dto/update-record.dto";
+import type { PhotoDto } from "../dto/upload-photo.dto";
+import { Record, type RecordPhoto } from "../models/record.model";
 
 export class FindAllRecordsParams extends PaginateParams {
   author?: string;
@@ -43,7 +43,7 @@ export class RecordPhotosApi {
     recordId: Record["_id"],
     file: File | Blob,
     dto: PhotoDto,
-    onUploadProgress?: AxiosRequestConfig["onUploadProgress"]
+    onUploadProgress?: AxiosRequestConfig["onUploadProgress"],
   ) {
     const formData = new FormData();
     formData.append("file", file);
@@ -66,11 +66,11 @@ export class RecordPhotosApi {
   static async update(
     recordId: Record["_id"],
     photoId: RecordPhoto["_id"],
-    dto: UpdatePhotoDto
+    dto: UpdatePhotoDto,
   ) {
     return api.patch<RecordPhoto>(
       `${BASE_URL}/${recordId}/photos/${photoId}`,
-      dto
+      dto,
     );
   }
 }

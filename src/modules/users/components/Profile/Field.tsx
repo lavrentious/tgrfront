@@ -1,6 +1,5 @@
-import { FormikValues, useFormik } from "formik";
-import React from "react";
-import { Form, FormControl, FormControlProps } from "react-bootstrap";
+import { type FormikValues, useFormik } from "formik";
+import { Form, FormControl, type FormControlProps } from "react-bootstrap";
 
 interface IFieldProps<Values extends FormikValues> extends FormControlProps {
   f: ReturnType<typeof useFormik<Values>>;

@@ -5,14 +5,14 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
 import { Record, SpotType } from "src/modules/records/models/record.model";
-import { RootState } from "src/store";
+import type { RootState } from "src/store";
 import * as yup from "yup";
 import { getDisplayAddress } from "../../utils/getDisplayAddress";
 import AddressForm from "./AddressForm";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";
 import ImageList from "./ImageList";
-import { CreateSpotValues, TYPE_PLACEHOLDER } from "./types";
+import { type CreateSpotValues, TYPE_PLACEHOLDER } from "./types";
 
 const MAX_FILES_COUNT = 10;
 
@@ -38,7 +38,7 @@ const validationSchema = yup.object().shape({
 });
 
 export type CreateSpotFormOnSubmit = (
-  values: CreateSpotValues | { type: SpotType }
+  values: CreateSpotValues | { type: SpotType },
 ) => void;
 interface CreateSpotFormProps {
   record?: Record;
@@ -50,7 +50,7 @@ const CreateSpotForm: React.FC<CreateSpotFormProps> = ({
   onSubmit,
 }) => {
   const { files, isFormDisabled } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
   const f = useFormik<CreateSpotValues>({
     initialValues: {

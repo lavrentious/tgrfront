@@ -10,9 +10,9 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { useDrag, useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
-import { RootState, useAppDispatch } from "src/store";
+import { type RootState, useAppDispatch } from "src/store";
 import { deleteFile, updateFile } from "src/store/createSpot.reducer";
-import { IFile } from "../../records.types";
+import type { IFile } from "../../records.types";
 import StatusIcon from "./StatusIcon";
 
 export interface IItem {
@@ -37,7 +37,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
 
   const dispatch = useAppDispatch();
   const { isFormDisabled } = useSelector(
-    (state: RootState) => state.createSpot
+    (state: RootState) => state.createSpot,
   );
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -47,7 +47,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         isDragging: monitor.isDragging(),
       }),
     }),
-    [file.file.url, index, moveFile]
+    [file.file.url, index, moveFile],
   );
   const [, drop] = useDrop<IItem>(
     () => ({
@@ -58,7 +58,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         item.index = index;
       },
     }),
-    [moveFile, index]
+    [moveFile, index],
   );
 
   const [comment, setComment] = useState<string>(file.dto.comment ?? "");
@@ -68,18 +68,18 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
       updateFile({
         url: file.file.url,
         value: { ...file, dto: { comment } },
-      })
+      }),
     );
   };
   const debouncedSave = useDebouncedCallback(
     saveCommentToStore,
     [dispatch],
-    500
+    500,
   );
 
   const progress = useMemo(
     () => Math.round(((file.meta?.progress ?? 0) / file.file.size) * 100),
-    [file.meta?.progress]
+    [file.meta?.progress],
   );
 
   drag(drop(ref));
@@ -92,7 +92,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
         "p-2",
         "my-2",
         "border rounded",
-        isDragging ? "opacity-0" : "opacity-100"
+        isDragging ? "opacity-0" : "opacity-100",
       )}
       onDragStart={(e) => {
         if (isFormDisabled) e.preventDefault();

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import { Button, ButtonProps } from "react-bootstrap";
+import { Button, type ButtonProps } from "react-bootstrap";
 import { PinMap as CenterIcon } from "react-bootstrap-icons";
 import "./leafletMap.css";
 

@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import store from "src/store";
 import { updateFile } from "src/store/createSpot.reducer";
 import {
@@ -5,17 +6,16 @@ import {
   RecordPhotosApi,
   RecordsApi,
 } from "../api/records.api";
-import { CreateRecordDto } from "../dto/create-record.dto";
-import { FindAllRecordsResultDto } from "../dto/find-all-records-result.dto";
-import { UpdateRecordDto } from "../dto/update-record.dto";
-import { UploadPhotoDto } from "../dto/upload-photo.dto";
-import { Record, RecordPhoto } from "../models/record.model";
+import type { CreateRecordDto } from "../dto/create-record.dto";
+import type { FindAllRecordsResultDto } from "../dto/find-all-records-result.dto";
+import type { UpdateRecordDto } from "../dto/update-record.dto";
+import type { UploadPhotoDto } from "../dto/upload-photo.dto";
+import { Record, type RecordPhoto } from "../models/record.model";
 import { FileStatus } from "../records.types";
-import { AxiosError } from "axios";
 
 export abstract class RecordsService {
   static async findAll(
-    params?: FindAllRecordsParams
+    params?: FindAllRecordsParams,
   ): Promise<FindAllRecordsResultDto> {
     const res = (await RecordsApi.findAll(params)).data;
     return { ...res, docs: res.docs.map((d) => new Record(d)) };
@@ -27,7 +27,7 @@ export abstract class RecordsService {
   static async create(
     dto: CreateRecordDto,
     photos: UploadPhotoDto[],
-    onRecordCreate?: (record: Record) => void
+    onRecordCreate?: (record: Record) => void,
   ) {
     const { data: record } = await RecordsApi.create(dto);
     if (onRecordCreate) onRecordCreate(record);
@@ -43,10 +43,10 @@ export abstract class RecordsService {
     id: string,
     dto: UpdateRecordDto,
     photos: UploadPhotoDto[],
-    initPhotos: RecordPhoto[]
+    initPhotos: RecordPhoto[],
   ) {
     const addedPhotos = photos.filter(
-      (p) => initPhotos.findIndex((ip) => ip.url === p.file.url) === -1
+      (p) => initPhotos.findIndex((ip) => ip.url === p.file.url) === -1,
     );
     const changedPhotos = photos
       .filter((p) => {
@@ -67,7 +67,7 @@ export abstract class RecordsService {
       addedPhotos.map(async (p) => {
         const fromDB = await PhotosService.uploadOne(id, p);
         idsByUrls.set(p.file.url, fromDB._id);
-      })
+      }),
     );
     const photosIds: string[] = [];
     for (const photo of photos) {
@@ -81,7 +81,7 @@ export abstract class RecordsService {
       photos: photosIds,
     });
     await Promise.all(
-      changedPhotos.map((p) => p && RecordPhotosApi.update(id, p.id, p.dto))
+      changedPhotos.map((p) => p && RecordPhotosApi.update(id, p.id, p.dto)),
     );
   }
 }
@@ -95,7 +95,7 @@ export abstract class PhotosService {
           ...photo,
           meta: { progress: photo.file.size, status: FileStatus.PENDING },
         },
-      })
+      }),
     );
     return RecordPhotosApi.upload(
       recordId,
@@ -109,9 +109,9 @@ export abstract class PhotosService {
               ...photo,
               meta: { ...photo.meta, progress: e.total ?? 0 },
             },
-          })
+          }),
         );
-      }
+      },
     )
       .then(({ data }) => {
         store.dispatch(
@@ -126,7 +126,7 @@ export abstract class PhotosService {
                 status: FileStatus.SUCCESS,
               },
             },
-          })
+          }),
         );
         return data;
       })
@@ -138,7 +138,7 @@ export abstract class PhotosService {
               ...photo,
               meta: { ...photo.meta, progress: 0, status: FileStatus.FAILED },
             },
-          })
+          }),
         );
         throw e;
       });
@@ -164,7 +164,7 @@ export abstract class PhotosService {
             });
           }
         }
-      })
+      }),
     );
     const photosIds: string[] = [];
     for (const photo of photos) {
