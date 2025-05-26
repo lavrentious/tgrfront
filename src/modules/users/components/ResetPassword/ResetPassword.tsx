@@ -10,6 +10,7 @@ import LoadingPage from "src/modules/common/components/LoadingPage";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
 import * as yup from "yup";
 
+import { formatApiError } from "src/api/utils";
 import {
   useLazyCheckPasswordResetQuery,
   useResetPasswordMutation,
@@ -31,20 +32,18 @@ const ResetPassword = () => {
   const { key } = useParams() as { key: string };
   const navigate = useNavigate();
 
-  const [check, { error, isFetching }] = useLazyCheckPasswordResetQuery();
+  const [check, { isFetching }] = useLazyCheckPasswordResetQuery();
 
   useEffect(() => {
-    check(key);
-  }, [check, key]);
+    check(key)
+      .unwrap()
+      .catch(() => {
+        toast.error("Ссылка устарела");
+        navigate("/login");
+      });
+  }, [check, key, navigate]);
 
-  useEffect(() => {
-    if (error) {
-      navigate("/login");
-      return;
-    }
-  }, [error, navigate]);
-
-  const [resetPassword] = useResetPasswordMutation();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const submit = async ({ password }: Values) => {
     resetPassword({ key, password })
@@ -53,8 +52,8 @@ const ResetPassword = () => {
         toast.success("Пароль успешно изменён");
         navigate("/login");
       })
-      .catch((e: unknown) => {
-        toast.error(new String(e).toString());
+      .catch((e) => {
+        toast.error(formatApiError(e));
       });
   };
   const [passwordVisible, togglePasswordVisible] = useToggle();
@@ -115,10 +114,10 @@ const ResetPassword = () => {
           </Form.Group>
 
           <LoadingButton
-            isLoading={f.isSubmitting}
+            isLoading={isLoading}
             type="submit"
             className="mt-2"
-            disabled={!f.isValid || f.isSubmitting}
+            disabled={!f.isValid}
           >
             Сбросить пароль
           </LoadingButton>

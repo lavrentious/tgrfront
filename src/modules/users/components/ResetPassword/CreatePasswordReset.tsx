@@ -24,7 +24,7 @@ const validationSchema = yup.object().shape({
 const CreatePasswordReset = () => {
   const navigate = useNavigate();
 
-  const [createPasswordReset] = useCreatePasswordResetMutation();
+  const [createPasswordReset, { isLoading }] = useCreatePasswordResetMutation();
 
   const submit = async ({ usernameOrEmail }: Values) => {
     createPasswordReset({ usernameOrEmail })
@@ -62,9 +62,9 @@ const CreatePasswordReset = () => {
               }
             />
             <LoadingButton
-              isLoading={f.isSubmitting}
+              isLoading={isLoading}
               type="submit"
-              disabled={!f.isValid || f.isSubmitting}
+              disabled={!f.isValid}
             >
               Сбросить пароль
             </LoadingButton>

@@ -58,20 +58,20 @@ export const usersApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
-    createPasswordReset: build.mutation<null, { usernameOrEmail: string }>({
+    createPasswordReset: build.mutation<void, { usernameOrEmail: string }>({
       query: ({ usernameOrEmail }) => ({
         url: "/password-resets",
         method: "POST",
         body: { usernameOrEmail },
       }),
     }),
-    checkPasswordReset: build.query<null, string>({
+    checkPasswordReset: build.query<void, string>({
       query: (key) => ({
         url: `/password-resets/${key}`,
         method: "GET",
       }),
     }),
-    resetPassword: build.mutation<null, { key: string; password: string }>({
+    resetPassword: build.mutation<void, { key: string; password: string }>({
       query: ({ key, password }) => ({
         url: `/password-resets/${key}`,
         method: "PATCH",
