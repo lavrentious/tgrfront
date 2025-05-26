@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type { LatLngTuple } from "leaflet";
+import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import AddressSearchModal from "src/modules/records/components/AddressSearch/AddressSearchModal";
 import CreateSpotModal from "src/modules/records/components/CreateSpot/CreateSpotModal";
@@ -12,10 +13,12 @@ import {
   setIsSelectingSpot,
   setSelectedSpot,
 } from "src/store/createSpot.reducer";
-import { setCenter, setZoom } from "src/store/map.reducer";
+import {
+  setCenter as setCenterAction,
+  setZoom as setZoomAction,
+} from "src/store/map.reducer";
+import { useGetRecordsQuery } from "../../api/records.api";
 import { useMarkers } from "../../hooks/useMarkers";
-import { Record } from "../../models/record.model";
-import { RecordsService } from "../../services/records.service";
 import "./mapView.css";
 
 const MainMap: React.FunctionComponent = () => {
@@ -25,15 +28,21 @@ const MainMap: React.FunctionComponent = () => {
   );
   const dispatch = useAppDispatch();
 
-  const [records, setRecords] = useState<Record[]>([]);
-  useEffect(() => {
-    RecordsService.findAll().then((res) => setRecords(res.docs));
-    return () => {
-      // TODO: various optimizations
-    };
-  }, []);
+  const { data: records } = useGetRecordsQuery();
+  const markers = useMarkers(records?.docs || [], selectedSpot);
 
-  const markers = useMarkers(records, selectedSpot);
+  const setCenter = useCallback(
+    (latLng: LatLngTuple) => {
+      dispatch(setCenterAction(latLng));
+    },
+    [dispatch],
+  );
+  const setZoom = useCallback(
+    (zoom: number) => {
+      dispatch(setZoomAction(zoom));
+    },
+    [dispatch],
+  );
 
   return (
     <>
@@ -41,8 +50,8 @@ const MainMap: React.FunctionComponent = () => {
         className="map-view__container"
         center={center}
         zoom={zoom}
-        setCenter={(latLng) => dispatch(setCenter(latLng))}
-        setZoom={(zoom) => dispatch(setZoom(zoom))}
+        setCenter={setCenter}
+        setZoom={setZoom}
         onMapClick={(e) => {
           if (isSelectingSpot) {
             const { lat, lng } = e.latlng;

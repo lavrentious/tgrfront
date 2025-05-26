@@ -37,7 +37,6 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       // ref={ref}
       className="viewable-image__backdrop"
       onClick={() => setIsFullscreen(false)}
-      onKeyDownCapture={console.log}
       tabIndex={0}
     >
       <div className="viewable-image__img">

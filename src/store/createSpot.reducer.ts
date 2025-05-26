@@ -3,7 +3,7 @@ import type { LatLngTuple } from "leaflet";
 import type { NormalizedObjects } from "src/modules/common/types";
 import arrayMove from "src/modules/common/utils/arrayMove";
 import normalizeLng from "src/modules/common/utils/normalizeLng";
-import type { IFile } from "src/modules/records/records.types";
+import { FileStatus, type IFile } from "src/modules/records/records.types";
 import type { AppThunk } from ".";
 
 export interface CreateSpotState {
@@ -50,6 +50,24 @@ const createSpotSlice = createSlice({
       if (state.files.byId[action.payload.url])
         state.files.byId[action.payload.url] = { ...action.payload.value };
     },
+    setFileStatus(
+      state,
+      action: PayloadAction<{ url: string; status: FileStatus }>,
+    ) {
+      const file = state.files.byId[action.payload.url];
+      if (!file) return;
+      if (!file.meta) file.meta = {};
+      file.meta!.status = action.payload.status;
+    },
+    setFileProgress(
+      state,
+      action: PayloadAction<{ url: string; progress: number }>,
+    ) {
+      const file = state.files.byId[action.payload.url];
+      if (!file) return;
+      if (!file.meta) file.meta = {};
+      file.meta!.progress = action.payload.progress;
+    },
     setIsCreationFormShown(state, action: PayloadAction<boolean>) {
       state.isCreationFormShown = action.payload;
     },
@@ -81,7 +99,9 @@ export const {
   setIsSelectingSpot,
   setSelectedSpot,
   setIsFormDisabled,
+  setFileProgress,
   updateFile,
+  setFileStatus,
   setFiles,
 } = createSpotSlice.actions;
 

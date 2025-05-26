@@ -1,8 +1,0 @@
-import type { Address } from "../models/record.model";
-
-export function getDisplayAddress(address: Address): string {
-  const { region, city, street, house } = address;
-  return [street, house, city, region]
-    .filter((e) => e && e.length > 0)
-    .join(", ");
-}

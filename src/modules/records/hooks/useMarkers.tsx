@@ -2,7 +2,6 @@ import type { DragEndEvent, LatLngTuple } from "leaflet";
 import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import {
   yellowIcon as ownRecordIcon,
   greyIcon as recordIcon,
@@ -15,22 +14,7 @@ import {
 } from "src/store/createSpot.reducer";
 import type { IMarker } from "../components/LeafletMap/LeafletMap";
 import { Record } from "../models/record.model";
-
-function RecordMarkerContent(record: Record) {
-  let description = <></>;
-  if (!record.description) description = <i>Нет описания</i>;
-  else if (record.description.length > 500)
-    description = <p>{record.description.slice(0, 500)}...</p>;
-  else description = <p>{record.description}</p>;
-  return (
-    <>
-      {description}
-      <Link to={`/record/${record._id}`}>
-        <Button>Открыть</Button>
-      </Link>
-    </>
-  );
-}
+import RecordMarkerContent from "../components/LeafletMap/RecordMarkerContent";
 
 export function recordMarker(record: Record, icon = recordIcon): IMarker {
   return {
@@ -38,7 +22,7 @@ export function recordMarker(record: Record, icon = recordIcon): IMarker {
     icon,
     position: [record.lat, record.lon],
     tooltip: record.name,
-    content: RecordMarkerContent(record),
+    content: <RecordMarkerContent record={record} />,
   };
 }
 

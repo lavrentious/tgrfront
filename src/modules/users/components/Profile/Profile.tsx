@@ -1,55 +1,72 @@
 import { useAbility } from "@casl/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { PencilFill as EditIcon } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
 import LoadingPage from "src/modules/common/components/LoadingPage";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
-import useFetch from "src/modules/common/hooks/useFetch";
-import { User } from "src/modules/users/models/user.model";
-import { UserService } from "src/modules/users/services/user.service";
+
+import { formatApiError } from "src/api/utils";
+import { type IUser } from "src/modules/users/models/user.model";
+import { useGetUserQuery } from "../../api/users.api";
+import { createUser } from "../../utils/utils";
 import EditProfileModal from "./EditProfileModal";
 import UserData from "./UserData";
 
 const Profile = () => {
   const { idOrUsername } = useParams();
-  const [user, setUser] = useState<User | null>(null);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const ability = useAbility(AbilityContext);
-
-  const { fetch, error, isFetching } = useFetch(() =>
-    UserService.findOne(idOrUsername as string),
-  );
   const navigate = useNavigate();
+  const navigatedFromUpdateRef = useRef(false);
+
+  const {
+    data: user,
+    error,
+    isFetching,
+    isError,
+  } = useGetUserQuery(idOrUsername ?? "", {
+    skip: !idOrUsername,
+  });
+
+  const [editFormVisible, setEditFormVisible] = useState(false);
 
   useEffect(() => {
-    if (!idOrUsername) return navigate("/");
-    if (user && (idOrUsername === user._id || idOrUsername === user.username))
+    if (!idOrUsername) {
+      navigate("/", { replace: true });
       return;
-    fetch().then((res) => {
-      if (!res) return;
-      setUser(res);
-      navigate(`/profile/${res.username ?? res._id}`, { replace: true });
-    });
-  }, [idOrUsername]);
-  if (error) {
-    return (
-      <ErrorAlert>{error.response?.data?.message ?? error.message}</ErrorAlert>
-    );
+    }
+
+    if (navigatedFromUpdateRef.current) {
+      navigatedFromUpdateRef.current = false;
+      return;
+    }
+
+    if (user && idOrUsername !== user._id && idOrUsername !== user.username) {
+      navigate(`/profile/${user.username || user._id}`, { replace: true });
+    }
+  }, [idOrUsername, user, navigate]);
+
+  const updateUser = useCallback(
+    async (newUser: IUser) => {
+      if (user?.username !== newUser.username) {
+        navigatedFromUpdateRef.current = true;
+        await navigate(`/profile/${newUser.username || newUser._id}`, {
+          replace: true,
+        });
+      }
+    },
+    [navigate, user],
+  );
+
+  if (isError) {
+    return <ErrorAlert>{formatApiError(error)}</ErrorAlert>;
   }
+
   if (isFetching || !user) {
     return <LoadingPage />;
   }
-  const updateUser = (newUser: User) => {
-    const oldUser = { ...user };
-    setUser(newUser);
-    if (oldUser.username !== newUser.username) {
-      navigate(`/profile/${newUser.username || oldUser._id}`, {
-        replace: true,
-      });
-    }
-  };
+
   return (
     <>
       <EditProfileModal
@@ -59,7 +76,7 @@ const Profile = () => {
         setUser={updateUser}
       />
       <Container className="mt-2">
-        {ability.can("update", user) && (
+        {ability.can("update", createUser(user)) && (
           <Button
             variant="secondary"
             className="my-2"
@@ -68,7 +85,7 @@ const Profile = () => {
             <EditIcon /> Изменить профиль
           </Button>
         )}
-        <UserData user={user} setUser={setUser} />
+        <UserData user={user} />
       </Container>
     </>
   );

@@ -3,11 +3,14 @@ import { useFormik } from "formik";
 import React from "react";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
-import type { ApiError } from "src/modules/common/api";
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
+import { useAppDispatch } from "src/store";
+import { setUser } from "src/store/auth.reducer";
 import * as yup from "yup";
-import { AuthService } from "../../services/auth.service";
+import { useRegisterMutation } from "../../api/auth.api";
+import { TokenService } from "../../services/token.service";
 import * as rules from "../../utils/validations";
 import { validators } from "../../utils/validations";
 
@@ -31,6 +34,10 @@ const validationSchema = yup.object().shape({
 
 const Register: React.FC = () => {
   const [passwordVisible, togglePasswordVisible] = useToggle();
+  const dispatch = useAppDispatch();
+
+  const [register] = useRegisterMutation();
+
   const f = useFormik<Values>({
     initialValues: {
       username: "",
@@ -41,18 +48,20 @@ const Register: React.FC = () => {
       tosAccepted: false,
     },
     onSubmit: async ({ email, password, name, username }) => {
-      await AuthService.register({
+      register({
         email,
         password,
         name: name || undefined,
         username: username || undefined,
       })
-        .then(() => {
+        .unwrap()
+        .then((data) => {
+          TokenService.accessToken = data.accessToken;
+          dispatch(setUser(data.user));
           toast.success("Аккаунт успешно создан");
         })
-        .catch((e: ApiError) => {
-          const msg = e.response?.data.message;
-          toast.error(msg ?? e.message);
+        .catch((e) => {
+          toast.error(formatApiError(e));
         });
     },
     validationSchema,

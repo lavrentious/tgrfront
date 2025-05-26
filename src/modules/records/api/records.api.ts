@@ -1,76 +1,148 @@
-import type { AxiosRequestConfig } from "axios";
-import { api } from "src/modules/common/api";
-import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
+import { api } from "src/api/api";
 import type { CreateRecordDto } from "../dto/create-record.dto";
 import type { FindAllRecordsResultDto } from "../dto/find-all-records-result.dto";
 import type { UpdatePhotoDto } from "../dto/update-photo.dto";
 import type { UpdateRecordDto } from "../dto/update-record.dto";
 import type { PhotoDto } from "../dto/upload-photo.dto";
-import { Record, type RecordPhoto } from "../models/record.model";
-
-export class FindAllRecordsParams extends PaginateParams {
-  author?: string;
-  userLat?: number;
-  userLon?: number;
-  radius?: number;
-  search?: string;
-}
+import { Record, type IRecord, type RecordPhoto } from "../models/record.model";
+import type { FindAllRecordsParams } from "./types";
 
 const BASE_URL = "/records";
 
-export abstract class RecordsApi {
-  static async create(dto: CreateRecordDto) {
-    return api.post<Record>(`${BASE_URL}`, dto);
-  }
-  static async findAll(params?: FindAllRecordsParams) {
-    return api.get<FindAllRecordsResultDto>(`${BASE_URL}`, { params });
-  }
-  static async findOne(id: string) {
-    return api.get<Record>(`${BASE_URL}/${id}`);
-  }
-  static async delete(id: string) {
-    return api.delete<{
-      record: Record;
-      photos: { deleted: (void | RecordPhoto)[]; failed: string[] };
-    }>(`${BASE_URL}/${id}`);
-  }
-  static async update(id: string, dto: UpdateRecordDto) {
-    return api.patch<Record>(`${BASE_URL}/${id}`, dto);
-  }
-}
-export class RecordPhotosApi {
-  static async upload(
-    recordId: Record["_id"],
-    file: File | Blob,
-    dto: PhotoDto,
-    onUploadProgress?: AxiosRequestConfig["onUploadProgress"],
-  ) {
-    const formData = new FormData();
-    formData.append("file", file);
-    if (dto.comment) {
-      formData.append("comment", dto.comment);
-    }
-
-    return api.post<RecordPhoto>(`/records/${recordId}/photos`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+export const recordsApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    getRecords: builder.query<
+      FindAllRecordsResultDto,
+      FindAllRecordsParams | void
+    >({
+      query: (params) => ({ url: BASE_URL, params: params ?? {} }),
+      transformResponse: (res: FindAllRecordsResultDto) => ({
+        ...res,
+        docs: res.docs.map((record) => ({
+          ...record,
+          author:
+            typeof record.author === "string"
+              ? { _id: record.author }
+              : record.author,
+        })),
+      }),
+      providesTags: (result) =>
+        result?.docs
+          ? [
+              ...result.docs.map((record) => ({
+                type: "Record" as const,
+                id: record._id,
+              })),
+              { type: "Record", id: "LIST" },
+            ]
+          : [{ type: "Record", id: "LIST" }],
+    }),
+    getRecord: builder.query<IRecord, string>({
+      query: (id) => `${BASE_URL}/${id}`,
+      providesTags: (_, __, id) => [{ type: "Record", id }],
+    }),
+    createRecord: builder.mutation<IRecord, CreateRecordDto>({
+      query: (dto) => ({
+        url: BASE_URL,
+        method: "POST",
+        body: dto,
+      }),
+      invalidatesTags: [{ type: "Record", id: "LIST" }],
+    }),
+    updateRecord: builder.mutation<
+      Record,
+      { id: string; dto: UpdateRecordDto }
+    >({
+      query: ({ id, dto }) => ({
+        url: `${BASE_URL}/${id}`,
+        method: "PATCH",
+        body: dto,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "Record", id },
+        { type: "Record", id: "LIST" },
+      ],
+    }),
+    deleteRecord: builder.mutation<
+      {
+        record: Record;
+        photos: { deleted: (void | RecordPhoto)[]; failed: string[] };
       },
-      onUploadProgress,
-    });
-  }
+      string
+    >({
+      query: (id) => ({
+        url: `${BASE_URL}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Record"],
+    }),
 
-  static async delete(recordId: Record["_id"], photoId: RecordPhoto["_id"]) {
-    return api.delete<RecordPhoto>(`${BASE_URL}/${recordId}/photos/${photoId}`);
-  }
+    // Photos endpoints
+    uploadPhoto: builder.mutation<
+      RecordPhoto,
+      {
+        recordId: string;
+        file: File | Blob;
+        dto: PhotoDto;
+        onUploadProgress?: (progressEvent: ProgressEvent) => void;
+      }
+    >({
+      query: ({ recordId, file, dto }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (dto.comment) {
+          formData.append("comment", dto.comment);
+        }
+        return {
+          url: `${BASE_URL}/${recordId}/photos`,
+          method: "POST",
+          body: formData,
+          // No need to explicitly set headers here; fetch handles it for FormData.
+        };
+      },
+      // RTK Query currently does not support onUploadProgress directly.
+      // You might need to handle it manually with axios or another lib if progress is critical.
+      invalidatesTags: (_, __, { recordId }) => [
+        { type: "Record", id: recordId },
+      ],
+    }),
+    deletePhoto: builder.mutation<
+      RecordPhoto,
+      { recordId: string; photoId: string }
+    >({
+      query: ({ recordId, photoId }) => ({
+        url: `${BASE_URL}/${recordId}/photos/${photoId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, { recordId }) => [
+        { type: "Record", id: recordId },
+      ],
+    }),
+    updatePhoto: builder.mutation<
+      RecordPhoto,
+      { recordId: string; photoId: string; dto: UpdatePhotoDto }
+    >({
+      query: ({ recordId, photoId, dto }) => ({
+        url: `${BASE_URL}/${recordId}/photos/${photoId}`,
+        method: "PATCH",
+        body: dto,
+      }),
+      invalidatesTags: (_, __, { recordId }) => [
+        { type: "Record", id: recordId },
+      ],
+    }),
+  }),
+});
 
-  static async update(
-    recordId: Record["_id"],
-    photoId: RecordPhoto["_id"],
-    dto: UpdatePhotoDto,
-  ) {
-    return api.patch<RecordPhoto>(
-      `${BASE_URL}/${recordId}/photos/${photoId}`,
-      dto,
-    );
-  }
-}
+export const {
+  useGetRecordsQuery,
+  useGetRecordQuery,
+  useLazyGetRecordQuery,
+  useLazyGetRecordsQuery,
+  useCreateRecordMutation,
+  useUpdateRecordMutation,
+  useDeleteRecordMutation,
+  useUploadPhotoMutation,
+  useDeletePhotoMutation,
+  useUpdatePhotoMutation,
+} = recordsApi;

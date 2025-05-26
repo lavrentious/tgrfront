@@ -8,15 +8,12 @@ import RoleBadge from "./RoleBadge";
 
 interface UserDataProps {
   user: User;
-  setUser: (user: User) => void;
 }
 
 const EmailConfirmationState = React.memo(function EmailConfirmationState({
   user,
-  setUser,
 }: {
   user: User;
-  setUser: (user: User) => void;
 }) {
   if (user.emailConfirmed == null) return <></>;
   return (
@@ -28,12 +25,12 @@ const EmailConfirmationState = React.memo(function EmailConfirmationState({
         <span className="text-danger">не подтверждён</span>
       )}
       )
-      <ResendEmailButton user={user} setUser={setUser} />
+      <ResendEmailButton user={user} />
     </>
   );
 });
 
-const UserData: React.FC<UserDataProps> = ({ user, setUser }) => {
+const UserData: React.FC<UserDataProps> = ({ user }) => {
   return (
     <ListGroup>
       <ListGroup.Item>ID: {user._id}</ListGroup.Item>
@@ -41,8 +38,7 @@ const UserData: React.FC<UserDataProps> = ({ user, setUser }) => {
       {user.name && <ListGroup.Item>Имя: {user.name}</ListGroup.Item>}
       {user.email && (
         <ListGroup.Item>
-          Email: {user.email}{" "}
-          <EmailConfirmationState user={user} setUser={setUser} />
+          Email: {user.email} <EmailConfirmationState user={user} />
         </ListGroup.Item>
       )}
       <ListGroup.Item>

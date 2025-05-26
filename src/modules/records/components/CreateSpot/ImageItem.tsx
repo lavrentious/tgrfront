@@ -79,7 +79,7 @@ const ImageItem: React.FC<ImageItemProps> = memo(function ImageItem({
 
   const progress = useMemo(
     () => Math.round(((file.meta?.progress ?? 0) / file.file.size) * 100),
-    [file.meta?.progress],
+    [file.file.size, file.meta?.progress],
   );
 
   drag(drop(ref));

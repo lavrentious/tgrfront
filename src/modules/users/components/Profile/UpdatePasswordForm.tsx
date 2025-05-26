@@ -3,13 +3,14 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
-import type { ApiError } from "src/modules/common/api";
-import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import { validators } from "src/modules/users/utils/validations";
 import * as yup from "yup";
 import { User } from "../../models/user.model";
-import { UserService } from "../../services/user.service";
 import { Field as FormikField } from "./Field";
+
+import { formatApiError } from "src/api/utils";
+import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
+import { validators } from "src/modules/users/utils/validations";
+import { useUpdateUserPasswordMutation } from "../../api/users.api";
 
 interface Values {
   oldPassword: string;
@@ -21,7 +22,10 @@ interface Values {
 const validationSchema = yup.object().shape({
   oldPassword: validators.password,
   newPassword: validators.password,
-  newPasswordRepeat: validators.password.oneOf([yup.ref("newPassword")]),
+  newPasswordRepeat: validators.password.oneOf(
+    [yup.ref("newPassword")],
+    "Пароли должны совпадать",
+  ),
   logout: yup.boolean().required(),
 });
 
@@ -36,6 +40,8 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
   user,
   setVisible,
 }) => {
+  const [updatePassword, { isLoading }] = useUpdateUserPasswordMutation();
+
   const f = useFormik<Values>({
     initialValues: {
       oldPassword: "",
@@ -43,24 +49,28 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
       newPasswordRepeat: "",
       logout: false,
     },
+    validationSchema,
+    validateOnBlur: true,
     onSubmit: async ({ oldPassword, newPassword, logout }) => {
-      await UserService.updatePassword(user._id, {
-        oldPassword,
-        newPassword,
-        logout,
+      await updatePassword({
+        dto: {
+          oldPassword,
+          newPassword,
+          logout,
+        },
+        id: user._id,
       })
+        .unwrap()
         .then(() => {
           toast.success("Пароль изменён");
           setVisible(false);
         })
-        .catch((e: ApiError) => {
-          const msg = e.response?.data.message;
-          toast.error(msg ?? e.message);
+        .catch((error) => {
+          toast.error(formatApiError(error));
         });
     },
-    validationSchema,
-    validateOnBlur: true,
   });
+
   return (
     <>
       <Form onSubmit={f.handleSubmit} id="updatePassword">
@@ -100,8 +110,8 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({
         variant="success"
         form="updatePassword"
         type="submit"
-        disabled={!f.isValid || f.isSubmitting}
-        isLoading={f.isSubmitting}
+        disabled={!f.isValid || isLoading}
+        isLoading={isLoading}
         icon={<SubmitIcon />}
       >
         Подтвердить

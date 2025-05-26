@@ -1,9 +1,9 @@
 import {
-  Ability,
   AbilityBuilder,
-  type AbilityClass,
+  createMongoAbility,
   type ExtractSubjectType,
   type InferSubjects,
+  type MongoAbility,
 } from "@casl/ability";
 import { createContext } from "react";
 import { Record } from "src/modules/records/models/record.model";
@@ -12,15 +12,10 @@ import type { StoredUser } from "src/store/auth.reducer";
 
 type Action = "manage" | "create" | "read" | "update" | "delete";
 type Subjects = InferSubjects<typeof User | typeof Record> | "all";
-export type AppAbility = Ability<[Action, Subjects]>;
-export const AppAbility = Ability as AbilityClass<AppAbility>;
-
-type FlatRecord = Record & {
-  "author._id": Record["author"]["_id"];
-};
+export type AppAbility = MongoAbility<[Action, Subjects]>;
 
 export default function defineRulesFor(user: StoredUser | null) {
-  const { can, rules } = new AbilityBuilder(AppAbility);
+  const { can, rules } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
   const defineForAnon = () => {
     can("read", Record);
@@ -35,12 +30,11 @@ export default function defineRulesFor(user: StoredUser | null) {
     can("update", User, ["username", "name", "email"], {
       _id: user.id,
     });
-    // TODO: store emailConfirmed in redux; verification requests module
   };
   const defineForVerified = () => {
     can("create", Record);
-    can<FlatRecord>("delete", Record, { "author._id": user.id });
-    can<FlatRecord>(
+    can("delete", Record, { "author._id": user.id });
+    can(
       "update",
       Record,
       [
@@ -91,7 +85,7 @@ export default function defineRulesFor(user: StoredUser | null) {
 }
 
 export function buildAbilityFor(user: StoredUser | null): AppAbility {
-  return new AppAbility(defineRulesFor(user), {
+  return createMongoAbility(defineRulesFor(user), {
     detectSubjectType: (object) =>
       object.constructor as ExtractSubjectType<Subjects>,
   });

@@ -1,88 +1,95 @@
 import { useAbility } from "@casl/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import {
   Trash as DeleteIcon,
   PencilFill as EditIcon,
 } from "react-bootstrap-icons";
-import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import type { ApiError } from "src/api/api";
 import { AbilityContext } from "src/modules/ability/ability";
-import type { ApiError } from "src/modules/common/api";
 import LoadingPage from "src/modules/common/components/LoadingPage";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
-import useFetch from "src/modules/common/hooks/useFetch";
 import { useAppDispatch } from "src/store";
 import { setIsCreationFormShown } from "src/store/createSpot.reducer";
-import { Record } from "../../models/record.model";
-import { RecordsService } from "../../services/records.service";
+
+import toast from "react-hot-toast";
+import { formatApiError } from "src/api/utils";
+import {
+  useDeleteRecordMutation,
+  useLazyGetRecordQuery,
+} from "../../api/records.api";
+import { createRecord } from "../../utils";
 import EditSpotModal from "./EditSpotModal";
 import RecordData from "./RecordData";
 
 const RecordView: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
-
   const ability = useAbility(AbilityContext);
 
-  const [record, setRecord] = useState<Record | null>(null);
-  const { fetch, error, isFetching } = useFetch(() =>
-    RecordsService.findOne(id as string),
-  );
+  const [fetchRecord, { data: record, isLoading, isError, error }] =
+    useLazyGetRecordQuery();
+  const [deleteRecord, { isLoading: isDeleting }] = useDeleteRecordMutation();
+
+  const openEditModal = () => dispatch(setIsCreationFormShown(true));
 
   useEffect(() => {
-    if (!id) return navigate("/");
-    fetch().then((res) => {
-      if (!res) return;
-      setRecord(res);
-    });
-  }, []);
-  if (error) {
-    return (
-      <ErrorAlert>{error.response?.data?.message ?? error.message}</ErrorAlert>
-    );
+    if (!id) return;
+    fetchRecord(id);
+  }, [fetchRecord, id]);
+
+  const handleDelete = useCallback(() => {
+    if (!record) return;
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите удалить "${record.name}"? Это действие нельзя отменить.`,
+      )
+    )
+      return;
+    deleteRecord(record._id)
+      .unwrap()
+      .then(() => navigate("/map"))
+      .catch((e: ApiError) => {
+        toast.error(formatApiError(e));
+      });
+  }, [deleteRecord, navigate, record]);
+
+  if (isError) {
+    return <ErrorAlert>{formatApiError(error)}</ErrorAlert>;
   }
 
-  const openEditModal = () => {
-    if (!record) return;
-    dispatch(setIsCreationFormShown(true));
-  };
-
-  if (isFetching || !record) {
+  if (isLoading || !record) {
     return <LoadingPage />;
   }
 
   return (
     <Container className="mt-2">
-      {ability.can("update", record) && (
-        <Button className="me-1" variant="secondary" onClick={openEditModal}>
+      {ability.can("update", createRecord(record)) && (
+        <Button
+          className="me-1"
+          variant="secondary"
+          onClick={openEditModal}
+          disabled={isDeleting}
+        >
           <EditIcon /> Редактировать
         </Button>
       )}
-      {ability.can("delete", record) && (
+      {ability.can("delete", createRecord(record)) && (
         <Button
           className="me-1"
           variant="danger"
-          onClick={() => {
-            if (
-              !confirm(
-                `Вы уверены, что хотите удалить "${record.name}"? Это действие нельзя отменить.`,
-              )
-            )
-              return;
-            RecordsService.delete(record._id)
-              .then(() => navigate("/map"))
-              .catch((e: ApiError) =>
-                toast.error(e.response?.data.message ?? e.message),
-              );
-          }}
+          onClick={handleDelete}
+          disabled={isDeleting}
         >
           <DeleteIcon /> Удалить
         </Button>
       )}
-      {record && <EditSpotModal record={record} />}
+      <EditSpotModal
+        record={record}
+        onSuccess={() => fetchRecord(record._id)}
+      />
       <div className="mt-2">
         <RecordData record={record} />
       </div>

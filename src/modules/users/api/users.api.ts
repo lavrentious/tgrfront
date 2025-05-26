@@ -1,38 +1,98 @@
-import { api } from "src/modules/common/api";
+import { api } from "src/api/api";
 import { PaginateParams } from "src/modules/common/dto/paginate-params.dto";
 import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
-import { User } from "src/modules/users/models/user.model";
+import type { IUser } from "src/modules/users/models/user.model";
 import type { UpdatePasswordDto } from "../dto/update-password.dto";
 import type { UpdateUserDto } from "../dto/update.dto";
 
-const BASE_URL = "/users";
-
-export class FindAllUsersParams extends PaginateParams {
+export interface FindAllUsersParams extends PaginateParams {
   search?: string;
 }
 
-export abstract class UsersApi {
-  static async findOne(idOrUsername: string) {
-    return (await api.get<User>(`${BASE_URL}/${idOrUsername}`)).data;
-  }
+export const usersApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    getUser: build.query<IUser, string>({
+      query: (idOrUsername) => `/users/${idOrUsername}`,
+      providesTags: (result) => [{ type: "User", id: result?._id }],
+    }),
+    getUsers: build.query<PaginateResult<IUser>, FindAllUsersParams | void>({
+      query: (params) => ({
+        url: "/users",
+        params: params ?? {},
+      }),
+      providesTags: (result) =>
+        result?.docs
+          ? [
+              ...result.docs.map((user) => ({
+                type: "User" as const,
+                id: user._id,
+              })),
+              { type: "User" as const, id: "LIST" },
+            ]
+          : [{ type: "User" as const, id: "LIST" }],
+    }),
+    updateUser: build.mutation<IUser, { id: string; dto: UpdateUserDto }>({
+      query: ({ id, dto }) => ({
+        url: `/users/${id}`,
+        method: "PATCH",
+        body: dto,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "User", id },
+        { type: "User", id: "LIST" },
+      ],
+    }),
+    updateUserPassword: build.mutation<
+      void,
+      { id: string; dto: UpdatePasswordDto }
+    >({
+      query: ({ id, dto }) => ({
+        url: `/users/${id}/password`,
+        method: "PUT",
+        body: dto,
+      }),
+    }),
+    resendConfirmationEmail: build.mutation<void, void>({
+      query: () => ({
+        url: "/users/confirm-email",
+        method: "POST",
+      }),
+    }),
+    createPasswordReset: build.mutation<null, { usernameOrEmail: string }>({
+      query: ({ usernameOrEmail }) => ({
+        url: "/password-resets",
+        method: "POST",
+        body: { usernameOrEmail },
+      }),
+    }),
+    checkPasswordReset: build.query<null, string>({
+      query: (key) => ({
+        url: `/password-resets/${key}`,
+        method: "GET",
+      }),
+    }),
+    resetPassword: build.mutation<null, { key: string; password: string }>({
+      query: ({ key, password }) => ({
+        url: `/password-resets/${key}`,
+        method: "PATCH",
+        body: { password },
+      }),
+    }),
+  }),
 
-  static async findAll(params?: FindAllUsersParams) {
-    return (await api.get<PaginateResult<User>>(`${BASE_URL}`, { params }))
-      .data;
-  }
+  overrideExisting: false,
+});
 
-  static async update(id: string, dto: UpdateUserDto): Promise<User> {
-    return (await api.patch<User>(`${BASE_URL}/${id}`, dto)).data;
-  }
-
-  static async updatePassword(
-    id: string,
-    dto: UpdatePasswordDto,
-  ): Promise<void> {
-    return (await api.put<void>(`${BASE_URL}/${id}/password`, dto)).data;
-  }
-
-  static async resendEmail(): Promise<void> {
-    return (await api.post<void>(`${BASE_URL}/confirm-email`)).data;
-  }
-}
+export const {
+  useGetUserQuery,
+  useGetUsersQuery,
+  useUpdateUserMutation,
+  useUpdateUserPasswordMutation,
+  useResendConfirmationEmailMutation,
+  useLazyGetUserQuery,
+  useLazyGetUsersQuery,
+  useCheckPasswordResetQuery,
+  useLazyCheckPasswordResetQuery,
+  useResetPasswordMutation,
+  useCreatePasswordResetMutation,
+} = usersApi;

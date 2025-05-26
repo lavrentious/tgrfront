@@ -4,147 +4,165 @@ import {
   Alert,
   Button,
   Card,
+  Col,
   Container,
   Form,
   FormControl,
   InputGroup,
   ListGroup,
+  Row,
 } from "react-bootstrap";
+import { XLg } from "react-bootstrap-icons";
 import { Link, useSearchParams } from "react-router-dom";
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
-import useFetch from "src/modules/common/hooks/useFetch";
-import { User } from "src/modules/users/models/user.model";
-import { UserService } from "src/modules/users/services/user.service";
+import { useGetUserQuery } from "src/modules/users/api/users.api";
+import { useDebounce } from "use-debounce";
+import { useLazyGetRecordsQuery } from "../../api/records.api";
 import { Record } from "../../models/record.model";
-import { RecordsService } from "../../services/records.service";
 import { SpotTypeItem } from "../RecordView/RecordData";
 
-const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => {
-  return (
-    <Card className="mt-2">
-      <Card.Header>
-        <Link to={`/record/${record._id}`}>{record.name}</Link>
-      </Card.Header>
-      <ListGroup variant="flush">
-        <ListGroup.Item>
-          <strong>Автор:</strong>{" "}
-          <Link to={`/profile/${record.author.username ?? record.author._id}`}>
-            {record.author.username ?? record.author._id}
-          </Link>
-        </ListGroup.Item>
-        <ListGroup.Item>
-          <strong>Адрес:</strong> {record.address.displayName}
-        </ListGroup.Item>
-        <ListGroup.Item>
-          <strong>Тип:</strong> <SpotTypeItem type={record.type} />
-        </ListGroup.Item>
-        <ListGroup.Item>
-          <strong>Дата создания:</strong>{" "}
-          {dayjs(record.createdAt).format("LLL")}
-        </ListGroup.Item>
-      </ListGroup>
-    </Card>
-  );
-};
+const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => (
+  <Card className="mt-2">
+    <Card.Header>
+      <Link to={`/record/${record._id}`}>{record.name}</Link>
+    </Card.Header>
+    <ListGroup variant="flush">
+      <ListGroup.Item>
+        <strong>Автор:</strong>{" "}
+        <Link to={`/profile/${record.author.username ?? record.author._id}`}>
+          {record.author.username ?? record.author._id}
+        </Link>
+      </ListGroup.Item>
+      <ListGroup.Item>
+        <strong>Адрес:</strong> {record.address.displayName}
+      </ListGroup.Item>
+      <ListGroup.Item>
+        <strong>Тип:</strong> <SpotTypeItem type={record.type} />
+      </ListGroup.Item>
+      <ListGroup.Item>
+        <strong>Дата создания:</strong> {dayjs(record.createdAt).format("LLL")}
+      </ListGroup.Item>
+    </ListGroup>
+  </Card>
+);
 
-const RecordSearch = () => {
+const RecordSearch: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [data, setData] = useState<PaginateResult<Record> | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
   const limit = 10;
 
-  const authorId = useMemo(() => searchParams.get("author"), [searchParams]);
-  const [user, setUser] = useState<User | null>(null);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
 
-  const { fetch, isFetching, error } = useFetch(() =>
-    RecordsService.findAll({
+  const authorId = useMemo(
+    () => searchParams.get("author") ?? undefined,
+    [searchParams],
+  );
+
+  const [
+    fetchRecords,
+    {
+      data: recordsData,
+      isFetching: isRecordsFetching,
+      error: recordsError,
+      isError: isRecordsError,
+    },
+  ] = useLazyGetRecordsQuery();
+
+  const { data: user } = useGetUserQuery(authorId ?? "", { skip: !authorId });
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchQuery, authorId]);
+
+  useEffect(() => {
+    fetchRecords({
       page,
       limit,
       pagination: true,
-      search: searchQuery || undefined,
-      author: authorId || undefined,
-    }).then((res) => {
-      if (!res) return;
-      setData(res);
-      setTotalPages(res.totalPages);
-    }),
-  );
+      search: debouncedSearchQuery || undefined,
+      author: authorId,
+    });
+  }, [page, limit, debouncedSearchQuery, authorId, fetchRecords]);
 
-  useEffect(() => {
-    fetch();
-    if (authorId) {
-      UserService.findOne(authorId).then((res) => setUser(res));
-    }
-  }, [page, authorId]);
+  const clearAuthorFilter = () => {
+    searchParams.delete("author");
+    setSearchParams(searchParams);
+    setPage(1);
+  };
 
   return (
     <Container className="mt-2">
       <h4>Поиск мест</h4>
-      <Form
-        className="mb-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          fetch();
-        }}
-      >
-        <InputGroup>
-          <FormControl
-            id="searchQuery"
-            placeholder="Поиск по названию и адресу"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <LoadingButton isLoading={isFetching} type="submit">
-            Поиск
-          </LoadingButton>
-        </InputGroup>
-      </Form>
+
+      <Row>
+        <Col lg={6}>
+          <Form className="mb-2">
+            <InputGroup>
+              <FormControl
+                id="searchQuery"
+                placeholder="Поиск по названию и адресу"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                readOnly={isRecordsFetching}
+              />
+              <LoadingButton
+                variant="secondary"
+                disabled={debouncedSearchQuery === ""}
+                isLoading={isRecordsFetching}
+                icon={<XLg />}
+                onClick={() => setSearchQuery("")}
+              />
+            </InputGroup>
+          </Form>
+        </Col>
+      </Row>
+
       {authorId && (
         <Alert>
           Показаны места, созданные пользователем{" "}
-          <a href={"profile/" + authorId}>
+          <Link to={`/profile/${authorId}`}>
             {user?.username || authorId}
             {user?.name && ` (${user.name})`}
-          </a>{" "}
-          <Button
-            size="sm"
-            onClick={() => {
-              searchParams.delete("author");
-              setSearchParams(searchParams);
-            }}
-          >
+          </Link>{" "}
+          <Button size="sm" onClick={clearAuthorFilter}>
             Сбросить
           </Button>
         </Alert>
       )}
-      <Paginator
-        page={page}
-        limit={limit}
-        totalPages={totalPages}
-        setPage={setPage}
-      />
-      {error && (
-        <ErrorAlert>{error.response?.data.message || error.message}</ErrorAlert>
+
+      {recordsData?.totalDocs != null && recordsData.totalDocs > 0 && (
+        <Paginator
+          page={page}
+          limit={limit}
+          totalPages={recordsData?.totalPages ?? 1}
+          setPage={setPage}
+        />
       )}
-      {data?.docs?.length ? (
+
+      {isRecordsError && (
+        <ErrorAlert>{formatApiError(recordsError)}</ErrorAlert>
+      )}
+
+      {recordsData?.docs?.length ? (
         <>
           <small className="text-muted">
-            Показано {data.pagingCounter}-
-            {Math.min(data.totalDocs, data.pagingCounter + data.limit - 1)} из{" "}
-            {data.totalDocs}
+            Показано {recordsData.pagingCounter}-
+            {Math.min(
+              recordsData.totalDocs,
+              recordsData.pagingCounter + recordsData.limit - 1,
+            )}{" "}
+            из {recordsData.totalDocs}
           </small>
-          {data.docs.map((doc) => (
+          {recordsData.docs.map((doc) => (
             <RecordData doc={doc} key={doc._id} />
           ))}
         </>
       ) : (
-        <>Нет результатов</>
+        !isRecordsFetching && <>Нет результатов</>
       )}
     </Container>
   );

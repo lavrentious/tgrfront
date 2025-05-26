@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { XLg as CancelIcon } from "react-bootstrap-icons";
-import { User } from "../../models/user.model";
+import { User, type IUser } from "../../models/user.model";
 import EditProfileForm from "./EditProfileForm";
 import UpdatePasswordForm from "./UpdatePasswordForm";
 
@@ -9,7 +9,7 @@ interface EditProfileModalProps {
   user: User;
   visible: boolean;
   setVisible: (v: boolean) => void;
-  setUser?: (u: User) => void;
+  setUser?: (u: IUser) => void;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({

@@ -3,12 +3,14 @@ import type { LatLngTuple } from "leaflet";
 import React, { useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Pencil, Save, XLg } from "react-bootstrap-icons";
+import toast from "react-hot-toast";
 import { greenIcon as recordIcon } from "src/assets/markerIcons";
 import { AbilityContext } from "src/modules/ability/ability";
 import { Record } from "src/modules/records/models/record.model";
 import { useAppDispatch } from "src/store";
 import { setIsAddressSearchShown } from "src/store/map.reducer";
-import { RecordsApi } from "../../api/records.api";
+import { useUpdateRecordMutation } from "../../api/records.api";
+import { createRecord } from "../../utils";
 import AddressSearchModal from "../AddressSearch/AddressSearchModal";
 import CenterButton from "../LeafletMap/CenterButton";
 import LeafletMap, { type IMarker } from "../LeafletMap/LeafletMap";
@@ -26,7 +28,7 @@ const EditButton: React.FC<{
   onSave: () => void;
 }> = ({ record, active, setActive, marker, onSave }) => {
   const ability = useAbility(AbilityContext);
-  if (!ability.can("update", record)) return <></>;
+  if (!ability.can("update", createRecord(record))) return <></>;
   if (active) {
     return (
       <>
@@ -89,11 +91,13 @@ const MapPreview: React.FC<MapPreviewProps> = ({ record }) => {
   });
   const dispatch = useAppDispatch();
 
+  const [updateRecord] = useUpdateRecordMutation();
+
   const save = () => {
     if (marker.current.position == null) return;
     const [lat, lon] = marker.current.position;
-    RecordsApi.update(record._id, { lat, lon, autoAddress }).then(() =>
-      window.location.reload(),
+    updateRecord({ id: record._id, dto: { lat, lon, autoAddress } }).then(() =>
+      toast.success("Положение изменено"),
     );
   };
   const select = (lat: number, lng: number) => {
@@ -127,8 +131,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({ record }) => {
         style={{ height: "40rem" }}
         center={center}
         zoom={zoom}
-        setCenter={(latLng) => setCenter(latLng)}
-        setZoom={(zoom) => setZoom(zoom)}
+        setCenter={setCenter}
+        setZoom={setZoom}
         markers={[marker.current]}
         btnBlockChildren={
           <>

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { Record, SpotType } from "src/modules/records/models/record.model";
 import type { RootState } from "src/store";
 import * as yup from "yup";
-import { getDisplayAddress } from "../../utils/getDisplayAddress";
+import { getDisplayAddress } from "../../utils";
 import AddressForm from "./AddressForm";
 import "./CreateSpot.css";
 import FileUploadField from "./FileUploadField";

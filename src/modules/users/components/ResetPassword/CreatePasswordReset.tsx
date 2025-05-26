@@ -2,10 +2,9 @@ import { useFormik } from "formik";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import type { ApiError } from "src/modules/common/api";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import * as yup from "yup";
-import { PasswordResetsApi } from "../../api/password-resets.api";
+import { useCreatePasswordResetMutation } from "../../api/users.api";
 import { validators } from "../../utils/validations";
 
 interface Values {
@@ -24,15 +23,27 @@ const validationSchema = yup.object().shape({
 
 const CreatePasswordReset = () => {
   const navigate = useNavigate();
+
+  const [createPasswordReset] = useCreatePasswordResetMutation();
+
   const submit = async ({ usernameOrEmail }: Values) => {
-    await PasswordResetsApi.create(usernameOrEmail)
+    // await PasswordResetsApi.create(usernameOrEmail)
+    //   .then(() => {
+    //     toast.success("Письмо с инструкцией отправлено на ваш email");
+    //     navigate("/login");
+    //   })
+    //   .catch((e: ApiError) => {
+    //     const msg = e.response?.data.message;
+    //     toast.error(msg ?? e.message);
+    //   });
+    createPasswordReset({ usernameOrEmail })
+      .unwrap()
       .then(() => {
         toast.success("Письмо с инструкцией отправлено на ваш email");
         navigate("/login");
       })
-      .catch((e: ApiError) => {
-        const msg = e.response?.data.message;
-        toast.error(msg ?? e.message);
+      .catch((e: unknown) => {
+        toast.error(new String(e).toString());
       });
   };
   const f = useFormik<Values>({

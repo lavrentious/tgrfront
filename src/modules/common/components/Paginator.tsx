@@ -11,7 +11,7 @@ interface PaginatorProps {
 export function Paginator({ page, totalPages, setPage }: PaginatorProps) {
   useEffect(() => {
     if (totalPages < page) setPage(totalPages);
-  }, [totalPages]);
+  }, [page, setPage, totalPages]);
   return (
     <Pagination>
       <Pagination.Prev

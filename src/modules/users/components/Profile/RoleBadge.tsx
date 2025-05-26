@@ -48,7 +48,7 @@ const RoleBadge: React.FC<IRoleBadgeProps> = React.memo(function RoleBadge({
   small,
   ...props
 }: IRoleBadgeProps) {
-  const role = useMemo(() => userRole || Role.USER, []);
+  const role = useMemo(() => userRole || Role.USER, [userRole]);
   const badge = badges[role];
   return (
     <Badge

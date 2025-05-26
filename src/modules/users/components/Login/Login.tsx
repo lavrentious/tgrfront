@@ -1,14 +1,17 @@
 import useToggle from "beautiful-react-hooks/useToggle";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useCallback } from "react";
 import { Container, Form, FormControl, InputGroup } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import type { ApiError } from "src/modules/common/api";
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
+import { useAppDispatch } from "src/store";
+import { setUser } from "src/store/auth.reducer";
 import * as yup from "yup";
-import { AuthService } from "../../services/auth.service";
+import { useLoginMutation } from "../../api/auth.api";
+import { TokenService } from "../../services/token.service";
 import { validators } from "../../utils/validations";
 
 interface Values {
@@ -27,23 +30,31 @@ const validationSchema = yup.object().shape({
   password: validators.password,
 });
 
-const submit = async (values: Values) => {
-  await AuthService.login(values)
-    .then(({ data }) => {
-      toast.success(() => (
-        <span>
-          Вы вошли как <b>{data.user.username ?? data.user.id}</b>
-        </span>
-      ));
-    })
-    .catch((e: ApiError) => {
-      const msg = e.response?.data.message;
-      toast.error(msg ?? e.message);
-    });
-};
-
 const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const [passwordVisible, togglePasswordVisible] = useToggle();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const submit = useCallback(
+    async (values: Values) => {
+      login(values)
+        .unwrap()
+        .then((data) => {
+          TokenService.accessToken = data.accessToken;
+          dispatch(setUser(data.user));
+          toast.success(() => (
+            <span>
+              Вы вошли как <b>{data.user.username ?? data.user.id}</b>
+            </span>
+          ));
+        })
+        .catch((e) => {
+          toast.error(formatApiError(e));
+        });
+    },
+    [dispatch, login],
+  );
 
   const f = useFormik<Values>({
     initialValues: {
@@ -92,10 +103,10 @@ const Login: React.FC = () => {
 
           <div className="d-flex align-items-center mt-2">
             <LoadingButton
-              isLoading={f.isSubmitting}
+              isLoading={isLoading}
               type="submit"
               className="me-2"
-              disabled={!f.isValid || f.isSubmitting}
+              disabled={!f.isValid}
             >
               Войти
             </LoadingButton>

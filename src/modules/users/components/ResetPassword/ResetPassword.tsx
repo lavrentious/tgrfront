@@ -4,13 +4,16 @@ import { useEffect } from "react";
 import { Container, Form, InputGroup } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import type { ApiError } from "src/modules/common/api";
+
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import LoadingPage from "src/modules/common/components/LoadingPage";
 import VisibilityButton from "src/modules/common/components/VisibilityButton/VisibilityButton";
-import useFetch from "src/modules/common/hooks/useFetch";
 import * as yup from "yup";
-import { PasswordResetsApi } from "../../api/password-resets.api";
+
+import {
+  useLazyCheckPasswordResetQuery,
+  useResetPasswordMutation,
+} from "../../api/users.api";
 import * as rules from "../../utils/validations";
 import { validators } from "../../utils/validations";
 
@@ -28,25 +31,37 @@ const ResetPassword = () => {
   const { key } = useParams() as { key: string };
   const navigate = useNavigate();
 
-  const check = useFetch(async () => PasswordResetsApi.check(key));
+  // const check = useFetch(async () => PasswordResetsApi.check(key));
+  const [check, { error, isFetching }] = useLazyCheckPasswordResetQuery();
 
   useEffect(() => {
-    check.fetch();
-  }, []);
+    check(key);
+  }, [check, key]);
 
   useEffect(() => {
-    if (check.error) return navigate("/login");
-  }, [check.error]);
+    if (error) return navigate("/login");
+  }, [error, navigate]);
+
+  const [resetPassword] = useResetPasswordMutation();
 
   const submit = async ({ password }: Values) => {
-    await PasswordResetsApi.reset(key, password)
+    // await PasswordResetsApi.reset(key, password)
+    //   .then(() => {
+    //     toast.success("Пароль успешно изменён");
+    //     navigate("/login");
+    //   })
+    //   .catch((e: ApiError) => {
+    //     const msg = e.response?.data.message;
+    //     toast.error(msg ?? e.message);
+    //   });
+    resetPassword({ key, password })
+      .unwrap()
       .then(() => {
         toast.success("Пароль успешно изменён");
         navigate("/login");
       })
-      .catch((e: ApiError) => {
-        const msg = e.response?.data.message;
-        toast.error(msg ?? e.message);
+      .catch((e: unknown) => {
+        toast.error(new String(e).toString());
       });
   };
   const [passwordVisible, togglePasswordVisible] = useToggle();
@@ -60,7 +75,7 @@ const ResetPassword = () => {
     validateOnBlur: true,
   });
 
-  if (check.isFetching) {
+  if (isFetching) {
     return <LoadingPage />;
   }
 

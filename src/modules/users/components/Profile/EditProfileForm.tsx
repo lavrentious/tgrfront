@@ -4,14 +4,15 @@ import { Form } from "react-bootstrap";
 import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import type { ApiError } from "src/modules/common/api";
+
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { validators } from "src/modules/users/utils/validations";
-import { type RootState, useAppDispatch } from "src/store";
+import { useAppDispatch, type RootState } from "src/store";
 import { setUser as setLoggedUser } from "src/store/auth.reducer";
 import * as yup from "yup";
-import { User } from "../../models/user.model";
-import { UserService } from "../../services/user.service";
+import { useUpdateUserMutation } from "../../api/users.api";
+import { User, type IUser } from "../../models/user.model";
 import { Field as FormikField } from "./Field";
 
 interface Values {
@@ -28,7 +29,7 @@ const validationSchema = yup.object().shape({
 
 interface EditProfileFormProps {
   user: User;
-  setUser?: (u: User) => void;
+  setUser?: (u: IUser) => void;
   setVisible: (v: boolean) => void;
 }
 
@@ -41,6 +42,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
 }) => {
   const loggedUser = useSelector((state: RootState) => state.auth.user);
   const dispatch = useAppDispatch();
+  const [updateUser] = useUpdateUserMutation();
 
   const f = useFormik<Values>({
     initialValues: {
@@ -54,7 +56,11 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
         name: name || null,
         username: username || null,
       };
-      await UserService.update(user._id, values, user)
+      await updateUser({
+        id: user._id,
+        dto: values,
+      })
+        .unwrap()
         .then((newUser) => {
           if (user._id === loggedUser?.id) {
             dispatch(
@@ -68,11 +74,10 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
           }
           toast.success("Профиль изменён");
           setVisible(false);
-          if (setUser) setUser(new User(newUser));
+          if (setUser) setUser(newUser);
         })
-        .catch((e: ApiError) => {
-          const msg = e.response?.data.message;
-          toast.error(msg ?? e.message);
+        .catch((error) => {
+          toast.error(formatApiError(error));
         });
     },
     validationSchema,

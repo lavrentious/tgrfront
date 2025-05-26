@@ -1,32 +1,39 @@
-import { api } from "src/modules/common/api";
-import type { StoredUser } from "src/store/auth.reducer";
-import type { LoginDto } from "../dto/login.dto";
-import type { RegisterDto } from "../dto/register.dto";
+import { api } from "src/api/api";
+import type { LoginDto } from "src/modules/users/dto/login.dto";
+import type { RegisterDto } from "src/modules/users/dto/register.dto";
+import type { AuthResponse } from "./types";
 
-const BASE_URL = "/auth";
+export const authApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    login: builder.mutation<AuthResponse, LoginDto>({
+      query: (body) => ({
+        url: "/auth/login",
+        method: "POST",
+        body,
+      }),
+    }),
+    register: builder.mutation<AuthResponse, RegisterDto>({
+      query: (body) => ({
+        url: "/auth/register",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "DELETE",
+      }),
+    }),
+    refresh: builder.query<AuthResponse, void>({
+      query: () => ({
+        url: "/auth/refresh",
+        method: "GET",
+      }),
+    }),
+  }),
+});
 
-export const REFRESH_URL = BASE_URL + "/refresh";
-
-interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: StoredUser;
-}
-
-export abstract class AuthApi {
-  static async login(dto: LoginDto) {
-    return await api.post<AuthResponse>(`${BASE_URL}/login`, dto);
-  }
-
-  static async register(dto: RegisterDto) {
-    return await api.post<AuthResponse>(`${BASE_URL}/register`, dto);
-  }
-
-  static async logout() {
-    return await api.delete(`${BASE_URL}/logout`);
-  }
-
-  static async refresh() {
-    return await api.get<AuthResponse>(REFRESH_URL);
-  }
-}
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
+  authApi;

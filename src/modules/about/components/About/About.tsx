@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { Alert, Container, Image, ListGroup } from "react-bootstrap";
 import {
   BsPersonLinesFill as ContactsIcon,
@@ -8,15 +7,11 @@ import {
   BsGearFill as TechInfoIcon,
   BsTelegram as TgIcon,
 } from "react-icons/bs";
+import { useGetHealthQuery } from "src/api/api";
 import TgLogo from "src/assets/tg_logo.png";
-import type { HealthCheckResult } from "../../about.api";
-import { AboutService } from "../../about.service";
 
 const About: React.FunctionComponent = () => {
-  const [health, setHealth] = useState<HealthCheckResult | null>(null);
-  useEffect(() => {
-    AboutService.getHealth().then(setHealth);
-  }, []); // TODO: move to redux store?
+  const { data: health } = useGetHealthQuery();
   return (
     <Container>
       <h1 className="text-center">О проекте</h1>

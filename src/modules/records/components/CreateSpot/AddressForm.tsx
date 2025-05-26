@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
-import { getDisplayAddress } from "../../utils/getDisplayAddress";
+import { getDisplayAddress } from "../../utils";
 import type { CreateSpotValues } from "./types";
 
 interface AddressFormProps {
@@ -10,15 +10,23 @@ interface AddressFormProps {
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ f, noAutoDisplayName }) => {
+  const prevAddressRef = useRef(f.values.address);
+
   useEffect(() => {
-    if (noAutoDisplayName || f.touched.address?.displayName) return;
-    f.setFieldValue("address.displayName", getDisplayAddress(f.values.address));
-  }, [
-    f.values.address.region,
-    f.values.address.city,
-    f.values.address.street,
-    f.values.address.house,
-  ]);
+    const prev = prevAddressRef.current;
+    const current = f.values.address;
+    if (
+      !noAutoDisplayName &&
+      !f.touched.address?.displayName &&
+      (prev.city !== current.city ||
+        prev.region !== current.region ||
+        prev.street !== current.street ||
+        prev.house !== current.house)
+    ) {
+      prevAddressRef.current = current;
+      f.setFieldValue("address.displayName", getDisplayAddress(current));
+    }
+  }, [f, noAutoDisplayName]);
 
   return (
     <>

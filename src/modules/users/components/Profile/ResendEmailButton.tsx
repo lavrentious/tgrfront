@@ -1,43 +1,49 @@
-import { default as React, useState } from "react";
-import { toast } from "react-hot-toast";
+import { default as React, useCallback, useState } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import type { ApiError } from "src/modules/common/api";
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
-import useFetch from "src/modules/common/hooks/useFetch";
-import type { RootState } from "src/store";
+import { useAppDispatch, type RootState } from "src/store";
+import {
+  useResendConfirmationEmailMutation,
+  usersApi,
+} from "../../api/users.api";
 import { User } from "../../models/user.model";
-import { UserService } from "../../services/user.service";
 
 interface ResendEmailButtonProps {
   user: User;
-  setUser: (user: User) => void;
 }
 
 const ResendEmailButton: React.FC<ResendEmailButtonProps> = React.memo(
-  function ResendEmailButton({ user, setUser }: ResendEmailButtonProps) {
+  function ResendEmailButton({ user }: ResendEmailButtonProps) {
+    const dispatch = useAppDispatch();
+
     const loggedUser = useSelector((state: RootState) => state.auth.user);
     const [isShown, setIsShown] = useState<boolean>(true);
-    const { fetch, isFetching } = useFetch(() =>
-      UserService.resendEmail()
+    const [resend, { isLoading }] = useResendConfirmationEmailMutation();
+    const fetch = useCallback(() => {
+      resend()
+        .unwrap()
         .then(() => {
           toast.success(
             `Письмо с подтверждением отправлено на почту ${user.email}`,
           );
           setIsShown(false);
         })
-        .catch((e: ApiError) => {
-          if (e?.response?.status === 400) {
-            setUser({ ...user, emailConfirmed: true });
-          }
-        }),
-    );
+        .catch((e) => {
+          toast.error(formatApiError(e));
+          dispatch(
+            usersApi.util.invalidateTags([{ type: "User", id: user._id }]),
+          );
+        });
+    }, [dispatch, resend, user._id, user.email]);
     return (
       <>
         {isShown && user._id === loggedUser?.id && !user.emailConfirmed && (
           <LoadingButton
             className="mx-1"
-            isLoading={isFetching}
-            onClick={fetch}
+            isLoading={isLoading}
+            onClick={() => fetch()}
             size="sm"
           >
             Отправить подтверждение

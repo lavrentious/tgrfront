@@ -1,17 +1,31 @@
-import { api } from "src/modules/common/api";
+import { api } from "src/api/api";
 
 const BASE_URL = "/password-resets";
 
-export abstract class PasswordResetsApi {
-  static async create(usernameOrEmail: string) {
-    return (await api.post<null>(BASE_URL, { usernameOrEmail })).data;
-  }
+export const passwordResetsApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    create: build.mutation<null, { usernameOrEmail: string }>({
+      query: (body) => ({
+        url: BASE_URL,
+        method: "POST",
+        body,
+      }),
+    }),
+    check: build.query<null, string>({
+      query: (key) => ({
+        url: `${BASE_URL}/${key}`,
+        method: "GET",
+      }),
+    }),
+    reset: build.mutation<null, { key: string; password: string }>({
+      query: ({ key, password }) => ({
+        url: `${BASE_URL}/${key}`,
+        method: "PATCH",
+        body: { password },
+      }),
+    }),
+  }),
+});
 
-  static async check(key: string) {
-    return (await api.get<null>(`${BASE_URL}/${key}`)).data;
-  }
-
-  static async reset(key: string, password: string) {
-    return (await api.patch<null>(`${BASE_URL}/${key}`, { password })).data;
-  }
-}
+export const { useCreateMutation, useCheckQuery, useResetMutation } =
+  passwordResetsApi;

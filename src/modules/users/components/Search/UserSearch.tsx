@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import {
+  Col,
   Container,
   Form,
   FormControl,
   InputGroup,
   ListGroup,
+  Row,
 } from "react-bootstrap";
+import { XLg } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
+import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import type { PaginateResult } from "src/modules/common/dto/paginate-result.dto";
 import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
-import useFetch from "src/modules/common/hooks/useFetch";
+import { useDebounce } from "use-debounce";
+import { useGetUsersQuery } from "../../api/users.api";
 import { User } from "../../models/user.model";
-import { UserService } from "../../services/user.service";
 import RoleBadge from "../Profile/RoleBadge";
 
 const UserData: React.FC<{ doc: User }> = ({ doc: user }) => {
@@ -29,59 +32,56 @@ const UserData: React.FC<{ doc: User }> = ({ doc: user }) => {
 
 const UserSearch = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [data, setData] = useState<PaginateResult<User> | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
 
-  const { fetch, isFetching, error } = useFetch(() =>
-    UserService.findAll({
-      page,
-      limit,
-      pagination: true,
-      search: searchQuery || undefined,
-    }).then((res) => {
-      if (!res) return;
-      setData(res);
-      setTotalPages(res.totalPages);
-    }),
-  );
-
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   useEffect(() => {
-    fetch();
-  }, [page]);
+    setPage(1);
+  }, [debouncedSearchQuery]);
+
+  const { data, error, isError, isFetching } = useGetUsersQuery({
+    pagination: true,
+    limit,
+    page,
+    search: debouncedSearchQuery,
+  });
 
   return (
     <Container className="mt-2">
       <h4>Поиск пользователей</h4>
-      <Form
-        className="mb-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          fetch();
-        }}
-      >
-        <InputGroup>
-          <FormControl
-            id="searchQuery"
-            placeholder="Поиск по логину и имени"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <LoadingButton isLoading={isFetching} type="submit">
-            Поиск
-          </LoadingButton>
-        </InputGroup>
-      </Form>
+      <Row>
+        <Col lg={6}>
+          <Form className="mb-2">
+            <InputGroup>
+              <FormControl
+                id="searchQuery"
+                placeholder="Поиск по логину и имени"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                readOnly={isFetching}
+              />
+              <LoadingButton
+                variant="secondary"
+                disabled={debouncedSearchQuery === ""}
+                isLoading={isFetching}
+                icon={<XLg />}
+                onClick={() => setSearchQuery("")}
+              />
+            </InputGroup>
+          </Form>
+        </Col>
+      </Row>
+
       <Paginator
         page={page}
         limit={limit}
-        totalPages={totalPages}
+        totalPages={data?.totalPages ?? 1}
         setPage={setPage}
       />
-      {error && (
-        <ErrorAlert>{error.response?.data.message || error.message}</ErrorAlert>
-      )}
+
+      {isError && <ErrorAlert>{formatApiError(error)}</ErrorAlert>}
+
       {data?.docs?.length ? (
         <>
           <small className="text-muted">
