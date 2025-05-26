@@ -46,3 +46,13 @@ export function extractStatusCode(
   }
   return null;
 }
+
+export function isApiError(
+  error: unknown,
+): error is FetchBaseQueryError | SerializedError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    ("status" in error || "message" in error)
+  );
+}

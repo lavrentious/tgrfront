@@ -4,7 +4,9 @@ import {
   XLg as CancelIcon,
   CheckLg as SubmitIcon,
 } from "react-bootstrap-icons";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { formatApiError, isApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { type RootState, useAppDispatch } from "src/store";
 import {
@@ -209,7 +211,10 @@ const EditSpotModal: React.FC<EditSpotModalProps> = ({ record, onSuccess }) => {
         onSuccess();
       }
     } catch (error) {
-      console.error("Failed to update spot:", error);
+      console.error(error);
+      if (isApiError(error)) {
+        toast.error(formatApiError(error));
+      }
     } finally {
       dispatch(setIsCreationFormShown(false));
       dispatch(setIsFormDisabled(false));
