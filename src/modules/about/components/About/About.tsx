@@ -86,7 +86,7 @@ const About: React.FunctionComponent = () => {
         </div>
       </div>
       <footer className="text-muted">
-        Версия приложения: {import.meta.env.VITE_APP_VERSION} (от{" "}
+        Версия приложения: {__APP_VERSION__} (от{" "}
         {dayjs(import.meta.env.VITE_LAST_COMMIT_DATE).format("LLL")})
         <br />
         {health && (
