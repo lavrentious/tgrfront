@@ -24,30 +24,35 @@ import { useLazyGetRecordsQuery } from "../../api/records.api";
 import { Record } from "../../models/record.model";
 import { SpotTypeItem } from "../RecordView/RecordData";
 
-const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => (
-  <Card className="mt-2">
-    <Card.Header>
-      <Link to={`/record/${record._id}`}>{record.name}</Link>
-    </Card.Header>
-    <ListGroup variant="flush">
-      <ListGroup.Item>
-        <strong>Автор:</strong>{" "}
-        <Link to={`/profile/${record.author.username ?? record.author._id}`}>
-          {record.author.username ?? record.author._id}
-        </Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <strong>Адрес:</strong> {record.address.displayName}
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <strong>Тип:</strong> <SpotTypeItem type={record.type} />
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <strong>Дата создания:</strong> {dayjs(record.createdAt).format("LLL")}
-      </ListGroup.Item>
-    </ListGroup>
-  </Card>
-);
+const RecordData: React.FC<{ doc: Record }> = ({ doc: record }) => {
+  const { data: author } = useGetUserQuery(record.author._id);
+  return (
+    <Card className="mt-2">
+      <Card.Header>
+        <Link to={`/record/${record._id}`}>{record.name}</Link>
+      </Card.Header>
+      <ListGroup variant="flush">
+        <ListGroup.Item>
+          <strong>Автор:</strong>{" "}
+          <Link to={`/profile/${record.author._id}`}>
+            {author?.username || record.author._id}
+            {author?.name && ` (${author.name})`}
+          </Link>{" "}
+        </ListGroup.Item>
+        <ListGroup.Item>
+          <strong>Адрес:</strong> {record.address.displayName}
+        </ListGroup.Item>
+        <ListGroup.Item>
+          <strong>Тип:</strong> <SpotTypeItem type={record.type} />
+        </ListGroup.Item>
+        <ListGroup.Item>
+          <strong>Дата создания:</strong>{" "}
+          {dayjs(record.createdAt).format("LLL")}
+        </ListGroup.Item>
+      </ListGroup>
+    </Card>
+  );
+};
 
 const RecordSearch: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
