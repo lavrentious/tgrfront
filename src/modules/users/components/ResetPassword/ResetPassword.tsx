@@ -31,7 +31,6 @@ const ResetPassword = () => {
   const { key } = useParams() as { key: string };
   const navigate = useNavigate();
 
-  // const check = useFetch(async () => PasswordResetsApi.check(key));
   const [check, { error, isFetching }] = useLazyCheckPasswordResetQuery();
 
   useEffect(() => {
@@ -39,21 +38,15 @@ const ResetPassword = () => {
   }, [check, key]);
 
   useEffect(() => {
-    if (error) return navigate("/login");
+    if (error) {
+      navigate("/login");
+      return;
+    }
   }, [error, navigate]);
 
   const [resetPassword] = useResetPasswordMutation();
 
   const submit = async ({ password }: Values) => {
-    // await PasswordResetsApi.reset(key, password)
-    //   .then(() => {
-    //     toast.success("Пароль успешно изменён");
-    //     navigate("/login");
-    //   })
-    //   .catch((e: ApiError) => {
-    //     const msg = e.response?.data.message;
-    //     toast.error(msg ?? e.message);
-    //   });
     resetPassword({ key, password })
       .unwrap()
       .then(() => {

@@ -14,6 +14,10 @@ type Action = "manage" | "create" | "read" | "update" | "delete";
 type Subjects = InferSubjects<typeof User | typeof Record> | "all";
 export type AppAbility = MongoAbility<[Action, Subjects]>;
 
+type FlatRecord = Record & {
+  "author._id": Record["author"]["_id"];
+};
+
 export default function defineRulesFor(user: StoredUser | null) {
   const { can, rules } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
@@ -33,8 +37,8 @@ export default function defineRulesFor(user: StoredUser | null) {
   };
   const defineForVerified = () => {
     can("create", Record);
-    can("delete", Record, { "author._id": user.id });
-    can(
+    can<FlatRecord>("delete", Record, { "author._id": user.id });
+    can<FlatRecord>(
       "update",
       Record,
       [

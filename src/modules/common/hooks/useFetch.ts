@@ -1,7 +1,7 @@
+import type { AxiosError } from "axios";
 import { useState } from "react";
-import type { ApiError } from "../api";
 
-function useFetch<T = unknown, E = ApiError>(
+function useFetch<T = unknown, E = AxiosError>(
   callback: (...args: unknown[]) => Promise<T>,
 ) {
   const [isFetching, setIsFetching] = useState<boolean>(false);

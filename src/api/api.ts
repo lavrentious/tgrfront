@@ -20,10 +20,6 @@ export const api = createApi({
         url: "/",
         method: "GET",
       }),
-      // transformResponse: (response: HealthCheckResult) => ({
-      //   ...response,
-      //   lastCommitDate: new Date(response.lastCommitDate),
-      // }),
     }),
   }),
 });

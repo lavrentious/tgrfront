@@ -27,15 +27,6 @@ const CreatePasswordReset = () => {
   const [createPasswordReset] = useCreatePasswordResetMutation();
 
   const submit = async ({ usernameOrEmail }: Values) => {
-    // await PasswordResetsApi.create(usernameOrEmail)
-    //   .then(() => {
-    //     toast.success("Письмо с инструкцией отправлено на ваш email");
-    //     navigate("/login");
-    //   })
-    //   .catch((e: ApiError) => {
-    //     const msg = e.response?.data.message;
-    //     toast.error(msg ?? e.message);
-    //   });
     createPasswordReset({ usernameOrEmail })
       .unwrap()
       .then(() => {
