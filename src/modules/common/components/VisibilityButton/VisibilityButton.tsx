@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, type ButtonProps } from "react-bootstrap";
 import {
-  BsEyeFill as HiddenIcon,
-  BsEyeSlashFill as VisibleIcon,
-} from "react-icons/bs";
+  RiEyeLine as HiddenIcon,
+  RiEyeOffLine as VisibleIcon,
+} from "react-icons/ri";
 
 interface VisibilityButtonProps extends ButtonProps {
   visible: boolean;

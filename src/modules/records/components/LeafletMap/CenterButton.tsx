@@ -1,14 +1,19 @@
 import clsx from "clsx";
 import React from "react";
 import { Button, type ButtonProps } from "react-bootstrap";
-import { BsPinMap as CenterIcon } from "react-icons/bs";
+import { RiMapPin5Line as CenterIcon } from "react-icons/ri";
 import "./leafletMap.css";
 
 interface CenterButtonProps extends ButtonProps {
   setCenter: () => void;
+  icon?: React.ReactNode;
 }
 
-const CenterButton: React.FC<CenterButtonProps> = ({ setCenter, ...props }) => {
+const CenterButton: React.FC<CenterButtonProps> = ({
+  setCenter,
+  icon,
+  ...props
+}) => {
   return (
     <Button
       variant="info"
@@ -18,7 +23,7 @@ const CenterButton: React.FC<CenterButtonProps> = ({ setCenter, ...props }) => {
         setCenter();
       }}
     >
-      <CenterIcon />
+      {icon || <CenterIcon />}
     </Button>
   );
 };

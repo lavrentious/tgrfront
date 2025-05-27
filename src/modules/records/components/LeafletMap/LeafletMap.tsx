@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.js";
 import * as React from "react";
 import { memo, type RefObject, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
+import { RiUserLocationLine as UserLocationIcon } from "react-icons/ri";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import { useSelector } from "react-redux";
 import { blueIcon as userSpotIcon } from "src/assets/markerIcons";
@@ -182,6 +183,7 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
         {userCoords && setCenter && setZoom && (
           <CenterButton
             className="leaflet-map__center-button"
+            icon={<UserLocationIcon />}
             setCenter={() => {
               setCenter(userCoords);
               setZoom(14);
