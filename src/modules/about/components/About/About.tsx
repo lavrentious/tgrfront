@@ -1,10 +1,9 @@
 import dayjs from "dayjs";
 import * as React from "react";
-import { Alert, Container, Image, ListGroup } from "react-bootstrap";
+import { Container, Image, ListGroup } from "react-bootstrap";
 import {
   BsPersonLinesFill as ContactsIcon,
   BsEnvelopeAtFill as EmailIcon,
-  BsGearFill as TechInfoIcon,
   BsTelegram as TgIcon,
 } from "react-icons/bs";
 import { useGetHealthQuery } from "src/api/api";
@@ -57,35 +56,8 @@ const About: React.FunctionComponent = () => {
             </ListGroup.Item>
           </ListGroup>
         </div>
-        <div>
-          <h4>
-            <TechInfoIcon /> Техническая информация
-          </h4>
-          <p>
-            Это обновлённая версия веб-сервиса. Все данные и основная логика
-            работы сохранены.
-          </p>
-          <Alert variant="warning">
-            Из соображений безопасности и производительности в этой версии
-            используется новый алгоритм хеширования паролей, не совместимый с
-            предыдущим. Это означает, что старые пароли не работают и требуют
-            обновления.
-            <br />
-            <strong>
-              Для работы Вам необходимо однократно сбросить пароль, используя
-              кнопку на <a href="/login">странице входа</a>.
-            </strong>
-            <br />
-            Приносим извинения за доставленные неудобства.
-          </Alert>
-          <Alert variant="warning">
-            Функция верификации аккаунтов находится в разработке и будет
-            внедрена в ближайшее время. Для изменения прав пользователей,
-            пожалуйста, обратитесь по ссылкам выше.
-          </Alert>
-        </div>
       </div>
-      <footer className="text-muted">
+      <footer className="text-muted mt-3">
         Версия приложения: {__APP_VERSION__} (от{" "}
         {dayjs(import.meta.env.VITE_LAST_COMMIT_DATE).format("LLL")})
         <br />
