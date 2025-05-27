@@ -42,8 +42,12 @@ const Profile = () => {
       return;
     }
 
-    if (user && idOrUsername !== user._id && idOrUsername !== user.username) {
-      navigate(`/profile/${user.username || user._id}`, { replace: true });
+    if (user && idOrUsername !== user.username) {
+      if (idOrUsername !== user._id) {
+        navigate(`/profile/${user.username || user._id}`, { replace: true });
+      } else if (user.username) {
+        navigate(`/profile/${user.username}`, { replace: true });
+      }
     }
   }, [idOrUsername, user, navigate]);
 
