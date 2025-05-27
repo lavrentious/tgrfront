@@ -50,7 +50,7 @@ const RecordView: React.FC = () => {
       return;
     deleteRecord(record._id)
       .unwrap()
-      .then(() => navigate("/map"))
+      .then(() => navigate("/"))
       .catch((e: ApiError) => {
         toast.error(formatApiError(e));
       });

@@ -18,8 +18,8 @@ export type Route = {
   authOnly?: boolean;
 };
 const routes: Route[] = [
-  { element: <MainMap />, path: "/map" },
-  { element: <About />, path: "/" },
+  { element: <MainMap />, path: "/" },
+  { element: <About />, path: "/about" },
   { element: <Login />, path: "/login", anonOnly: true },
   { element: <Register />, path: "/register", anonOnly: true },
   { element: <RecordView />, path: "/record/:id" },

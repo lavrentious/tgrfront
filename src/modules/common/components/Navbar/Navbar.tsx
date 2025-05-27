@@ -106,14 +106,14 @@ const Navbar: React.FunctionComponent = () => {
           <Nav className="d-flex justify-content-between flex-row w-100">
             <div className="d-flex flex-wrap">
               <NavbarItem
-                to="/map"
+                to="/"
                 inactiveIcon={<MapIcon />}
                 activeIcon={<MapIconActive />}
               >
                 Карта
               </NavbarItem>
               <NavbarItem
-                to="/"
+                to="/about"
                 inactiveIcon={<AboutIcon />}
                 activeIcon={<AboutIconActive />}
               >
