@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import "react-photo-view/dist/react-photo-view.css";
 import { Provider } from "react-redux";
 import "./app.css";
 import AbilityContextProvider from "./modules/ability/ability.context.provider";

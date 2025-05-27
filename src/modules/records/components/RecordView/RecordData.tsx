@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React from "react";
 import { Accordion, Card, ListGroup } from "react-bootstrap";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Link } from "react-router-dom";
-import ImageViewer from "src/modules/common/components/ImageViewer/ImageViewer";
 import {
   type Address,
   Record,
@@ -109,52 +109,20 @@ const AddressItem: React.FC<{ address: Address }> = ({ address }) => {
   );
 };
 
-const PhotoItem: React.FC<{ photo: RecordPhoto; imgOnClick: () => void }> = ({
-  photo,
-  imgOnClick,
-}) => {
-  return (
-    <Card className="m-1" style={{ width: "18rem" }}>
-      <Card.Img src={photo.url} alt={photo.comment} onClick={imgOnClick} />
-      {/* <ViewableImage
-        src={photo.url}
-        alt={photo.comment}
-        className="card-img-top"
-      /> */}
-      {photo.comment && (
-        <Card.Body>
-          <Card.Text>{photo.comment}</Card.Text>
-        </Card.Body>
-      )}
-    </Card>
-  );
-};
 const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [i, setI] = useState<number>(0);
   return (
-    <>
-      {isFullscreen && (
-        <ImageViewer
-          images={photos.map((p) => ({ src: p.url, alt: p.comment }))}
-          i={i}
-          setI={setI}
-          setIsFullscreen={setIsFullscreen}
-        />
-      )}
-      <ListGroup.Item className="d-flex flex-wrap justify-content-around align-items-start">
-        {photos.map((photo, i) => (
-          <PhotoItem
-            key={photo._id}
-            photo={photo}
-            imgOnClick={() => {
-              setIsFullscreen(true);
-              setI(i);
-            }}
-          />
+    <ListGroup.Item className="d-flex flex-wrap justify-content-center align-items-start">
+      <PhotoProvider>
+        {photos.map((photo) => (
+          <PhotoView key={photo._id} src={photo.url}>
+            <Card className="m-3" style={{ maxWidth: "18rem" }}>
+              <Card.Img src={photo.url} alt={photo.comment} />
+              {photo.comment?.trim() && <Card.Body>{photo.comment}</Card.Body>}
+            </Card>
+          </PhotoView>
         ))}
-      </ListGroup.Item>
-    </>
+      </PhotoProvider>
+    </ListGroup.Item>
   );
 };
 
