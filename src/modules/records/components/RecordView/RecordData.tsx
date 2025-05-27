@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React from "react";
+import React, { useMemo } from "react";
 import { Accordion, Card, ListGroup } from "react-bootstrap";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Link } from "react-router-dom";
@@ -110,9 +110,23 @@ const AddressItem: React.FC<{ address: Address }> = ({ address }) => {
 };
 
 const PhotoList: React.FC<{ photos: RecordPhoto[] }> = ({ photos }) => {
+  const urlsToComments = useMemo(() => {
+    return photos.reduce(
+      (acc, photo) => {
+        if (photo.url) {
+          acc[photo.url] = photo.comment || "";
+        }
+        return acc;
+      },
+      {} as { [url: string]: string },
+    );
+  }, [photos]);
+
   return (
     <ListGroup.Item className="d-flex flex-wrap justify-content-center align-items-start">
-      <PhotoProvider>
+      <PhotoProvider
+        toolbarRender={(e) => <>{urlsToComments[e.images[e.index].src!]}</>}
+      >
         {photos.map((photo) => (
           <PhotoView key={photo._id} src={photo.url}>
             <Card className="m-3" style={{ maxWidth: "18rem" }}>
