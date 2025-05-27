@@ -3,6 +3,23 @@ import { Button, Spinner } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import BootstrapNavbar from "react-bootstrap/Navbar";
+import {
+  RiFileLine as AboutIcon,
+  RiFileFill as AboutIconActive,
+  RiLoginBoxLine as LoginIcon,
+  RiLoginBoxFill as LoginIconActive,
+  RiMapLine as MapIcon,
+  RiMapFill as MapIconActive,
+  RiUserLine as ProfileIcon,
+  RiUserFill as ProfileIconActive,
+  RiSearchLine as RecordSearchIcon,
+  RiSearchFill as RecordSearchIconActive,
+  RiUserAddLine as RegisterIcon,
+  RiUserAddFill as RegisterIconActive,
+  RiUserSearchLine as UserSearchIcon,
+  RiUserSearchFill as UserSearchIconActive,
+} from "react-icons/ri";
+
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Logo from "src/assets/tg_logo.png";
@@ -11,6 +28,7 @@ import { TokenService } from "src/modules/users/services/token.service";
 import { useAppDispatch, type RootState } from "src/store";
 import { setUser } from "src/store/auth.reducer";
 import "./Navbar.css";
+import NavbarItem from "./NavbarItem";
 
 const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
   const dispatch = useAppDispatch();
@@ -27,9 +45,13 @@ const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
   if (user) {
     return (
       <>
-        <Nav.Link as={Link} to={`/profile/${user.username ?? user.id}`}>
+        <NavbarItem
+          to={`/profile/${user.username ?? user.id}`}
+          inactiveIcon={<ProfileIcon />}
+          activeIcon={<ProfileIconActive />}
+        >
           {user.username ?? user.name ?? "Мой профиль"}
-        </Nav.Link>
+        </NavbarItem>
         <Button variant="danger" onClick={logout}>
           Выход
         </Button>
@@ -38,12 +60,20 @@ const AuthStatus = ({ user, isAuthLoading }: RootState["auth"]) => {
   }
   return (
     <>
-      <Nav.Link as={Link} to="/login">
+      <NavbarItem
+        to="/login"
+        inactiveIcon={<LoginIcon />}
+        activeIcon={<LoginIconActive />}
+      >
         Вход
-      </Nav.Link>
-      <Nav.Link as={Link} to="/register">
+      </NavbarItem>
+      <NavbarItem
+        to="/register"
+        inactiveIcon={<RegisterIcon />}
+        activeIcon={<RegisterIconActive />}
+      >
         Регистрация
-      </Nav.Link>
+      </NavbarItem>
     </>
   );
 };
@@ -75,18 +105,34 @@ const Navbar: React.FunctionComponent = () => {
         <BootstrapNavbar.Collapse>
           <Nav className="d-flex justify-content-between flex-row w-100">
             <div className="d-flex flex-wrap">
-              <Nav.Link as={Link} to="/map">
-                🗺 Карта
-              </Nav.Link>
-              <Nav.Link as={Link} to="/">
-                📄 О проекте
-              </Nav.Link>
-              <Nav.Link as={Link} to="/record-search">
-                🔍 Поиск мест
-              </Nav.Link>
-              <Nav.Link as={Link} to="/user-search">
-                👤 Поиск пользователей
-              </Nav.Link>
+              <NavbarItem
+                to="/map"
+                inactiveIcon={<MapIcon />}
+                activeIcon={<MapIconActive />}
+              >
+                Карта
+              </NavbarItem>
+              <NavbarItem
+                to="/"
+                inactiveIcon={<AboutIcon />}
+                activeIcon={<AboutIconActive />}
+              >
+                О проекте
+              </NavbarItem>
+              <NavbarItem
+                to="/record-search"
+                inactiveIcon={<RecordSearchIcon />}
+                activeIcon={<RecordSearchIconActive />}
+              >
+                Поиск мест
+              </NavbarItem>
+              <NavbarItem
+                to="/user-search"
+                inactiveIcon={<UserSearchIcon />}
+                activeIcon={<UserSearchIconActive />}
+              >
+                Поиск пользователей
+              </NavbarItem>
             </div>
             <div className="d-flex flex-wrap">
               <AuthStatus isAuthLoading={isAuthLoading} user={user} />
