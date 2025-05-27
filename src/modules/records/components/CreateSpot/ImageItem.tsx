@@ -2,12 +2,12 @@ import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import clsx from "clsx";
 import React, { memo, useMemo, useRef, useState } from "react";
 import { Button, CloseButton, FormControl } from "react-bootstrap";
-import {
-  ArrowDown as MoveDownIcon,
-  ArrowUp as MoveUpIcon,
-} from "react-bootstrap-icons";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { useDrag, useDrop } from "react-dnd";
+import {
+  BsArrowDown as MoveDownIcon,
+  BsArrowUp as MoveUpIcon,
+} from "react-icons/bs";
 import { useSelector } from "react-redux";
 import bytesToHumanSize from "src/modules/common/utils/bytesToHumanSize";
 import { type RootState, useAppDispatch } from "src/store";

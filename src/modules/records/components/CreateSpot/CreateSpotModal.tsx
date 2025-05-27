@@ -1,9 +1,6 @@
 import { Button, Modal } from "react-bootstrap";
-import {
-  DashLg as HideIcon,
-  CheckLg as SubmitIcon,
-} from "react-bootstrap-icons";
 import toast from "react-hot-toast";
+import { BsDashLg as HideIcon, BsCheckLg as SubmitIcon } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";

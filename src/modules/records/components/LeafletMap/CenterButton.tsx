@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 import { Button, type ButtonProps } from "react-bootstrap";
-import { PinMap as CenterIcon } from "react-bootstrap-icons";
+import { BsPinMap as CenterIcon } from "react-icons/bs";
 import "./leafletMap.css";
 
 interface CenterButtonProps extends ButtonProps {

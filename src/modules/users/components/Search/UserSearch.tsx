@@ -8,7 +8,7 @@ import {
   ListGroup,
   Row,
 } from "react-bootstrap";
-import { XLg } from "react-bootstrap-icons";
+import { BsXLg as CancelIcon } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
@@ -65,7 +65,7 @@ const UserSearch = () => {
                 variant="secondary"
                 disabled={debouncedSearchQuery === ""}
                 isLoading={isFetching}
-                icon={<XLg />}
+                icon={<CancelIcon />}
                 onClick={() => setSearchQuery("")}
               />
             </InputGroup>

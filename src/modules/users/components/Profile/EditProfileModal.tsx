@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import { XLg as CancelIcon } from "react-bootstrap-icons";
+import { BsXLg as CancelIcon } from "react-icons/bs";
 import { User, type IUser } from "../../models/user.model";
 import EditProfileForm from "./EditProfileForm";
 import UpdatePasswordForm from "./UpdatePasswordForm";

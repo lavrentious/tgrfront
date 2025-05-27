@@ -1,11 +1,11 @@
 import { useAbility } from "@casl/react";
 import { Button } from "react-bootstrap";
 import {
-  XLg as CancelIcon,
-  PlusLg as CreateIcon,
-  Search as SearchIcon,
-  CheckLg as SubmitIcon,
-} from "react-bootstrap-icons";
+  BsXLg as CancelIcon,
+  BsPlusLg as CreateIcon,
+  BsSearch as SearchIcon,
+  BsCheckLg as SubmitIcon,
+} from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { AbilityContext } from "src/modules/ability/ability";
 import { type RootState, useAppDispatch } from "src/store";

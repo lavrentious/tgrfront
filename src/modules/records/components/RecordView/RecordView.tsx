@@ -2,9 +2,9 @@ import { useAbility } from "@casl/react";
 import React, { useCallback, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import {
-  Trash as DeleteIcon,
-  PencilFill as EditIcon,
-} from "react-bootstrap-icons";
+  BsTrash as DeleteIcon,
+  BsPencilFill as EditIcon,
+} from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import type { ApiError } from "src/api/api";
 import { AbilityContext } from "src/modules/ability/ability";

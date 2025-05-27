@@ -3,7 +3,7 @@ import axios from "axios";
 import type { LatLngTuple } from "leaflet";
 import React, { type FormEvent, useState } from "react";
 import { Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
-import { Search as SearchIcon } from "react-bootstrap-icons";
+import { BsSearch as SearchIcon } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { AbilityContext } from "src/modules/ability/ability";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";

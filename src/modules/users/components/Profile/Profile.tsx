@@ -1,7 +1,7 @@
 import { useAbility } from "@casl/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Container } from "react-bootstrap";
-import { PencilFill as EditIcon } from "react-bootstrap-icons";
+import { BsPencilFill as EditIcon } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
 import LoadingPage from "src/modules/common/components/LoadingPage";

@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { CheckLg as SubmitIcon } from "react-bootstrap-icons";
 import { toast } from "react-hot-toast";
+import { BsCheckLg as SubmitIcon } from "react-icons/bs";
 import * as yup from "yup";
 import { User } from "../../models/user.model";
 import { Field as FormikField } from "./Field";

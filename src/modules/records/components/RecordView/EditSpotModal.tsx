@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Button, Modal } from "react-bootstrap";
-import {
-  XLg as CancelIcon,
-  CheckLg as SubmitIcon,
-} from "react-bootstrap-icons";
 import toast from "react-hot-toast";
+import { BsXLg as CancelIcon, BsCheckLg as SubmitIcon } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { formatApiError, isApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";

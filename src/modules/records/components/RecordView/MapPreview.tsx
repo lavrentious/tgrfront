@@ -2,8 +2,12 @@ import { useAbility } from "@casl/react";
 import type { LatLngTuple } from "leaflet";
 import React, { useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { Pencil, Save, XLg } from "react-bootstrap-icons";
 import toast from "react-hot-toast";
+import {
+  BsXLg as CancelIcon,
+  BsPencil as EditIcon,
+  BsSave as SaveIcon,
+} from "react-icons/bs";
 import { greenIcon as recordIcon } from "src/assets/markerIcons";
 import { AbilityContext } from "src/modules/ability/ability";
 import { Record } from "src/modules/records/models/record.model";
@@ -41,7 +45,7 @@ const EditButton: React.FC<{
             marker.draggable = false;
           }}
         >
-          <XLg /> Отмена
+          <CancelIcon /> Отмена
         </Button>
         <Button
           className="my-1 me-1"
@@ -52,7 +56,7 @@ const EditButton: React.FC<{
             onSave();
           }}
         >
-          <Save /> Сохранить
+          <SaveIcon /> Сохранить
         </Button>
       </>
     );
@@ -66,7 +70,7 @@ const EditButton: React.FC<{
         marker.draggable = true;
       }}
     >
-      <Pencil /> Изменить положение
+      <EditIcon /> Изменить положение
     </Button>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { Spinner } from "react-bootstrap";
-import { CheckLg, XLg } from "react-bootstrap-icons";
+import { BsCheckLg, BsXLg } from "react-icons/bs";
 import { FileStatus } from "src/modules/records/records.types";
 
 interface StatusIconProps {
@@ -12,9 +12,9 @@ const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
     case FileStatus.PENDING:
       return <Spinner animation="border" size="sm" />;
     case FileStatus.FAILED:
-      return <XLg className="text-danger" />;
+      return <BsXLg className="text-danger" />;
     case FileStatus.SUCCESS:
-      return <CheckLg className="text-success" />;
+      return <BsCheckLg className="text-success" />;
     default:
       return <></>;
   }
