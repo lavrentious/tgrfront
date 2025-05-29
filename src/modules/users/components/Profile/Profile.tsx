@@ -22,12 +22,17 @@ const Profile = () => {
 
   const {
     data: user,
+    currentData: currentUser,
     error,
     isFetching,
     isError,
+    refetch,
   } = useGetUserQuery(idOrUsername ?? "", {
     skip: !idOrUsername,
   });
+  useEffect(() => {
+    refetch();
+  }, [ability, refetch]);
 
   const [editFormVisible, setEditFormVisible] = useState(false);
 
@@ -89,7 +94,7 @@ const Profile = () => {
             <EditIcon /> Изменить профиль
           </Button>
         )}
-        <UserData user={user} />
+        <UserData user={user ?? currentUser} />
       </Container>
     </>
   );
