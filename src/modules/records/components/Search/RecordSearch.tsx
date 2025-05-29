@@ -139,35 +139,24 @@ const RecordSearch: React.FC = () => {
         </Alert>
       )}
 
-      {recordsData?.totalDocs != null && recordsData.totalDocs > 0 && (
-        <Paginator
-          page={page}
-          limit={limit}
-          totalPages={recordsData?.totalPages ?? 1}
-          setPage={setPage}
-        />
-      )}
+      <Paginator
+        page={page}
+        limit={limit}
+        totalPages={recordsData?.totalPages ?? 1}
+        setPage={setPage}
+        totalCount={recordsData?.totalDocs}
+      />
 
       {isRecordsError && (
         <ErrorAlert>{formatApiError(recordsError)}</ErrorAlert>
       )}
 
-      {recordsData?.docs?.length ? (
+      {recordsData?.docs?.length != null && (
         <>
-          <small className="text-muted">
-            Показано {recordsData.pagingCounter}-
-            {Math.min(
-              recordsData.totalDocs,
-              recordsData.pagingCounter + recordsData.limit - 1,
-            )}{" "}
-            из {recordsData.totalDocs}
-          </small>
           {recordsData.docs.map((doc) => (
             <RecordData doc={doc} key={doc._id} />
           ))}
         </>
-      ) : (
-        !isRecordsFetching && <>Нет результатов</>
       )}
     </Container>
   );

@@ -78,25 +78,19 @@ const UserSearch = () => {
         limit={limit}
         totalPages={data?.totalPages ?? 1}
         setPage={setPage}
+        totalCount={data?.totalDocs}
       />
 
       {isError && <ErrorAlert>{formatApiError(error)}</ErrorAlert>}
 
-      {data?.docs?.length ? (
+      {data?.docs?.length != null && (
         <>
-          <small className="text-muted">
-            Показано {data.pagingCounter}-
-            {Math.min(data.totalDocs, data.pagingCounter + data.limit - 1)} из{" "}
-            {data.totalDocs}
-          </small>
           <ListGroup>
             {data.docs.map((doc) => (
               <UserData doc={doc} key={doc._id} />
             ))}
           </ListGroup>
         </>
-      ) : (
-        <>Нет результатов</>
       )}
     </Container>
   );
