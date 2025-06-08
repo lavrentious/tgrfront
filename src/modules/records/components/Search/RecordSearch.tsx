@@ -105,14 +105,13 @@ const RecordSearch: React.FC = () => {
 
       <Row>
         <Col lg={6}>
-          <Form className="mb-2">
+          <Form className="mb-2" onSubmit={(e) => e.preventDefault()}>
             <InputGroup>
               <FormControl
                 id="searchQuery"
                 placeholder="Поиск по названию и адресу"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                readOnly={isRecordsFetching}
               />
               <LoadingButton
                 variant="secondary"
