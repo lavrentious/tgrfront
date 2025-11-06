@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { ApiError } from "src/api/api";
 import { AbilityContext } from "src/modules/ability/ability";
 import LoadingPage from "src/modules/common/components/LoadingPage";
-import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
+import ErrorAlert from "src/modules/common/components/ErrorAlert/ErrorAlert";
 import { useAppDispatch } from "src/store";
 import { setIsCreationFormShown } from "src/store/createSpot.reducer";
 

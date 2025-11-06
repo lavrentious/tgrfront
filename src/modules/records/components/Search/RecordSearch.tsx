@@ -17,7 +17,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
+import ErrorAlert from "src/modules/common/components/ErrorAlert/ErrorAlert";
 import { useGetUserQuery } from "src/modules/users/api/users.api";
 import { useDebounce } from "use-debounce";
 import { useLazyGetRecordsQuery } from "../../api/records.api";

@@ -5,7 +5,7 @@ import { BsPencilFill as EditIcon } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { AbilityContext } from "src/modules/ability/ability";
 import LoadingPage from "src/modules/common/components/LoadingPage";
-import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
+import ErrorAlert from "src/modules/common/components/ErrorAlert/ErrorAlert";
 
 import { formatApiError } from "src/api/utils";
 import { type IUser } from "src/modules/users/models/user.model";

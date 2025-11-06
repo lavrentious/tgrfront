@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { formatApiError } from "src/api/utils";
 import LoadingButton from "src/modules/common/components/LoadingButton/LoadingButton";
 import { Paginator } from "src/modules/common/components/Paginator";
-import ErrorAlert from "src/modules/common/ErrorAlert/ErrorAlert";
+import ErrorAlert from "src/modules/common/components/ErrorAlert/ErrorAlert";
 import { useDebounce } from "use-debounce";
 import { useGetUsersQuery } from "../../api/users.api";
 import { User } from "../../models/user.model";
