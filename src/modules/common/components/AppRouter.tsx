@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import LoadingPage from "src/modules/common/components/LoadingPage";
 import routes, { type Route as RouteType } from "src/routes";
 import type { RootState } from "src/store";
 import type { StoredUser } from "src/store/auth.reducer";
@@ -24,20 +25,21 @@ function getRouteElement(
 
 const AppRouter: React.FC<AppRouterProps> = ({ children }) => {
   const { user, isAuthLoading } = useSelector((state: RootState) => state.auth);
+
   return (
     <BrowserRouter>
       {children}
-      <Routes>
-        {routes.map((route) => {
-          return (
+      <Suspense fallback={<LoadingPage />}>
+        <Routes>
+          {routes.map((route) => (
             <Route
               key={route.path}
               path={route.path}
               element={getRouteElement(route, user, isAuthLoading)}
             />
-          );
-        })}
-      </Routes>
+          ))}
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };

@@ -1,15 +1,4 @@
-import React from "react";
-import About from "src/modules/about/components/About/About";
-import NotFound from "src/modules/common/components/NotFound/NotFound";
-import MainMap from "src/modules/records/components/MapView/MapView";
-import RecordView from "src/modules/records/components/RecordView/RecordView";
-import RecordSearch from "src/modules/records/components/Search/RecordSearch";
-import Login from "src/modules/users/components/Login/Login";
-import Profile from "src/modules/users/components/Profile/Profile";
-import Register from "src/modules/users/components/Register/Register";
-import CreatePasswordReset from "src/modules/users/components/ResetPassword/CreatePasswordReset";
-import ResetPassword from "src/modules/users/components/ResetPassword/ResetPassword";
-import UserSearch from "src/modules/users/components/Search/UserSearch";
+import { lazy } from "react";
 
 export type Route = {
   path: string;
@@ -17,6 +6,38 @@ export type Route = {
   anonOnly?: boolean;
   authOnly?: boolean;
 };
+
+const MainMap = lazy(
+  () => import("src/modules/records/components/MapView/MapView"),
+);
+const About = lazy(() => import("src/modules/about/components/About/About"));
+const Login = lazy(() => import("src/modules/users/components/Login/Login"));
+const Register = lazy(
+  () => import("src/modules/users/components/Register/Register"),
+);
+const RecordView = lazy(
+  () => import("src/modules/records/components/RecordView/RecordView"),
+);
+const Profile = lazy(
+  () => import("src/modules/users/components/Profile/Profile"),
+);
+const CreatePasswordReset = lazy(
+  () =>
+    import("src/modules/users/components/ResetPassword/CreatePasswordReset"),
+);
+const ResetPassword = lazy(
+  () => import("src/modules/users/components/ResetPassword/ResetPassword"),
+);
+const RecordSearch = lazy(
+  () => import("src/modules/records/components/Search/RecordSearch"),
+);
+const UserSearch = lazy(
+  () => import("src/modules/users/components/Search/UserSearch"),
+);
+const NotFound = lazy(
+  () => import("src/modules/common/components/NotFound/NotFound"),
+);
+
 const routes: Route[] = [
   { element: <MainMap />, path: "/" },
   { element: <About />, path: "/about" },
