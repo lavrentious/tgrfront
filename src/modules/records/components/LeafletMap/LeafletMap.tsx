@@ -20,6 +20,7 @@ import { blueIcon as userSpotIcon } from "src/assets/markerIcons";
 import arraysEqual from "src/modules/common/utils/arraysEqual";
 import { type RootState, useAppDispatch } from "src/store";
 import { setUserCoords } from "src/store/map.reducer";
+import { useDebouncedCallback } from "use-debounce";
 import CenterButton from "./CenterButton";
 import LeafletAttribution from "./LeafletAttribution";
 import RecordMarker from "./RecordMarker";
@@ -117,14 +118,20 @@ const LeafletMap: React.FunctionComponent<ILeafletMapProps> = memo(
       }
     }, [center, zoom]);
 
+    const displayErrorToast = useDebouncedCallback((message: string) => {
+      toast.error(message);
+    }, 1000);
+
     const { position, onError } = useGeolocationState();
     onError((e) => {
       switch (e.code) {
         case e.PERMISSION_DENIED:
-          toast.error("Вы запретили доступ к своему местоположению.");
+          displayErrorToast(
+            "Невозможно получить местоположение: отказано в разрешении.",
+          );
           break;
         default:
-          toast.error("Невозможно получить местоположение.");
+          displayErrorToast("Невозможно получить местоположение.");
           break;
       }
     });
